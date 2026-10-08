@@ -1,797 +1,801 @@
-### Purpose
+### Propósito
 
-Resolve one stable target, run two independent assessments, synthesize a design critique, persist a snapshot, and ask the user what to improve next. The chat response is the primary deliverable; the snapshot is an archive of that run.
+Resolva um alvo estável, execute duas avaliações independentes, sintetize uma crítica de design, persista um snapshot e pergunte ao usuário o que melhorar em seguida. A resposta no chat é a entrega principal; o snapshot é um arquivo histórico dessa execução.
 
-### Hard Invariants
+### Invariantes rígidas
 
-- Assessment A (design review) and Assessment B (detector/browser evidence) are both required.
-- Assessment A and B MUST run as two isolated sub-agents whenever a sub-agent/Task tool is exposed. Running them inline in this context is "possible" but is NOT permitted; it is a degraded run. Inline is allowed ONLY when no sub-agent tool exists (or the user declined, on harnesses that ask).
-- If you degrade for any reason, the report's first line MUST be a banner: `⚠️ DEGRADED: single-context (<reason>)`. A silent degraded critique is a failed critique.
-- Assessment A must finish before detector findings enter the parent synthesis context. Detector output is deterministic, but it still anchors judgment.
-- A skipped detector is a failed critique run unless `impeccable detect` is missing or crashes after a real attempt.
-- Viewable targets require browser inspection when available.
-- Any local server started only for critique visualization must run in the background, have a recorded stop method, and be stopped before final reporting unless the user asks to keep it.
-- Do not claim a user-visible overlay exists unless script injection succeeded and the detector ran in the page.
-- The question is the LAST thing in the response. Write the entire report out first, then ask; nothing follows the question. Prose emitted after a structured question is withheld until the user answers it, so a report written after the question reads as if the critique never ran.
-- A run that ends with neither the targeted questions nor a literal `Questions skipped: <reason>` line is an incomplete run. The report is not the finish; the close is.
+- A Avaliação A (revisão de design) e a Avaliação B (evidências do detector/navegador) são ambas obrigatórias.
+- As Avaliações A e B DEVEM rodar como dois subagentes isolados sempre que uma ferramenta de subagente/Task estiver exposta. Rodá-las inline neste contexto é "possível", mas NÃO é permitido; isso é uma execução degradada. Inline é permitido SOMENTE quando não existe nenhuma ferramenta de subagente (ou o usuário recusou, em harnesses que perguntam).
+- Se você degradar por qualquer motivo, a primeira linha do relatório DEVE ser um banner: `⚠️ DEGRADED: single-context (<reason>)`. Uma crítica degradada silenciosa é uma crítica falha.
+- A Avaliação A precisa terminar antes que os achados do detector entrem no contexto de síntese do agente pai. A saída do detector é determinística, mas ainda assim ancora o julgamento.
+- Um detector pulado é uma execução de crítica falha, a menos que `impeccable detect` esteja ausente ou trave após uma tentativa real.
+- Alvos visualizáveis exigem inspeção no navegador quando ela estiver disponível.
+- Qualquer servidor local iniciado apenas para a visualização da crítica deve rodar em segundo plano, ter um método de parada registrado e ser parado antes do relatório final, a menos que o usuário peça para mantê-lo.
+- Não afirme que existe uma sobreposição visível ao usuário a menos que a injeção do script tenha dado certo e o detector tenha rodado na página.
+- A pergunta é a ÚLTIMA coisa na resposta. Escreva o relatório inteiro primeiro e depois pergunte; nada vem depois da pergunta. A prosa emitida depois de uma pergunta estruturada fica retida até o usuário respondê-la, então um relatório escrito depois da pergunta parece como se a crítica nunca tivesse rodado.
+- Uma execução que termina sem as perguntas direcionadas e sem uma linha literal `Questions skipped: <reason>` é uma execução incompleta. O relatório não é o fim; o fechamento é.
 
-### Setup
+### Configuração
 
-1. **Resolve the target** to a concrete file path or URL. Prefer a source path over a dev-server URL when both identify the same surface; ports drift, paths do not.
-   - "the homepage" -> `site/pages/index.astro` or `index.html`
-   - "the settings modal" -> the primary component file
-   - "this page" -> the current URL or source file
-2. **Confirm the target slugs cleanly**:
+1. **Resolva o alvo** para um caminho de arquivo ou URL concreto. Prefira um caminho de código-fonte a uma URL de servidor de desenvolvimento quando ambos identificam a mesma superfície; portas mudam, caminhos não.
+   - "a página inicial" -> `site/pages/index.astro` ou `index.html`
+   - "o modal de configurações" -> o arquivo do componente principal
+   - "esta página" -> a URL atual ou o arquivo-fonte
+2. **Confirme que o alvo gera um slug limpo**:
    ```bash
    .kiro/skills/impeccable/scripts/impeccable critique-storage slug "<resolved-path-or-url>"
    ```
-   Every later command also accepts the resolved target directly and derives the same slug internally; never hand-write a slug. If this exits non-zero, skip persistence and trend for this run, but continue the critique.
-3. **Read `.impeccable/critique/ignore.md`** if it exists. Drop matching findings silently; it is the only prior-run input critique consumes.
+   Todos os comandos posteriores também aceitam o alvo resolvido diretamente e derivam internamente o mesmo slug; nunca escreva um slug à mão. Se isso sair com código diferente de zero, pule a persistência e a tendência nesta execução, mas continue a crítica.
+3. **Leia `.impeccable/critique/ignore.md`** se existir. Descarte silenciosamente os achados correspondentes; essa é a única entrada de execuções anteriores que a crítica consome.
 
-### Assessment Orchestration
+### Orquestração das avaliações
 
-Delegate Assessment A and Assessment B to separate sub-agents. They must not see each other's output. Do not show findings to the user until synthesis.
+Delegue a Avaliação A e a Avaliação B a subagentes separados. Eles não podem ver a saída um do outro. Não mostre achados ao usuário até a síntese.
 
-Sub-agent gate (all harnesses):
-- Unless a harness-specific gate below overrides this, spawn A and B as two isolated, parallel sub-agents whenever a sub-agent/Task tool is exposed. This is the default and is mandatory; do not run them inline because it is faster.
-- "Unavailable" means exactly one thing: no sub-agent/Task tool is exposed in this session (or, on harnesses that ask, the user declined). It does not mean inconvenient.
-- If and only if sub-agents are unavailable, fall back sequentially: finish and record Assessment A, then run Assessment B, then synthesize, and emit the degraded banner.
-- Whichever path you take, declare it in the report header (see Report header provenance). Skipping sub-agents without the banner is the most common failure of this command.
+Portão de subagentes (todos os harnesses):
+- A menos que um portão específico de harness abaixo substitua este, crie A e B como dois subagentes isolados e paralelos sempre que uma ferramenta de subagente/Task estiver exposta. Esse é o padrão e é obrigatório; não os rode inline só porque é mais rápido.
+- "Indisponível" significa exatamente uma coisa: nenhuma ferramenta de subagente/Task está exposta nesta sessão (ou, em harnesses que perguntam, o usuário recusou). Não significa inconveniente.
+- Se, e somente se, os subagentes estiverem indisponíveis, recorra à execução sequencial: termine e registre a Avaliação A, depois rode a Avaliação B, depois sintetize e emita o banner de degradação.
+- Seja qual for o caminho escolhido, declare-o no cabeçalho do relatório (veja Procedência no cabeçalho do relatório). Pular subagentes sem o banner é a falha mais comum deste comando.
 
-If browser automation is available, each assessment creates its own new tab. Never reuse an existing tab, even if it is already at the right URL.
+Se houver automação de navegador disponível, cada avaliação cria sua própria aba nova. Nunca reutilize uma aba existente, mesmo que ela já esteja na URL certa.
 
-### Assessment A: Design Review
+### Avaliação A: Revisão de design
 
-Read relevant source files and visually inspect the live page when browser automation is available. Think like a design director.
+Leia os arquivos-fonte relevantes e inspecione visualmente a página ao vivo quando houver automação de navegador disponível. Pense como um diretor de design.
 
-Evaluate:
-- **Design specificity**: Is the composition, interaction, and visual language grounded in this product, or could an unrelated product use it unchanged? Make this judgment before seeing detector output.
-- **Holistic design**: hierarchy, IA, emotional fit, discoverability, composition, typography, color, accessibility, states, copy, and edge cases.
-- **Cognitive load**: consult the [Cognitive Load Assessment](#cognitive-load-assessment) section below; report checklist failures and decision points with >4 visible options.
-- **Emotional journey**: peak-end rule, emotional valleys, reassurance at high-stakes moments.
-- **Nielsen heuristics**: consult the [Heuristics Scoring Guide](#heuristics-scoring-guide) section below; score all 10 heuristics 0-4, marking any heuristic the mode-applicability rule allows as `n/a` instead of forcing a number.
+Avalie:
+- **Especificidade do design**: a composição, a interação e a linguagem visual estão fundamentadas neste produto, ou um produto não relacionado poderia usá-las sem mudanças? Faça esse julgamento antes de ver a saída do detector.
+- **Design holístico**: hierarquia, arquitetura da informação, adequação emocional, descoberta, composição, tipografia, cor, acessibilidade, estados, copy e casos extremos.
+- **Carga cognitiva**: consulte a seção [Avaliação de carga cognitiva](#cognitive-load-assessment) abaixo; relate as falhas do checklist e os pontos de decisão com >4 opções visíveis.
+- **Jornada emocional**: regra do pico-fim, vales emocionais, segurança em momentos de alto risco.
+- **Heurísticas de Nielsen**: consulte a seção [Guia de pontuação das heurísticas](#heuristics-scoring-guide) abaixo; pontue todas as 10 heurísticas de 0 a 4, marcando como `n/a` qualquer heurística que a regra de aplicabilidade por modo permita, em vez de forçar um número.
 
-Return: design-specificity verdict, heuristic scores, cognitive load, emotional journey, 2-3 strengths, 3-5 priority issues, persona red flags, minor observations, and provocative questions.
+Retorne: veredito de especificidade do design, pontuações das heurísticas, carga cognitiva, jornada emocional, 2-3 pontos fortes, 3-5 problemas prioritários, sinais de alerta das personas, observações menores e perguntas provocativas.
 
-### Assessment B: Detector + Browser Evidence
+### Avaliação B: Detector + evidências do navegador
 
-Run the bundled detector and browser visualization evidence. Assessment B is mandatory and must remain isolated from Assessment A until both are complete.
+Rode o detector incluído e a visualização no navegador como evidência. A Avaliação B é obrigatória e precisa permanecer isolada da Avaliação A até que ambas estejam concluídas.
 
-CLI scan:
+Varredura via CLI:
 ```bash
 .kiro/skills/impeccable/scripts/impeccable detect --json [target]
 ```
 
-- Pass markup files/directories as `[target]`; do not pass CSS-only files.
-- For URLs, skip CLI scan and use browser visualization.
-- For very large trees (500+ scannable files), narrow scope or ask.
-- Exit code 0 = clean; 2 = findings.
-- If the detector entrypoint is missing or fails to load, report deterministic scan unavailable and continue with browser/manual review.
+- Passe arquivos/diretórios de marcação como `[target]`; não passe arquivos só de CSS.
+- Para URLs, pule a varredura via CLI e use a visualização no navegador.
+- Para árvores muito grandes (500+ arquivos varríveis), restrinja o escopo ou pergunte.
+- Código de saída 0 = limpo; 2 = achados.
+- Se o ponto de entrada do detector estiver ausente ou falhar ao carregar, relate que a varredura determinística está indisponível e continue com a revisão via navegador/manual.
 
-Browser visualization is required for a viewable target when browser automation is available. Use a localhost dev/static URL for local files; avoid `file://` unless the available browser explicitly supports this workflow. Overlay flow:
+A visualização no navegador é obrigatória para um alvo visualizável quando houver automação de navegador disponível. Use uma URL localhost de desenvolvimento/estática para arquivos locais; evite `file://`, a menos que o navegador disponível suporte explicitamente esse fluxo. Fluxo da sobreposição:
 
-1. Create a fresh tab and navigate. Prefer the harness's native/browser-canvas screenshot path before hand-rolling a Playwright/Puppeteer script; only fall back to a custom script when no native browser tool is exposed.
-2. Preflight mutable injection by setting `document.title` and appending a `<script>` tag. Read-only evaluate APIs do not count.
-3. If mutation is unavailable, skip live server, browser presentation, and injection; report fallback signal.
-4. If mutation is available, start `.kiro/skills/impeccable/scripts/impeccable live-server --background`, present the browser if supported, label `[Human]`, scroll top, inject `http://localhost:PORT/detect.js`, wait 2-3 seconds, read `impeccable` console messages, then stop the live server.
-5. For multi-view targets, inject on 3-5 representative pages.
+1. Crie uma aba nova e navegue. Prefira o caminho de captura de tela nativo do harness/canvas do navegador antes de escrever à mão um script Playwright/Puppeteer; só recorra a um script personalizado quando nenhuma ferramenta de navegador nativa estiver exposta.
+2. Faça uma verificação prévia da injeção mutável definindo `document.title` e anexando uma tag `<script>`. APIs de avaliação somente leitura não contam.
+3. Se a mutação estiver indisponível, pule o servidor live, a apresentação no navegador e a injeção; relate o sinal de fallback.
+4. Se a mutação estiver disponível, inicie `.kiro/skills/impeccable/scripts/impeccable live-server --background`, apresente o navegador se houver suporte, rotule como `[Human]`, role até o topo, injete `http://localhost:PORT/detect.js`, aguarde 2-3 segundos, leia as mensagens de console `impeccable` e então pare o servidor live.
+5. Para alvos com várias visualizações, injete em 3-5 páginas representativas.
 
-Return: CLI findings JSON/counts, browser console findings if applicable, false positives, and skipped/failed browser steps with concrete reasons.
+Retorne: JSON/contagens dos achados da CLI, achados do console do navegador, se aplicável, falsos positivos e etapas de navegador puladas/falhas com motivos concretos.
 
-After Assessment B returns usable CLI findings, reuse them. Do not rerun `impeccable detect` in the parent unless Assessment B failed, was truncated, or omitted count, rule names, or file locations.
+Depois que a Avaliação B retornar achados utilizáveis da CLI, reutilize-os. Não rode `impeccable detect` novamente no agente pai, a menos que a Avaliação B tenha falhado, sido truncada ou omitido a contagem, os nomes das regras ou as localizações dos arquivos.
 
-### Generate Combined Critique Report
+### Gere o relatório de crítica combinado
 
-Synthesize both assessments into a single report. Do NOT simply concatenate. Weave the findings together, noting where the LLM review and detector agree, where the detector caught issues the LLM missed, and where detector findings are false positives.
+Sintetize as duas avaliações em um único relatório. NÃO apenas as concatene. Entrelace os achados, apontando onde a revisão do LLM e o detector concordam, onde o detector pegou problemas que o LLM deixou passar e onde os achados do detector são falsos positivos.
 
-The chat response is the primary user-facing deliverable. Present the full structured critique below in chat; do not replace it with a summary and a link. The persisted snapshot is an archive of that run.
+A resposta no chat é a entrega principal voltada ao usuário. Apresente no chat a crítica estruturada completa abaixo; não a substitua por um resumo e um link. O snapshot persistido é um arquivo histórico dessa execução.
 
-Structure your feedback as a design director would:
+Estruture seu feedback como faria um diretor de design:
 
-#### Report header provenance
+#### Procedência no cabeçalho do relatório
 
-The report's first line MUST declare how the assessments were run, so a degraded run is never silent:
-- Dual-agent: `Method: dual-agent (A: <agent-id> · B: <agent-id>)`
-- Degraded: `⚠️ DEGRADED: single-context (<reason, e.g. no sub-agent tool exposed>)`
+A primeira linha do relatório DEVE declarar como as avaliações foram executadas, para que uma execução degradada nunca seja silenciosa:
+- Dois agentes: `Method: dual-agent (A: <agent-id> · B: <agent-id>)`
+- Degradada: `⚠️ DEGRADED: single-context (<reason, e.g. no sub-agent tool exposed>)`
 
-#### Design Health Score
-> *Consult the [Heuristics Scoring Guide](#heuristics-scoring-guide) section below.*
+#### Pontuação de saúde do design
+> *Consulte a seção [Guia de pontuação das heurísticas](#heuristics-scoring-guide) abaixo.*
 
-Present the Nielsen's 10 heuristics scores as a table:
+Apresente as pontuações das 10 heurísticas de Nielsen como uma tabela:
 
-| # | Heuristic | Score | Key Issue |
+| # | Heurística | Pontuação | Problema principal |
 |---|-----------|-------|-----------|
-| 1 | Visibility of System Status | ? | [specific finding or "n/a" if solid] |
-| 2 | Match System / Real World | ? | |
-| 3 | User Control and Freedom | ? | |
-| 4 | Consistency and Standards | ? | |
-| 5 | Error Prevention | ? | |
-| 6 | Recognition Rather Than Recall | ? | |
-| 7 | Flexibility and Efficiency | ? | |
-| 8 | Aesthetic and Minimalist Design | ? | |
-| 9 | Error Recovery | ? | |
-| 10 | Help and Documentation | ? | |
-| **Total** | | **??/[applicable max]** | **[Rating band]** |
+| 1 | Visibilidade do status do sistema | ? | [achado específico ou "n/a" se estiver sólido] |
+| 2 | Correspondência entre o sistema e o mundo real | ? | |
+| 3 | Controle e liberdade do usuário | ? | |
+| 4 | Consistência e padrões | ? | |
+| 5 | Prevenção de erros | ? | |
+| 6 | Reconhecimento em vez de memorização | ? | |
+| 7 | Flexibilidade e eficiência | ? | |
+| 8 | Design estético e minimalista | ? | |
+| 9 | Recuperação de erros | ? | |
+| 10 | Ajuda e documentação | ? | |
+| **Total** | | **??/[máximo aplicável]** | **[Faixa de classificação]** |
 
-The applicable maximum is 4 times the number of heuristics you actually scored: **/40** when all ten apply, **/32** when two are `n/a`. Never print `/40` over a partial set.
+O máximo aplicável é 4 vezes o número de heurísticas que você de fato pontuou: **/40** quando todas as dez se aplicam, **/32** quando duas são `n/a`. Nunca imprima `/40` sobre um conjunto parcial.
 
-Be honest with scores. A 4 means genuinely excellent. Most real interfaces score 20-32 out of 40.
+Seja honesto nas pontuações. Um 4 significa genuinamente excelente. A maioria das interfaces reais pontua entre 20 e 32 de 40.
 
-**Mode applicability**: heuristics 7 (Flexibility and Efficiency) and 10 (Help and Documentation) may be scored `n/a` on Persuade and Experience surfaces (landing pages, campaigns, portfolios, bodies of work), as may any other heuristic that genuinely cannot apply to the surface under review. Write `n/a` in the Score cell with a one-line reason, and renormalize the total to the applicable maximum (e.g. **24/32** when two heuristics are n/a) so the rating band stays proportional. The persisted snapshot must record the applicable maximum and which heuristics were scored n/a.
+**Aplicabilidade por modo**: as heurísticas 7 (Flexibilidade e eficiência) e 10 (Ajuda e documentação) podem ser pontuadas como `n/a` em superfícies Persuade (persuadir) e Experience (experiência) (landing pages, campanhas, portfólios, conjuntos de obras), assim como qualquer outra heurística que genuinamente não possa se aplicar à superfície em revisão. Escreva `n/a` na célula de Pontuação com um motivo de uma linha e renormalize o total para o máximo aplicável (por exemplo, **24/32** quando duas heurísticas são n/a), para que a faixa de classificação permaneça proporcional. O snapshot persistido precisa registrar o máximo aplicável e quais heurísticas foram pontuadas como n/a.
 
-#### Design Specificity Verdict
+#### Veredito de especificidade do design
 
-**Start here.** Does the result feel authored for this product, or category-interchangeable?
+**Comece aqui.** O resultado parece feito sob medida para este produto ou intercambiável dentro da categoria?
 
-**LLM assessment**: Your unanchored evaluation of design specificity. Cover overall coherence, structural sameness, category-interchangeable choices, and missed opportunities for product character.
+**Avaliação do LLM**: sua avaliação não ancorada da especificidade do design. Cubra a coerência geral, a mesmice estrutural, as escolhas intercambiáveis dentro da categoria e as oportunidades perdidas de dar caráter ao produto.
 
-**Deterministic scan**: Summarize what the automated detector found, with counts and file locations. Note any additional issues the detector caught that you missed, and flag any false positives.
+**Varredura determinística**: resuma o que o detector automatizado encontrou, com contagens e localizações nos arquivos. Aponte quaisquer problemas adicionais que o detector pegou e você deixou passar, e sinalize quaisquer falsos positivos.
 
-**Visual overlays** (if injection succeeded): Tell the user that overlays are now visible in the **[Human]** tab in their browser, highlighting the detected issues. Summarize what the console output reported. If browser visualization was attempted but injection failed, say that no reliable user-visible overlay is available and report the fallback signal instead.
+**Sobreposições visuais** (se a injeção deu certo): diga ao usuário que as sobreposições agora estão visíveis na aba **[Human]** do navegador dele, destacando os problemas detectados. Resuma o que a saída do console relatou. Se a visualização no navegador foi tentada, mas a injeção falhou, diga que não há nenhuma sobreposição confiável visível ao usuário e relate o sinal de fallback no lugar.
 
-#### Overall Impression
-A brief gut reaction: what works, what doesn't, and the single biggest opportunity.
+#### Impressão geral
+Uma breve reação instintiva: o que funciona, o que não funciona e a maior oportunidade isolada.
 
-#### What's Working
-Highlight 2-3 things done well. Be specific about why they work.
+#### O que está funcionando
+Destaque 2-3 coisas bem feitas. Seja específico sobre por que elas funcionam.
 
-#### Priority Issues
-The 3-5 most impactful design problems, ordered by importance.
+#### Problemas prioritários
+Os 3-5 problemas de design de maior impacto, ordenados por importância.
 
-For each issue, tag with **P0-P3 severity** (see [Issue Severity below](#issue-severity-p0p3) for definitions):
-- **[P?] What**: Name the problem clearly
-- **Why it matters**: How this hurts users or undermines goals
-- **Fix**: What to do about it (be concrete)
-- **Suggested command**: Which command could address this (from: /impeccable adapt, /impeccable animate, /impeccable audit, /impeccable bolder, /impeccable clarify, /impeccable colorize, /impeccable critique, /impeccable delight, /impeccable distill, /impeccable document, /impeccable harden, /impeccable layout, /impeccable onboard, /impeccable optimize, /impeccable overdrive, /impeccable polish, /impeccable quieter, /impeccable shape, /impeccable typeset)
+Para cada problema, marque com uma **severidade P0-P3** (veja [Severidade dos problemas abaixo](#issue-severity-p0p3) para as definições):
+- **[P?] O quê**: nomeie o problema com clareza
+- **Por que importa**: como isso prejudica os usuários ou compromete os objetivos
+- **Correção**: o que fazer a respeito (seja concreto)
+- **Comando sugerido**: qual comando poderia resolver isso (dentre: /impeccable adapt, /impeccable animate, /impeccable audit, /impeccable bolder, /impeccable clarify, /impeccable colorize, /impeccable critique, /impeccable delight, /impeccable distill, /impeccable document, /impeccable harden, /impeccable layout, /impeccable onboard, /impeccable optimize, /impeccable overdrive, /impeccable polish, /impeccable quieter, /impeccable shape, /impeccable typeset)
 
-#### Persona Red Flags
-> *Consult the [Personas reference](#persona-based-design-testing) below.*
+#### Sinais de alerta das personas
+> *Consulte a [referência de Personas](#persona-based-design-testing) abaixo.*
 
-Auto-select 2-3 personas most relevant to this interface type (use the selection table in the reference). If `.kiro/settings.json` contains a `## Design Context` section from `impeccable init`, also generate 1-2 project-specific personas from the audience/brand info.
+Selecione automaticamente 2-3 personas mais relevantes para este tipo de interface (use a tabela de seleção da referência). Se `.kiro/settings.json` contiver uma seção `## Design Context` vinda de `impeccable init`, gere também 1-2 personas específicas do projeto a partir das informações de público/marca.
 
-For each selected persona, walk through the primary user action and list specific red flags found:
+Para cada persona selecionada, percorra a ação principal do usuário e liste os sinais de alerta específicos encontrados:
 
-**Alex (Power User)**: No keyboard shortcuts detected. Form requires 8 clicks for primary action. Forced modal onboarding. High abandonment risk.
+**Alex (usuário avançado)**: nenhum atalho de teclado detectado. O formulário exige 8 cliques para a ação principal. Onboarding forçado em modal. Alto risco de abandono.
 
-**Jordan (First-Timer)**: Icon-only nav in sidebar. Technical jargon in error messages ("404 Not Found"). No visible help. Will abandon at step 2.
+**Jordan (iniciante)**: navegação só com ícones na barra lateral. Jargão técnico nas mensagens de erro ("404 Not Found"). Nenhuma ajuda visível. Vai abandonar no passo 2.
 
-Be specific. Name the exact elements and interactions that fail each persona. Don't write generic persona descriptions; write what broke for them.
+Seja específico. Nomeie os elementos e as interações exatos que falham para cada persona. Não escreva descrições genéricas de personas; escreva o que quebrou para elas.
 
-#### Minor Observations
-Quick notes on smaller issues worth addressing.
+#### Observações menores
+Notas rápidas sobre problemas menores que vale a pena resolver.
 
-#### Questions to Consider
-Provocative questions that might unlock better solutions:
-- "What if the primary action were more prominent?"
-- "Does this need to feel this complex?"
-- "What would a confident version of this look like?"
+#### Perguntas a considerar
+Perguntas provocativas que podem destravar soluções melhores:
+- "E se a ação principal fosse mais proeminente?"
+- "Isto precisa parecer tão complexo?"
+- "Como seria uma versão confiante disto?"
 
-**Remember**:
-- Be direct. Vague feedback wastes everyone's time.
-- Be specific. "The submit button," not "some elements."
-- Say what's wrong AND why it matters to users.
-- Give concrete suggestions. Cut "consider exploring..." entirely.
-- Prioritize ruthlessly. If everything is important, nothing is.
-- Don't soften criticism. Developers need honest feedback to ship great design.
+**Lembre-se**:
+- Seja direto. Feedback vago desperdiça o tempo de todos.
+- Seja específico. "O botão de enviar", não "alguns elementos".
+- Diga o que está errado E por que isso importa para os usuários.
+- Dê sugestões concretas. Corte totalmente o "considere explorar...".
+- Priorize sem piedade. Se tudo é importante, nada é.
+- Não suavize as críticas. Desenvolvedores precisam de feedback honesto para entregar um ótimo design.
 
-### Deliver the Report
+### Entregue o relatório
 
-Write the full report into the chat response now, before any persistence work. This is the deliverable; everything below it is bookkeeping.
+Escreva agora o relatório completo na resposta do chat, antes de qualquer trabalho de persistência. Esta é a entrega; tudo abaixo disto é contabilidade.
 
-Do this first because the alternative is the most common way this command fails: the report gets composed once, straight into the persistence heredoc, and the run ends with a perfect archive nobody has read. Composing it into a file is not delivering it. If the report exists only in `.impeccable/critique/`, the run produced nothing.
+Faça isso primeiro porque a alternativa é a forma mais comum de este comando falhar: o relatório é composto uma única vez, direto no heredoc de persistência, e a execução termina com um arquivo histórico perfeito que ninguém leu. Compor o relatório em um arquivo não é entregá-lo. Se o relatório existir apenas em `.impeccable/critique/`, a execução não produziu nada.
 
-Persistence is not the end of the run. After it, the response continues with the trend line and the close.
+A persistência não é o fim da execução. Depois dela, a resposta continua com a linha de tendência e o fechamento.
 
-### Persist the Snapshot
+### Persista o snapshot
 
-Once the report above is finalized, write it to `.impeccable/critique/` so the user can refer back, and so `/impeccable polish` can pick up the priority issues without a copy-paste.
+Assim que o relatório acima estiver finalizado, grave-o em `.impeccable/critique/` para que o usuário possa consultá-lo depois e para que `/impeccable polish` possa pegar os problemas prioritários sem copiar e colar.
 
-Skip this step if the Setup slug was null (vague or root-level target).
+Pule este passo se o slug da Configuração for nulo (alvo vago ou no nível da raiz).
 
-1. **Write the body to a temp file** so you can pipe it to the helper. Use the full critique report (heuristic table, design-specificity verdict, priority issues, persona red flags, minor observations, and questions), but stop before the "Ask the User" / "Recommended Actions" sections that come later.
+1. **Escreva o corpo em um arquivo temporário** para poder passá-lo por pipe ao auxiliar. Use o relatório de crítica completo (tabela de heurísticas, veredito de especificidade do design, problemas prioritários, sinais de alerta das personas, observações menores e perguntas), mas pare antes das seções "Pergunte ao usuário" / "Ações recomendadas" que vêm depois.
 
-   This is a copy of the report you already delivered above, for later commands to read. It is not delivery. If you find yourself composing the report for the first time inside this heredoc, you have skipped Deliver the Report; go back and send it.
+   Isto é uma cópia do relatório que você já entregou acima, para que comandos posteriores o leiam. Não é a entrega. Se você se pegar compondo o relatório pela primeira vez dentro deste heredoc, você pulou o passo Entregue o relatório; volte e envie-o.
 
-2. **Pass the structured metadata** through `IMPECCABLE_CRITIQUE_META` (JSON), then run the write command:
+2. **Passe os metadados estruturados** por meio de `IMPECCABLE_CRITIQUE_META` (JSON) e então rode o comando de gravação:
    ```bash
    IMPECCABLE_CRITIQUE_META='{"target":"<user phrasing>","total_score":<n>,"max_score":<n>,"na_heuristics":"<comma-separated numbers, or empty>","p0_count":<n>,"p1_count":<n>}' \
      .kiro/skills/impeccable/scripts/impeccable critique-storage write "<resolved target>" <body-file>
    ```
-   `max_score` is the applicable maximum from the heuristic table (40 when every heuristic applied), so a later run can tell a renormalized total from a full one. For a local file target, the helper also records an exact content fingerprint so polish can distinguish the assessed bytes from later edits without relying on Git state or timestamps. The helper prints the absolute path it wrote. Leave that file on disk. Polish closes it; this run does not.
+   `max_score` é o máximo aplicável da tabela de heurísticas (40 quando todas as heurísticas se aplicaram), para que uma execução posterior consiga distinguir um total renormalizado de um total completo. Para um alvo que é arquivo local, o auxiliar também registra uma impressão digital exata do conteúdo, para que o polish consiga distinguir os bytes avaliados de edições posteriores sem depender do estado do Git nem de timestamps. O auxiliar imprime o caminho absoluto que gravou. Deixe esse arquivo no disco. O polish o fecha; esta execução não.
 
-3. **Delete the temp body file** after the write attempt completes, whether the write succeeded or failed. If deletion fails, mention `temp-file cleanup failed: <reason>` briefly in the final output, but do not block the critique.
+3. **Apague o arquivo temporário do corpo** depois que a tentativa de gravação terminar, quer a gravação tenha dado certo, quer tenha falhado. Se a exclusão falhar, mencione brevemente `temp-file cleanup failed: <reason>` na saída final, mas não bloqueie a crítica.
 
-4. **Read the trend** for context:
+4. **Leia a tendência** para ter contexto:
    ```bash
    .kiro/skills/impeccable/scripts/impeccable critique-storage trend "<resolved target>" 5
    ```
-   This returns a JSON array of the last 5 frontmatter entries (including the one you just wrote).
+   Isso retorna um array JSON com as últimas 5 entradas de frontmatter (incluindo a que você acabou de gravar).
 
-5. **Append a single line to the user-visible output**, after the report and before the questions:
+5. **Acrescente uma única linha à saída visível ao usuário**, depois do relatório e antes das perguntas:
 
-   > **Trend for `<slug>` (last 5 runs): 24 → 28 → 32 → 29 → 32 (out of 40)**
-   > Wrote `.impeccable/critique/<filename>`.
+   > **Tendência de `<slug>` (últimas 5 execuções): 24 → 28 → 32 → 29 → 32 (de 40)**
+   > Gravado `.impeccable/critique/<filename>`.
 
-   Read `max_score` on each trend entry. When every entry shares one maximum, state it once as above. When they differ, print each score with its own denominator (`24/32 → 30/40`) and note that the runs scored different heuristic sets, so the line is not a like-for-like comparison. Treat a missing `max_score` on an older entry as 40.
+   Leia `max_score` em cada entrada da tendência. Quando todas as entradas compartilham um mesmo máximo, informe-o uma única vez, como acima. Quando forem diferentes, imprima cada pontuação com seu próprio denominador (`24/32 → 30/40`) e observe que as execuções pontuaram conjuntos diferentes de heurísticas, então a linha não é uma comparação equivalente. Trate um `max_score` ausente em uma entrada mais antiga como 40.
 
-   If this is the first run for the slug, the trend is just one score; say so: "First run for this target, no trend yet."
+   Se esta for a primeira execução para o slug, a tendência é apenas uma pontuação; diga isso: "Primeira execução para este alvo, ainda sem tendência."
 
-6. **Close the run.** Go to Ask the User below and emit the questions, or the `Questions skipped: <reason>` line when the count allows it. The run is not complete until you do. Persistence is bookkeeping and cleanup is not an ending; stopping here leaves the user with a report and no way forward, and leaves `/impeccable polish` with no priorities to inherit.
+6. **Feche a execução.** Vá para Pergunte ao usuário abaixo e emita as perguntas, ou a linha `Questions skipped: <reason>` quando a contagem permitir. A execução não está completa até você fazer isso. A persistência é contabilidade e a limpeza não é um encerramento; parar aqui deixa o usuário com um relatório e nenhum caminho adiante, e deixa o `/impeccable polish` sem prioridades para herdar.
 
-This is fire-and-forget. Do not show the user the helper's JSON output; only the human-readable trend line and the written path. Failures here should not block the rest of the flow; print the error and move on.
+Isto é do tipo "dispare e esqueça". Não mostre ao usuário a saída JSON do auxiliar; apenas a linha de tendência legível e o caminho gravado. Falhas aqui não devem bloquear o restante do fluxo; imprima o erro e siga em frente.
 
-### Ask the User
+### Pergunte ao usuário
 
-**After presenting findings**, use targeted questions based on what was actually found. Ask the user directly to clarify what you cannot infer. These answers will shape the action plan.
+**Depois de apresentar os achados**, faça perguntas direcionadas com base no que foi de fato encontrado. Pergunte diretamente ao usuário para esclarecer o que você não consegue inferir. Essas respostas vão moldar o plano de ação.
 
-Ask in the same message that carries the report, with the report written out first and the question last. Do not split the two across turns: a turn that ends on the report is a turn that ends, and the questions never arrive. Order within the message is what matters, because prose emitted after a structured question is withheld until the user answers.
+Pergunte na mesma mensagem que traz o relatório, com o relatório escrito primeiro e a pergunta por último. Não divida os dois em turnos diferentes: um turno que termina no relatório é um turno que termina, e as perguntas nunca chegam. O que importa é a ordem dentro da mensagem, porque a prosa emitida depois de uma pergunta estruturada fica retida até o usuário responder.
 
-Ask questions along these lines (adapt to the specific findings; do NOT ask generic questions):
+Faça perguntas nesta linha (adapte aos achados específicos; NÃO faça perguntas genéricas):
 
-1. **Priority direction**: Based on the issues found, ask which category matters most to the user right now. For example: "I found problems with visual hierarchy, color usage, and information overload. Which area should we tackle first?" Offer the top 2-3 issue categories as options.
+1. **Direção de prioridade**: com base nos problemas encontrados, pergunte qual categoria mais importa para o usuário agora. Por exemplo: "Encontrei problemas de hierarquia visual, uso de cores e excesso de informação. Qual área devemos atacar primeiro?" Ofereça as 2-3 principais categorias de problemas como opções.
 
-2. **Design intent**: If the critique found a tonal mismatch, ask whether it was intentional. For example: "The interface feels clinical and corporate. Is that the intended tone, or should it feel warmer/bolder/more playful?" Offer 2-3 tonal directions as options based on what would fix the issues found.
+2. **Intenção de design**: se a crítica encontrou um descompasso de tom, pergunte se ele foi intencional. Por exemplo: "A interface parece clínica e corporativa. Esse é o tom pretendido ou ela deveria parecer mais calorosa/ousada/divertida?" Ofereça 2-3 direções de tom como opções, com base no que corrigiria os problemas encontrados.
 
-3. **Scope**: Ask how much the user wants to take on. For example: "I found N issues. Want to address everything, or focus on the top 3?" Offer scope options like "Top 3 only", "All issues", "Critical issues only".
+3. **Escopo**: pergunte quanto o usuário quer encarar. Por exemplo: "Encontrei N problemas. Quer resolver todos ou focar nos 3 principais?" Ofereça opções de escopo como "Só os 3 principais", "Todos os problemas", "Só os problemas críticos".
 
-4. **Constraints** (optional; only ask if relevant): If the findings touch many areas, ask if anything is off-limits. For example: "Should any sections stay as-is?" This prevents the plan from touching things the user considers done.
+4. **Restrições** (opcional; pergunte só se for relevante): se os achados tocam muitas áreas, pergunte se algo está fora dos limites. Por exemplo: "Alguma seção deve permanecer como está?" Isso evita que o plano mexa em coisas que o usuário considera prontas.
 
-**Rules for questions**:
-- Every question must reference specific findings from the report. Never ask generic "who is your audience?" questions.
-- Keep it to 2-4 questions maximum. Respect the user's time.
-- Offer concrete options, not open-ended prompts.
-- Skipping is allowed only when the report listed **fewer than 3 Priority Issues**. Count them; do not judge the findings "straightforward" by feel. At 3 or more, the questions are required.
+**Regras para as perguntas**:
+- Toda pergunta precisa referenciar achados específicos do relatório. Nunca faça perguntas genéricas do tipo "quem é o seu público?".
+- Limite-se a no máximo 2-4 perguntas. Respeite o tempo do usuário.
+- Ofereça opções concretas, não prompts abertos.
+- Pular é permitido somente quando o relatório listou **menos de 3 Problemas prioritários**. Conte-os; não julgue os achados como "simples" pela intuição. Com 3 ou mais, as perguntas são obrigatórias.
 
-**Final-question gate.** The user-visible response must either include the targeted questions or carry the literal line `Questions skipped: <reason>` naming the count that permitted the skip. Each question must include 2-3 concrete answer options tied to the actual critique findings. Do not end with only open-ended questions, and do not end with neither: stopping after the report, having asked nothing and printed no skip line, is the most common way this command fails.
+**Portão da pergunta final.** A resposta visível ao usuário precisa incluir as perguntas direcionadas ou trazer a linha literal `Questions skipped: <reason>` informando a contagem que permitiu pular. Cada pergunta precisa incluir 2-3 opções de resposta concretas ligadas aos achados reais da crítica. Não termine apenas com perguntas abertas e não termine sem nenhuma das duas coisas: parar depois do relatório, sem ter perguntado nada e sem imprimir a linha de pulo, é a forma mais comum de este comando falhar.
 
-### Recommended Actions
+### Ações recomendadas
 
-**After receiving the user's answers**, present a prioritized action summary reflecting the user's priorities and scope from Ask the User.
+**Depois de receber as respostas do usuário**, apresente um resumo de ações priorizado que reflita as prioridades e o escopo do usuário definidos em Pergunte ao usuário.
 
-#### Action Summary
+#### Resumo de ações
 
-List recommended commands in priority order, based on the user's answers:
+Liste os comandos recomendados em ordem de prioridade, com base nas respostas do usuário:
 
-1. **`/command-name`**: Brief description of what to fix (specific context from critique findings)
-2. **`/command-name`**: Brief description (specific context)
+1. **`/command-name`**: breve descrição do que corrigir (contexto específico dos achados da crítica)
+2. **`/command-name`**: breve descrição (contexto específico)
 ...
 
-**Rules for recommendations**:
-- Only recommend commands from: /impeccable adapt, /impeccable animate, /impeccable audit, /impeccable bolder, /impeccable clarify, /impeccable colorize, /impeccable critique, /impeccable delight, /impeccable distill, /impeccable document, /impeccable harden, /impeccable layout, /impeccable onboard, /impeccable optimize, /impeccable overdrive, /impeccable polish, /impeccable quieter, /impeccable shape, /impeccable typeset
-- Order by the user's stated priorities first, then by impact
-- Each item's description should carry enough context that the command knows what to focus on
-- Map each Priority Issue to the appropriate command
-- Skip commands that would address zero issues
-- If the user chose a limited scope, only include items within that scope
-- If the user marked areas as off-limits, exclude commands that would touch those areas
-- End with `/impeccable polish` as the final step if any fixes were recommended
+**Regras para as recomendações**:
+- Recomende somente comandos dentre: /impeccable adapt, /impeccable animate, /impeccable audit, /impeccable bolder, /impeccable clarify, /impeccable colorize, /impeccable critique, /impeccable delight, /impeccable distill, /impeccable document, /impeccable harden, /impeccable layout, /impeccable onboard, /impeccable optimize, /impeccable overdrive, /impeccable polish, /impeccable quieter, /impeccable shape, /impeccable typeset
+- Ordene primeiro pelas prioridades declaradas pelo usuário e depois pelo impacto
+- A descrição de cada item deve trazer contexto suficiente para que o comando saiba no que focar
+- Mapeie cada Problema prioritário para o comando apropriado
+- Pule comandos que não resolveriam nenhum problema
+- Se o usuário escolheu um escopo limitado, inclua apenas itens dentro desse escopo
+- Se o usuário marcou áreas como fora dos limites, exclua comandos que mexeriam nessas áreas
+- Termine com `/impeccable polish` como passo final se alguma correção foi recomendada
 
-After presenting the summary, tell the user:
+Depois de apresentar o resumo, diga ao usuário:
 
-> You can ask me to run these one at a time, all at once, or in any order you prefer.
+> Você pode me pedir para rodar esses comandos um de cada vez, todos de uma vez ou na ordem que preferir.
 >
-> Re-run `/impeccable critique` after fixes to see your score improve.
+> Rode `/impeccable critique` novamente depois das correções para ver sua pontuação melhorar.
 
 ---
 
-## Reference Material
+## Material de referência
 
-The sections below were previously separate reference files (`cognitive-load.md`, `heuristics-scoring.md`, `personas.md`). They live inline now so the critique flow has all its deep context in one place.
+As seções abaixo eram antes arquivos de referência separados (`cognitive-load.md`, `heuristics-scoring.md`, `personas.md`). Agora elas ficam inline, para que o fluxo de crítica tenha todo o seu contexto aprofundado em um só lugar.
 
-### Cognitive Load Assessment
+<a id="cognitive-load-assessment"></a>
+### Avaliação de carga cognitiva
 
-Cognitive load is the total mental effort required to use an interface. Overloaded users make mistakes, get frustrated, and leave. This reference helps identify and fix cognitive overload.
-
----
-
-#### Three Types of Cognitive Load
-
-##### Intrinsic Load: The Task Itself
-Complexity inherent to what the user is trying to do. You can't eliminate this, but you can structure it.
-
-**Manage it by**:
-- Breaking complex tasks into discrete steps
-- Providing scaffolding (templates, defaults, examples)
-- Progressive disclosure: show what's needed now, hide the rest
-- Grouping related decisions together
-
-##### Extraneous Load: Bad Design
-Mental effort caused by poor design choices. **Eliminate this ruthlessly.** It's pure waste.
-
-**Common sources**:
-- Confusing navigation that requires mental mapping
-- Unclear labels that force users to guess meaning
-- Visual clutter competing for attention
-- Inconsistent patterns that prevent learning
-- Unnecessary steps between user intent and result
-
-##### Germane Load: Learning Effort
-Mental effort spent building understanding. This is *good* cognitive load; it leads to mastery.
-
-**Support it by**:
-- Progressive disclosure that reveals complexity gradually
-- Consistent patterns that reward learning
-- Feedback that confirms correct understanding
-- Onboarding that teaches through action, not walls of text
+Carga cognitiva é o esforço mental total necessário para usar uma interface. Usuários sobrecarregados cometem erros, se frustram e vão embora. Esta referência ajuda a identificar e corrigir a sobrecarga cognitiva.
 
 ---
 
-#### Cognitive Load Checklist
+#### Três tipos de carga cognitiva
 
-Evaluate the interface against these 8 items:
+##### Carga intrínseca: a tarefa em si
+Complexidade inerente ao que o usuário está tentando fazer. Você não consegue eliminá-la, mas consegue estruturá-la.
 
-- [ ] **Single focus**: Can the user complete their primary task without distraction from competing elements?
-- [ ] **Chunking**: Is information presented in digestible groups (≤4 items per group)?
-- [ ] **Grouping**: Are related items visually grouped together (proximity, borders, shared background)?
-- [ ] **Visual hierarchy**: Is it immediately clear what's most important on the screen?
-- [ ] **One thing at a time**: Can the user focus on a single decision before moving to the next?
-- [ ] **Minimal choices**: Are decisions simplified (≤4 visible options at any decision point)?
-- [ ] **Working memory**: Does the user need to remember information from a previous screen to act on the current one?
-- [ ] **Progressive disclosure**: Is complexity revealed only when the user needs it?
+**Gerencie-a**:
+- Dividindo tarefas complexas em passos distintos
+- Oferecendo apoio (templates, valores padrão, exemplos)
+- Com divulgação progressiva: mostre o que é necessário agora, esconda o resto
+- Agrupando decisões relacionadas
 
-**Scoring**: Count the failed items. 0–1 failures = low cognitive load (good). 2–3 = moderate (address soon). 4+ = high cognitive load (critical fix needed).
+##### Carga estranha: design ruim
+Esforço mental causado por escolhas de design ruins. **Elimine-a sem piedade.** É puro desperdício.
 
----
+**Fontes comuns**:
+- Navegação confusa que exige mapeamento mental
+- Rótulos pouco claros que forçam o usuário a adivinhar o significado
+- Poluição visual competindo por atenção
+- Padrões inconsistentes que impedem o aprendizado
+- Passos desnecessários entre a intenção do usuário e o resultado
 
-#### The Working Memory Rule
+##### Carga germânica: esforço de aprendizado
+Esforço mental gasto construindo entendimento. Esta é uma carga cognitiva *boa*; ela leva ao domínio.
 
-**Humans can hold ≤4 items in working memory at once** (Miller's Law revised by Cowan, 2001).
-
-At any decision point, count the number of distinct options, actions, or pieces of information a user must simultaneously consider:
-- **≤4 items**: Within working memory limits, manageable
-- **5–7 items**: Pushing the boundary; consider grouping or progressive disclosure
-- **8+ items**: Overloaded; users will skip, misclick, or abandon
-
-**Practical applications**:
-- Action buttons: 1 primary, 1–2 secondary, group the rest in a menu
-- Navigation menus: ≤5 top-level items (group the rest under clear categories)
-- Long-form articles: one reading path; gather related links into a single block at the end instead of scattering them mid-flow
-- Documentation sidebars: ≤4 sibling choices visible per level before grouping kicks in
-- Portfolio and gallery indexes: one decision per screen (which piece to open), not filter, sort, and tag controls all at once
+**Apoie-a com**:
+- Divulgação progressiva que revela a complexidade aos poucos
+- Padrões consistentes que recompensam o aprendizado
+- Feedback que confirma o entendimento correto
+- Onboarding que ensina pela ação, não por paredes de texto
 
 ---
 
-#### Common Cognitive Load Violations
+#### Checklist de carga cognitiva
 
-##### 1. The Wall of Options
-**Problem**: Presenting 10+ choices at once with no hierarchy.
-**Fix**: Group into categories, highlight recommended, use progressive disclosure.
+Avalie a interface com base nestes 8 itens:
 
-##### 2. The Memory Bridge
-**Problem**: User must remember info from step 1 to complete step 3.
-**Fix**: Keep relevant context visible, or repeat it where it's needed.
+- [ ] **Foco único**: o usuário consegue concluir a tarefa principal sem ser distraído por elementos concorrentes?
+- [ ] **Agrupamento em blocos**: a informação é apresentada em grupos digeríveis (≤4 itens por grupo)?
+- [ ] **Agrupamento**: itens relacionados estão agrupados visualmente (proximidade, bordas, fundo compartilhado)?
+- [ ] **Hierarquia visual**: fica imediatamente claro o que é mais importante na tela?
+- [ ] **Uma coisa de cada vez**: o usuário consegue focar em uma única decisão antes de passar para a próxima?
+- [ ] **Escolhas mínimas**: as decisões são simplificadas (≤4 opções visíveis em qualquer ponto de decisão)?
+- [ ] **Memória de trabalho**: o usuário precisa lembrar informações de uma tela anterior para agir na atual?
+- [ ] **Divulgação progressiva**: a complexidade só é revelada quando o usuário precisa dela?
 
-##### 3. The Hidden Navigation
-**Problem**: User must build a mental map of where things are.
-**Fix**: Always show current location (breadcrumbs, active states, progress indicators).
-
-##### 4. The Jargon Barrier
-**Problem**: Technical or domain language forces translation effort.
-**Fix**: Use plain language. If domain terms are unavoidable, define them inline.
-
-##### 5. The Visual Noise Floor
-**Problem**: Every element has the same visual weight; nothing stands out.
-**Fix**: Establish clear hierarchy: one primary element, 2–3 secondary, everything else muted.
-
-##### 6. The Inconsistent Pattern
-**Problem**: Similar actions work differently in different places.
-**Fix**: Standardize interaction patterns. Same type of action = same type of UI.
-
-##### 7. The Multi-Task Demand
-**Problem**: Interface requires processing multiple simultaneous inputs (reading + deciding + navigating).
-**Fix**: Sequence the steps. Let the user do one thing at a time.
-
-##### 8. The Context Switch
-**Problem**: User must jump between screens/tabs/modals to gather info for a single decision.
-**Fix**: Co-locate the information needed for each decision. Reduce back-and-forth.
+**Pontuação**: conte os itens que falharam. 0–1 falha = carga cognitiva baixa (bom). 2–3 = moderada (resolva em breve). 4+ = carga cognitiva alta (correção crítica necessária).
 
 ---
 
-### Heuristics Scoring Guide
+#### A regra da memória de trabalho
 
-Score each of Nielsen's 10 Usability Heuristics on a 0–4 scale. Be honest: a 4 means genuinely excellent, not "good enough."
+**Humanos conseguem manter ≤4 itens na memória de trabalho ao mesmo tempo** (Lei de Miller revisada por Cowan, 2001).
 
-#### Nielsen's 10 Heuristics
+Em qualquer ponto de decisão, conte o número de opções, ações ou informações distintas que o usuário precisa considerar simultaneamente:
+- **≤4 itens**: dentro dos limites da memória de trabalho, administrável
+- **5–7 itens**: forçando o limite; considere agrupar ou usar divulgação progressiva
+- **8+ itens**: sobrecarregado; os usuários vão pular, clicar errado ou abandonar
 
-##### 1. Visibility of System Status
-
-Keep users informed about what's happening through timely, appropriate feedback.
-
-**Check for**:
-- Loading indicators during async operations
-- Confirmation of user actions (save, submit, delete)
-- Progress indicators for multi-step processes
-- Current location in navigation (breadcrumbs, active states)
-- Form validation feedback (inline, not just on submit)
-
-**Scoring**:
-| Score | Criteria |
-|-------|----------|
-| 0 | No feedback; user is guessing what happened |
-| 1 | Rare feedback; most actions produce no visible response |
-| 2 | Partial; some states communicated, major gaps remain |
-| 3 | Good; most operations give clear feedback, minor gaps |
-| 4 | Excellent; every action confirms, progress is always visible |
-
-##### 2. Match Between System and Real World
-
-Speak the user's language. Follow real-world conventions. Information appears in natural, logical order.
-
-**Check for**:
-- Familiar terminology (no unexplained jargon)
-- Logical information order matching user expectations
-- Recognizable icons and metaphors
-- Domain-appropriate language for the target audience
-- Natural reading flow (left-to-right, top-to-bottom priority)
-
-**Scoring**:
-| Score | Criteria |
-|-------|----------|
-| 0 | Pure tech jargon, alien to users |
-| 1 | Mostly confusing; requires domain expertise to navigate |
-| 2 | Mixed; some plain language, some jargon leaks through |
-| 3 | Mostly natural; occasional term needs context |
-| 4 | Speaks the user's language fluently throughout |
-
-##### 3. User Control and Freedom
-
-Users need a clear "emergency exit" from unwanted states without extended dialogue.
-
-**Check for**:
-- Undo/redo functionality
-- Cancel buttons on forms and modals
-- Clear navigation back to safety (home, previous)
-- Easy way to clear filters, search, selections
-- Escape from long or multi-step processes
-
-**Scoring**:
-| Score | Criteria |
-|-------|----------|
-| 0 | Users get trapped; no way out without refreshing |
-| 1 | Difficult exits; must find obscure paths to escape |
-| 2 | Some exits; main flows have escape, edge cases don't |
-| 3 | Good control; users can exit and undo most actions |
-| 4 | Full control; undo, cancel, back, and escape everywhere |
-
-##### 4. Consistency and Standards
-
-Users shouldn't wonder whether different words, situations, or actions mean the same thing.
-
-**Check for**:
-- Consistent terminology throughout the interface
-- Same actions produce same results everywhere
-- Platform conventions followed (standard UI patterns)
-- Visual consistency (colors, typography, spacing, components)
-- Consistent interaction patterns (same gesture = same behavior)
-
-**Scoring**:
-| Score | Criteria |
-|-------|----------|
-| 0 | Inconsistent everywhere; feels like different products stitched together |
-| 1 | Many inconsistencies; similar things look/behave differently |
-| 2 | Partially consistent; main flows match, details diverge |
-| 3 | Mostly consistent; occasional deviation, nothing confusing |
-| 4 | Fully consistent; cohesive system, predictable behavior |
-
-##### 5. Error Prevention
-
-Better than good error messages is a design that prevents problems in the first place.
-
-**Check for**:
-- Confirmation before destructive actions (delete, overwrite)
-- Constraints preventing invalid input (date pickers, dropdowns)
-- Smart defaults that reduce errors
-- Clear labels that prevent misunderstanding
-- Autosave and draft recovery
-
-**Scoring**:
-| Score | Criteria |
-|-------|----------|
-| 0 | Errors easy to make; no guardrails anywhere |
-| 1 | Few safeguards; some inputs validated, most aren't |
-| 2 | Partial prevention; common errors caught, edge cases slip |
-| 3 | Good prevention; most error paths blocked proactively |
-| 4 | Excellent; errors nearly impossible through smart constraints |
-
-##### 6. Recognition Rather Than Recall
-
-Minimize memory load. Make objects, actions, and options visible or easily retrievable.
-
-**Check for**:
-- Visible options (not buried in hidden menus)
-- Contextual help when needed (tooltips, inline hints)
-- Recent items and history
-- Autocomplete and suggestions
-- Labels on icons (not icon-only navigation)
-
-**Scoring**:
-| Score | Criteria |
-|-------|----------|
-| 0 | Heavy memorization; users must remember paths and commands |
-| 1 | Mostly recall; many hidden features, few visible cues |
-| 2 | Some aids; main actions visible, secondary features hidden |
-| 3 | Good recognition; most things discoverable, few memory demands |
-| 4 | Everything discoverable; users never need to memorize |
-
-##### 7. Flexibility and Efficiency of Use
-
-Accelerators, invisible to novices, speed up expert interaction.
-
-**Check for**:
-- Keyboard shortcuts for common actions
-- Customizable interface elements
-- Recent items and favorites
-- Bulk/batch actions
-- Power user features that don't complicate the basics
-
-**Scoring**:
-| Score | Criteria |
-|-------|----------|
-| 0 | One rigid path; no shortcuts or alternatives |
-| 1 | Limited flexibility; few alternatives to the main path |
-| 2 | Some shortcuts; basic keyboard support, limited bulk actions |
-| 3 | Good accelerators; keyboard nav, some customization |
-| 4 | Highly flexible; multiple paths, power features, customizable |
-
-##### 8. Aesthetic and Minimalist Design
-
-Interfaces should not contain irrelevant or rarely needed information. Every element should serve a purpose.
-
-**Check for**:
-- Only necessary information visible at each step
-- Clear visual hierarchy directing attention
-- Purposeful use of color and emphasis
-- No decorative clutter competing for attention
-- Focused, uncluttered layouts
-
-**Scoring**:
-| Score | Criteria |
-|-------|----------|
-| 0 | Overwhelming; everything competes for attention equally |
-| 1 | Cluttered; too much noise, hard to find what matters |
-| 2 | Some clutter; main content clear, periphery noisy |
-| 3 | Mostly clean; focused design, minor visual noise |
-| 4 | Perfectly minimal; every element earns its pixel |
-
-##### 9. Help Users Recognize, Diagnose, and Recover from Errors
-
-Error messages should use plain language, precisely indicate the problem, and constructively suggest a solution.
-
-**Check for**:
-- Plain language error messages (no error codes for users)
-- Specific problem identification ("Email is missing @" not "Invalid input")
-- Actionable recovery suggestions
-- Errors displayed near the source of the problem
-- Non-blocking error handling (don't wipe the form)
-
-**Scoring**:
-| Score | Criteria |
-|-------|----------|
-| 0 | Cryptic errors; codes, jargon, or no message at all |
-| 1 | Vague errors; "Something went wrong" with no guidance |
-| 2 | Clear but unhelpful; names the problem but not the fix |
-| 3 | Clear with suggestions; identifies problem and offers next steps |
-| 4 | Perfect recovery; pinpoints issue, suggests fix, preserves user work |
-
-##### 10. Help and Documentation
-
-Even if the system is usable without docs, help should be easy to find, task-focused, and concise.
-
-**Check for**:
-- Searchable help or documentation
-- Contextual help (tooltips, inline hints, guided tours)
-- Task-focused organization (not feature-organized)
-- Concise, scannable content
-- Easy access without leaving current context
-
-**Scoring**:
-| Score | Criteria |
-|-------|----------|
-| 0 | No help available anywhere |
-| 1 | Help exists but hard to find or irrelevant |
-| 2 | Basic help; FAQ or docs exist, not contextual |
-| 3 | Good documentation; searchable, mostly task-focused |
-| 4 | Excellent contextual help; right info at the right moment |
+**Aplicações práticas**:
+- Botões de ação: 1 principal, 1–2 secundários, agrupe o resto em um menu
+- Menus de navegação: ≤5 itens de nível superior (agrupe o resto em categorias claras)
+- Artigos longos: um único caminho de leitura; reúna os links relacionados em um único bloco no final, em vez de espalhá-los no meio do fluxo
+- Barras laterais de documentação: ≤4 opções irmãs visíveis por nível antes de o agrupamento entrar em ação
+- Índices de portfólios e galerias: uma decisão por tela (qual peça abrir), não controles de filtro, ordenação e tags todos de uma vez
 
 ---
 
-#### Score Summary
+#### Violações comuns de carga cognitiva
 
-**Total possible**: 40 points (10 heuristics × 4 max)
+##### 1. A parede de opções
+**Problema**: apresentar 10+ escolhas de uma vez, sem hierarquia.
+**Correção**: agrupe em categorias, destaque a recomendada, use divulgação progressiva.
 
-| Score Range | Rating | What It Means |
+##### 2. A ponte de memória
+**Problema**: o usuário precisa lembrar informações do passo 1 para concluir o passo 3.
+**Correção**: mantenha o contexto relevante visível ou repita-o onde for necessário.
+
+##### 3. A navegação escondida
+**Problema**: o usuário precisa construir um mapa mental de onde as coisas estão.
+**Correção**: sempre mostre a localização atual (breadcrumbs, estados ativos, indicadores de progresso).
+
+##### 4. A barreira do jargão
+**Problema**: linguagem técnica ou de domínio força um esforço de tradução.
+**Correção**: use linguagem simples. Se termos de domínio forem inevitáveis, defina-os inline.
+
+##### 5. O piso de ruído visual
+**Problema**: todo elemento tem o mesmo peso visual; nada se destaca.
+**Correção**: estabeleça uma hierarquia clara: um elemento principal, 2–3 secundários, todo o resto atenuado.
+
+##### 6. O padrão inconsistente
+**Problema**: ações semelhantes funcionam de forma diferente em lugares diferentes.
+**Correção**: padronize os padrões de interação. Mesmo tipo de ação = mesmo tipo de UI.
+
+##### 7. A exigência de multitarefa
+**Problema**: a interface exige processar várias entradas simultâneas (ler + decidir + navegar).
+**Correção**: sequencie os passos. Deixe o usuário fazer uma coisa de cada vez.
+
+##### 8. A troca de contexto
+**Problema**: o usuário precisa pular entre telas/abas/modais para reunir informações para uma única decisão.
+**Correção**: coloque juntas as informações necessárias para cada decisão. Reduza o vaivém.
+
+---
+
+<a id="heuristics-scoring-guide"></a>
+### Guia de pontuação das heurísticas
+
+Pontue cada uma das 10 Heurísticas de Usabilidade de Nielsen em uma escala de 0–4. Seja honesto: um 4 significa genuinamente excelente, não "bom o bastante".
+
+#### As 10 heurísticas de Nielsen
+
+##### 1. Visibilidade do status do sistema
+
+Mantenha os usuários informados sobre o que está acontecendo por meio de feedback oportuno e adequado.
+
+**Verifique**:
+- Indicadores de carregamento durante operações assíncronas
+- Confirmação das ações do usuário (salvar, enviar, excluir)
+- Indicadores de progresso para processos com várias etapas
+- Localização atual na navegação (breadcrumbs, estados ativos)
+- Feedback de validação de formulários (inline, não apenas ao enviar)
+
+**Pontuação**:
+| Pontuação | Critérios |
+|-------|----------|
+| 0 | Nenhum feedback; o usuário fica adivinhando o que aconteceu |
+| 1 | Feedback raro; a maioria das ações não produz resposta visível |
+| 2 | Parcial; alguns estados são comunicados, ainda restam lacunas grandes |
+| 3 | Bom; a maioria das operações dá feedback claro, pequenas lacunas |
+| 4 | Excelente; toda ação é confirmada, o progresso está sempre visível |
+
+##### 2. Correspondência entre o sistema e o mundo real
+
+Fale a língua do usuário. Siga as convenções do mundo real. A informação aparece em uma ordem natural e lógica.
+
+**Verifique**:
+- Terminologia familiar (sem jargão não explicado)
+- Ordem lógica das informações, correspondendo às expectativas do usuário
+- Ícones e metáforas reconhecíveis
+- Linguagem adequada ao domínio para o público-alvo
+- Fluxo de leitura natural (prioridade da esquerda para a direita, de cima para baixo)
+
+**Pontuação**:
+| Pontuação | Critérios |
+|-------|----------|
+| 0 | Puro jargão técnico, estranho aos usuários |
+| 1 | Majoritariamente confuso; exige conhecimento do domínio para navegar |
+| 2 | Misto; alguma linguagem simples, algum jargão escapa |
+| 3 | Majoritariamente natural; um termo ou outro precisa de contexto |
+| 4 | Fala a língua do usuário com fluência do início ao fim |
+
+##### 3. Controle e liberdade do usuário
+
+Os usuários precisam de uma "saída de emergência" clara de estados indesejados, sem diálogos prolongados.
+
+**Verifique**:
+- Funcionalidade de desfazer/refazer
+- Botões de cancelar em formulários e modais
+- Navegação clara de volta a um lugar seguro (início, anterior)
+- Forma fácil de limpar filtros, buscas e seleções
+- Saída de processos longos ou com várias etapas
+
+**Pontuação**:
+| Pontuação | Critérios |
+|-------|----------|
+| 0 | Os usuários ficam presos; não há saída sem recarregar a página |
+| 1 | Saídas difíceis; é preciso encontrar caminhos obscuros para escapar |
+| 2 | Algumas saídas; os fluxos principais têm saída, os casos extremos não |
+| 3 | Bom controle; os usuários conseguem sair e desfazer a maioria das ações |
+| 4 | Controle total; desfazer, cancelar, voltar e sair em todo lugar |
+
+##### 4. Consistência e padrões
+
+Os usuários não deveriam ter que se perguntar se palavras, situações ou ações diferentes significam a mesma coisa.
+
+**Verifique**:
+- Terminologia consistente em toda a interface
+- As mesmas ações produzem os mesmos resultados em todo lugar
+- Convenções da plataforma seguidas (padrões de UI comuns)
+- Consistência visual (cores, tipografia, espaçamento, componentes)
+- Padrões de interação consistentes (mesmo gesto = mesmo comportamento)
+
+**Pontuação**:
+| Pontuação | Critérios |
+|-------|----------|
+| 0 | Inconsistente em todo lugar; parece vários produtos diferentes costurados |
+| 1 | Muitas inconsistências; coisas semelhantes parecem/se comportam de forma diferente |
+| 2 | Parcialmente consistente; os fluxos principais batem, os detalhes divergem |
+| 3 | Majoritariamente consistente; desvios ocasionais, nada confuso |
+| 4 | Totalmente consistente; sistema coeso, comportamento previsível |
+
+##### 5. Prevenção de erros
+
+Melhor do que boas mensagens de erro é um design que evita os problemas logo de início.
+
+**Verifique**:
+- Confirmação antes de ações destrutivas (excluir, sobrescrever)
+- Restrições que impedem entradas inválidas (seletores de data, dropdowns)
+- Valores padrão inteligentes que reduzem erros
+- Rótulos claros que evitam mal-entendidos
+- Salvamento automático e recuperação de rascunhos
+
+**Pontuação**:
+| Pontuação | Critérios |
+|-------|----------|
+| 0 | Erros fáceis de cometer; nenhuma proteção em lugar nenhum |
+| 1 | Poucas salvaguardas; algumas entradas validadas, a maioria não |
+| 2 | Prevenção parcial; erros comuns são pegos, casos extremos escapam |
+| 3 | Boa prevenção; a maioria dos caminhos de erro é bloqueada de forma proativa |
+| 4 | Excelente; erros quase impossíveis graças a restrições inteligentes |
+
+##### 6. Reconhecimento em vez de memorização
+
+Minimize a carga de memória. Torne objetos, ações e opções visíveis ou fáceis de recuperar.
+
+**Verifique**:
+- Opções visíveis (não enterradas em menus ocultos)
+- Ajuda contextual quando necessário (tooltips, dicas inline)
+- Itens recentes e histórico
+- Autocompletar e sugestões
+- Rótulos nos ícones (não navegação só com ícones)
+
+**Pontuação**:
+| Pontuação | Critérios |
+|-------|----------|
+| 0 | Muita memorização; os usuários precisam lembrar caminhos e comandos |
+| 1 | Majoritariamente memorização; muitos recursos ocultos, poucas pistas visíveis |
+| 2 | Alguns auxílios; ações principais visíveis, recursos secundários ocultos |
+| 3 | Bom reconhecimento; a maioria das coisas é descobrível, poucas exigências de memória |
+| 4 | Tudo descobrível; os usuários nunca precisam memorizar |
+
+##### 7. Flexibilidade e eficiência de uso
+
+Aceleradores, invisíveis para novatos, agilizam a interação de especialistas.
+
+**Verifique**:
+- Atalhos de teclado para ações comuns
+- Elementos da interface personalizáveis
+- Itens recentes e favoritos
+- Ações em massa/em lote
+- Recursos para usuários avançados que não complicam o básico
+
+**Pontuação**:
+| Pontuação | Critérios |
+|-------|----------|
+| 0 | Um único caminho rígido; sem atalhos nem alternativas |
+| 1 | Flexibilidade limitada; poucas alternativas ao caminho principal |
+| 2 | Alguns atalhos; suporte básico a teclado, ações em massa limitadas |
+| 3 | Bons aceleradores; navegação por teclado, alguma personalização |
+| 4 | Altamente flexível; múltiplos caminhos, recursos avançados, personalizável |
+
+##### 8. Design estético e minimalista
+
+As interfaces não devem conter informações irrelevantes ou raramente necessárias. Todo elemento deve servir a um propósito.
+
+**Verifique**:
+- Apenas as informações necessárias visíveis em cada etapa
+- Hierarquia visual clara direcionando a atenção
+- Uso intencional de cor e ênfase
+- Nenhuma poluição decorativa competindo por atenção
+- Layouts focados e despoluídos
+
+**Pontuação**:
+| Pontuação | Critérios |
+|-------|----------|
+| 0 | Esmagador; tudo compete igualmente por atenção |
+| 1 | Poluído; ruído demais, difícil encontrar o que importa |
+| 2 | Alguma poluição; conteúdo principal claro, periferia ruidosa |
+| 3 | Majoritariamente limpo; design focado, pequeno ruído visual |
+| 4 | Perfeitamente minimalista; cada elemento merece seu pixel |
+
+##### 9. Ajude os usuários a reconhecer, diagnosticar e se recuperar de erros
+
+As mensagens de erro devem usar linguagem simples, indicar o problema com precisão e sugerir uma solução de forma construtiva.
+
+**Verifique**:
+- Mensagens de erro em linguagem simples (sem códigos de erro para os usuários)
+- Identificação específica do problema ("Falta o @ no e-mail", não "Entrada inválida")
+- Sugestões de recuperação acionáveis
+- Erros exibidos perto da origem do problema
+- Tratamento de erros não bloqueante (não apague o formulário)
+
+**Pontuação**:
+| Pontuação | Critérios |
+|-------|----------|
+| 0 | Erros enigmáticos; códigos, jargão ou nenhuma mensagem |
+| 1 | Erros vagos; "Algo deu errado" sem nenhuma orientação |
+| 2 | Claros, mas inúteis; nomeiam o problema, mas não a correção |
+| 3 | Claros e com sugestões; identificam o problema e oferecem próximos passos |
+| 4 | Recuperação perfeita; aponta o problema com precisão, sugere a correção, preserva o trabalho do usuário |
+
+##### 10. Ajuda e documentação
+
+Mesmo que o sistema seja utilizável sem documentação, a ajuda deve ser fácil de encontrar, focada em tarefas e concisa.
+
+**Verifique**:
+- Ajuda ou documentação pesquisável
+- Ajuda contextual (tooltips, dicas inline, tours guiados)
+- Organização focada em tarefas (não organizada por funcionalidades)
+- Conteúdo conciso e fácil de escanear
+- Acesso fácil sem sair do contexto atual
+
+**Pontuação**:
+| Pontuação | Critérios |
+|-------|----------|
+| 0 | Nenhuma ajuda disponível em lugar nenhum |
+| 1 | A ajuda existe, mas é difícil de encontrar ou irrelevante |
+| 2 | Ajuda básica; existem FAQ ou documentação, mas não contextual |
+| 3 | Boa documentação; pesquisável, majoritariamente focada em tarefas |
+| 4 | Excelente ajuda contextual; a informação certa no momento certo |
+
+---
+
+#### Resumo da pontuação
+
+**Total possível**: 40 pontos (10 heurísticas × 4 no máximo)
+
+| Faixa de pontuação | Classificação | O que significa |
 |-------------|--------|---------------|
-| 36–40 | Excellent | Minor polish only; ship it |
-| 28–35 | Good | Address weak areas, solid foundation |
-| 20–27 | Acceptable | Significant improvements needed before users are happy |
-| 12–19 | Poor | Major UX overhaul required; core experience broken |
-| 0–11 | Critical | Redesign needed; unusable in current state |
+| 36–40 | Excelente | Só um polimento menor; pode lançar |
+| 28–35 | Bom | Resolva as áreas fracas; base sólida |
+| 20–27 | Aceitável | Melhorias significativas necessárias antes que os usuários fiquem satisfeitos |
+| 12–19 | Ruim | Reformulação grande de UX necessária; a experiência central está quebrada |
+| 0–11 | Crítico | Redesign necessário; inutilizável no estado atual |
 
-When heuristics were scored `n/a`, the maximum is lower than 40; read the band off the percentage instead of the raw number (90%+ Excellent, 70%+ Good, 50%+ Acceptable, 30%+ Poor, below that Critical). 24/32 is 75%, so Good.
+Quando heurísticas foram pontuadas como `n/a`, o máximo é menor que 40; leia a faixa pela porcentagem, em vez do número bruto (90%+ Excelente, 70%+ Bom, 50%+ Aceitável, 30%+ Ruim, abaixo disso Crítico). 24/32 é 75%, portanto Bom.
 
 ---
 
-#### Issue Severity (P0–P3)
+<a id="issue-severity-p0p3"></a>
+#### Severidade dos problemas (P0–P3)
 
-Tag each individual issue found during scoring with a priority level:
+Marque cada problema individual encontrado durante a pontuação com um nível de prioridade:
 
-| Priority | Name | Description | Action |
+| Prioridade | Nome | Descrição | Ação |
 |----------|------|-------------|--------|
-| **P0** | Blocking | Prevents task completion entirely | Fix immediately; this is a showstopper |
-| **P1** | Major | Causes significant difficulty or confusion | Fix before release |
-| **P2** | Minor | Annoyance, but workaround exists | Fix in next pass |
-| **P3** | Polish | Nice-to-fix, no real user impact | Fix if time permits |
+| **P0** | Bloqueante | Impede totalmente a conclusão da tarefa | Corrija imediatamente; isto impede o lançamento |
+| **P1** | Grave | Causa dificuldade ou confusão significativa | Corrija antes do lançamento |
+| **P2** | Menor | Incômodo, mas existe uma forma de contornar | Corrija na próxima rodada |
+| **P3** | Polimento | Bom de corrigir, sem impacto real no usuário | Corrija se houver tempo |
 
-**Tip**: If you're unsure between two levels, ask: "Would a user contact support about this?" If yes, it's at least P1.
-
----
-
-### Persona-Based Design Testing
-
-Test the interface through the eyes of 5 distinct user archetypes. Each persona exposes different failure modes that a single "design director" perspective would miss.
-
-**How to use**: Select 2–3 personas most relevant to the interface being critiqued. Walk through the primary user action as each persona. Report specific red flags, not generic concerns.
+**Dica**: se estiver em dúvida entre dois níveis, pergunte: "Um usuário entraria em contato com o suporte por causa disto?" Se sim, é no mínimo P1.
 
 ---
 
-#### 1. Impatient Power User: "Alex"
+<a id="persona-based-design-testing"></a>
+### Testes de design baseados em personas
 
-**Profile**: Expert with similar products. Expects efficiency, hates hand-holding. Will find shortcuts or leave.
+Teste a interface pelos olhos de 5 arquétipos de usuário distintos. Cada persona expõe modos de falha diferentes que uma única perspectiva de "diretor de design" deixaria passar.
 
-**Behaviors**:
-- Skips all onboarding and instructions
-- Looks for keyboard shortcuts immediately
-- Tries to bulk-select, batch-edit, and automate
-- Gets frustrated by required steps that feel unnecessary
-- Abandons if anything feels slow or patronizing
-
-**Test Questions**:
-- Can Alex complete the core task in under 60 seconds?
-- Are there keyboard shortcuts for common actions?
-- Can onboarding be skipped entirely?
-- Do modals have keyboard dismiss (Esc)?
-- Is there a "power user" path (shortcuts, bulk actions)?
-
-**Red Flags** (report these specifically):
-- Forced tutorials or unskippable onboarding
-- No keyboard navigation for primary actions
-- Slow animations that can't be skipped
-- One-item-at-a-time workflows where batch would be natural
-- Redundant confirmation steps for low-risk actions
+**Como usar**: selecione 2–3 personas mais relevantes para a interface sob crítica. Percorra a ação principal do usuário como cada persona. Relate sinais de alerta específicos, não preocupações genéricas.
 
 ---
 
-#### 2. Confused First-Timer: "Jordan"
+#### 1. Usuário avançado impaciente: "Alex"
 
-**Profile**: Never used this type of product. Needs guidance at every step. Will abandon rather than figure it out.
+**Perfil**: especialista em produtos semelhantes. Espera eficiência, odeia ser conduzido pela mão. Vai encontrar atalhos ou ir embora.
 
-**Behaviors**:
-- Reads all instructions carefully
-- Hesitates before clicking anything unfamiliar
-- Looks for help or support constantly
-- Misunderstands jargon and abbreviations
-- Takes the most literal interpretation of any label
+**Comportamentos**:
+- Pula todo o onboarding e todas as instruções
+- Procura atalhos de teclado imediatamente
+- Tenta selecionar em massa, editar em lote e automatizar
+- Se frustra com etapas obrigatórias que parecem desnecessárias
+- Abandona se algo parecer lento ou condescendente
 
-**Test Questions**:
-- Is the first action obviously clear within 5 seconds?
-- Are all icons labeled with text?
-- Is there contextual help at decision points?
-- Does terminology assume prior knowledge?
-- Is there a clear "back" or "undo" at every step?
+**Perguntas de teste**:
+- Alex consegue concluir a tarefa central em menos de 60 segundos?
+- Existem atalhos de teclado para ações comuns?
+- O onboarding pode ser pulado por completo?
+- Os modais podem ser fechados pelo teclado (Esc)?
+- Existe um caminho para "usuário avançado" (atalhos, ações em massa)?
 
-**Red Flags** (report these specifically):
-- Icon-only navigation with no labels
-- Technical jargon without explanation
-- No visible help option or guidance
-- Ambiguous next steps after completing an action
-- No confirmation that an action succeeded
-
----
-
-#### 3. Accessibility-Dependent User: "Sam"
-
-**Profile**: Uses screen reader (VoiceOver/NVDA), keyboard-only navigation. May have low vision, motor impairment, or cognitive differences.
-
-**Behaviors**:
-- Tabs through the interface linearly
-- Relies on ARIA labels and heading structure
-- Cannot see hover states or visual-only indicators
-- Needs adequate color contrast (4.5:1 minimum)
-- May use browser zoom up to 200%
-
-**Test Questions**:
-- Can the entire primary flow be completed keyboard-only?
-- Are all interactive elements focusable with visible focus indicators?
-- Do images have meaningful alt text?
-- Is color contrast WCAG AA compliant (4.5:1 for text)?
-- Does the screen reader announce state changes (loading, success, errors)?
-
-**Red Flags** (report these specifically):
-- Click-only interactions with no keyboard alternative
-- Missing or invisible focus indicators
-- Meaning conveyed by color alone (red = error, green = success)
-- Unlabeled form fields or buttons
-- Time-limited actions without extension option
-- Custom components that break screen reader flow
+**Sinais de alerta** (relate-os especificamente):
+- Tutoriais forçados ou onboarding que não pode ser pulado
+- Nenhuma navegação por teclado para as ações principais
+- Animações lentas que não podem ser puladas
+- Fluxos de um item por vez onde a ação em lote seria natural
+- Etapas de confirmação redundantes para ações de baixo risco
 
 ---
 
-#### 4. Deliberate Stress Tester: "Riley"
+#### 2. Iniciante confuso: "Jordan"
 
-**Profile**: Methodical user who pushes interfaces beyond the happy path. Tests edge cases, tries unexpected inputs, and probes for gaps in the experience.
+**Perfil**: nunca usou este tipo de produto. Precisa de orientação em cada etapa. Prefere abandonar a tentar descobrir sozinho.
 
-**Behaviors**:
-- Tests edge cases intentionally (empty states, long strings, special characters)
-- Submits forms with unexpected data (emoji, RTL text, very long values)
-- Tries to break workflows by navigating backwards, refreshing mid-flow, or opening in multiple tabs
-- Looks for inconsistencies between what the UI promises and what actually happens
-- Documents problems methodically
+**Comportamentos**:
+- Lê todas as instruções com atenção
+- Hesita antes de clicar em qualquer coisa desconhecida
+- Procura ajuda ou suporte o tempo todo
+- Entende mal jargões e abreviações
+- Adota a interpretação mais literal de qualquer rótulo
 
-**Test Questions**:
-- What happens at the edges (0 items, 1000 items, very long text)?
-- Do error states recover gracefully or leave the UI in a broken state?
-- What happens on refresh mid-workflow? Is state preserved?
-- Are there features that appear to work but produce broken results?
-- How does the UI handle unexpected input (emoji, special chars, paste from Excel)?
+**Perguntas de teste**:
+- A primeira ação fica obviamente clara em até 5 segundos?
+- Todos os ícones têm rótulo de texto?
+- Existe ajuda contextual nos pontos de decisão?
+- A terminologia pressupõe conhecimento prévio?
+- Existe um "voltar" ou "desfazer" claro em cada etapa?
 
-**Red Flags** (report these specifically):
-- Features that appear to work but silently fail or produce wrong results
-- Error handling that exposes technical details or leaves UI in a broken state
-- Empty states that show nothing useful ("No results" with no guidance)
-- Workflows that lose user data on refresh or navigation
-- Inconsistent behavior between similar interactions in different parts of the UI
-
----
-
-#### 5. Distracted Mobile User: "Casey"
-
-**Profile**: Using phone one-handed on the go. Frequently interrupted. Possibly on a slow connection.
-
-**Behaviors**:
-- Uses thumb only; prefers bottom-of-screen actions
-- Gets interrupted mid-flow and returns later
-- Switches between apps frequently
-- Has limited attention span and low patience
-- Types as little as possible, prefers taps and selections
-
-**Test Questions**:
-- Are primary actions in the thumb zone (bottom half of screen)?
-- Is state preserved if the user leaves and returns?
-- Does it work on slow connections (3G)?
-- Can forms use autocomplete and smart defaults?
-- Are touch targets at least 44×44pt?
-
-**Red Flags** (report these specifically):
-- Important actions positioned at the top of the screen (unreachable by thumb)
-- No state persistence; progress lost on tab switch or interruption
-- Large text inputs required where selection would work
-- Heavy assets loading on every page (no lazy loading)
-- Tiny tap targets or targets too close together
+**Sinais de alerta** (relate-os especificamente):
+- Navegação só com ícones, sem rótulos
+- Jargão técnico sem explicação
+- Nenhuma opção de ajuda ou orientação visível
+- Próximos passos ambíguos depois de concluir uma ação
+- Nenhuma confirmação de que uma ação deu certo
 
 ---
 
-#### Selecting Personas
+#### 3. Usuário que depende de acessibilidade: "Sam"
 
-Choose personas based on the interface type:
+**Perfil**: usa leitor de tela (VoiceOver/NVDA) e navegação somente por teclado. Pode ter baixa visão, deficiência motora ou diferenças cognitivas.
 
-| Interface Type | Primary Personas | Why |
+**Comportamentos**:
+- Percorre a interface de forma linear com Tab
+- Depende de rótulos ARIA e da estrutura de títulos
+- Não consegue ver estados de hover nem indicadores apenas visuais
+- Precisa de contraste de cor adequado (mínimo de 4.5:1)
+- Pode usar zoom do navegador de até 200%
+
+**Perguntas de teste**:
+- O fluxo principal inteiro pode ser concluído somente pelo teclado?
+- Todos os elementos interativos recebem foco, com indicadores de foco visíveis?
+- As imagens têm texto alternativo significativo?
+- O contraste de cor está em conformidade com WCAG AA (4.5:1 para texto)?
+- O leitor de tela anuncia mudanças de estado (carregando, sucesso, erros)?
+
+**Sinais de alerta** (relate-os especificamente):
+- Interações só por clique, sem alternativa por teclado
+- Indicadores de foco ausentes ou invisíveis
+- Significado transmitido apenas pela cor (vermelho = erro, verde = sucesso)
+- Campos de formulário ou botões sem rótulo
+- Ações com limite de tempo sem opção de extensão
+- Componentes personalizados que quebram o fluxo do leitor de tela
+
+---
+
+#### 4. Testador de estresse deliberado: "Riley"
+
+**Perfil**: usuário metódico que leva as interfaces além do caminho feliz. Testa casos extremos, tenta entradas inesperadas e sonda lacunas na experiência.
+
+**Comportamentos**:
+- Testa casos extremos de propósito (estados vazios, strings longas, caracteres especiais)
+- Envia formulários com dados inesperados (emoji, texto RTL, valores muito longos)
+- Tenta quebrar fluxos navegando para trás, recarregando no meio do fluxo ou abrindo em várias abas
+- Procura inconsistências entre o que a UI promete e o que de fato acontece
+- Documenta os problemas de forma metódica
+
+**Perguntas de teste**:
+- O que acontece nos extremos (0 itens, 1000 itens, texto muito longo)?
+- Os estados de erro se recuperam com elegância ou deixam a UI em um estado quebrado?
+- O que acontece ao recarregar no meio do fluxo? O estado é preservado?
+- Existem funcionalidades que parecem funcionar, mas produzem resultados quebrados?
+- Como a UI lida com entradas inesperadas (emoji, caracteres especiais, colar do Excel)?
+
+**Sinais de alerta** (relate-os especificamente):
+- Funcionalidades que parecem funcionar, mas falham silenciosamente ou produzem resultados errados
+- Tratamento de erros que expõe detalhes técnicos ou deixa a UI em um estado quebrado
+- Estados vazios que não mostram nada útil ("Nenhum resultado" sem orientação)
+- Fluxos que perdem dados do usuário ao recarregar ou navegar
+- Comportamento inconsistente entre interações semelhantes em partes diferentes da UI
+
+---
+
+#### 5. Usuário mobile distraído: "Casey"
+
+**Perfil**: usa o celular com uma mão só, em movimento. É interrompido com frequência. Possivelmente está em uma conexão lenta.
+
+**Comportamentos**:
+- Usa só o polegar; prefere ações na parte de baixo da tela
+- É interrompido no meio do fluxo e volta mais tarde
+- Alterna entre apps com frequência
+- Tem pouca capacidade de atenção e pouca paciência
+- Digita o mínimo possível; prefere toques e seleções
+
+**Perguntas de teste**:
+- As ações principais estão na zona do polegar (metade inferior da tela)?
+- O estado é preservado se o usuário sair e voltar?
+- Funciona em conexões lentas (3G)?
+- Os formulários podem usar autocompletar e valores padrão inteligentes?
+- Os alvos de toque têm pelo menos 44×44pt?
+
+**Sinais de alerta** (relate-os especificamente):
+- Ações importantes posicionadas no topo da tela (fora do alcance do polegar)
+- Nenhuma persistência de estado; progresso perdido ao trocar de aba ou ser interrompido
+- Campos de texto grandes exigidos onde uma seleção funcionaria
+- Assets pesados carregando em todas as páginas (sem lazy loading)
+- Alvos de toque minúsculos ou alvos próximos demais uns dos outros
+
+---
+
+#### Selecionando personas
+
+Escolha as personas com base no tipo de interface:
+
+| Tipo de interface | Personas principais | Por quê |
 |---------------|-----------------|-----|
-| Landing page / marketing | Jordan, Riley, Casey | First impressions, trust, mobile |
-| Dashboard / admin | Alex, Sam | Power users, accessibility |
-| E-commerce / checkout | Casey, Riley, Jordan | Mobile, edge cases, clarity |
-| Onboarding flow | Jordan, Casey | Confusion, interruption |
-| Data-heavy / analytics | Alex, Sam | Efficiency, keyboard nav |
-| Form-heavy / wizard | Jordan, Sam, Casey | Clarity, accessibility, mobile |
+| Landing page / marketing | Jordan, Riley, Casey | Primeiras impressões, confiança, mobile |
+| Dashboard / admin | Alex, Sam | Usuários avançados, acessibilidade |
+| E-commerce / checkout | Casey, Riley, Jordan | Mobile, casos extremos, clareza |
+| Fluxo de onboarding | Jordan, Casey | Confusão, interrupção |
+| Muitos dados / analytics | Alex, Sam | Eficiência, navegação por teclado |
+| Muitos formulários / wizard | Jordan, Sam, Casey | Clareza, acessibilidade, mobile |
 
 ---
 
-#### Project-Specific Personas
+#### Personas específicas do projeto
 
-If `.kiro/settings.json` contains a `## Design Context` section (generated by `impeccable init`), derive 1–2 additional personas from the audience and brand information:
+Se `.kiro/settings.json` contiver uma seção `## Design Context` (gerada por `impeccable init`), derive 1–2 personas adicionais a partir das informações de público e marca:
 
-1. Read the target audience description
-2. Identify the primary user archetype not covered by the 5 predefined personas
-3. Create a persona following this template:
+1. Leia a descrição do público-alvo
+2. Identifique o arquétipo de usuário principal não coberto pelas 5 personas predefinidas
+3. Crie uma persona seguindo este template:
 
 ```
 ##### [Role]: "[Name]"
@@ -803,4 +807,4 @@ If `.kiro/settings.json` contains a `## Design Context` section (generated by `i
 **Red Flags**: [3-4 things that would alienate this specific user type]
 ```
 
-Only generate project-specific personas when real Design Context data is available. Don't invent audience details; use the 5 predefined personas when no context exists.
+Só gere personas específicas do projeto quando houver dados reais de Design Context disponíveis. Não invente detalhes do público; use as 5 personas predefinidas quando não houver contexto.

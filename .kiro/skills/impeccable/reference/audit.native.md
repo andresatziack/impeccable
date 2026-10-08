@@ -1,139 +1,139 @@
-Run systematic **technical** quality checks on a native app (`ios` / `android` / `adaptive`) and generate a comprehensive report. Don't fix issues; document them for other commands to address.
+Execute verificações **técnicas** sistemáticas de qualidade em um app nativo (`ios` / `android` / `adaptive`) e gere um relatório abrangente. Não corrija os problemas; documente-os para que outros comandos os resolvam.
 
-This is a code-level audit, not a design critique. Audit from source (SwiftUI / UIKit / Compose / React Native / Flutter); no browser tooling or `impeccable detect` applies. Score against the platform reference(s): [ios.md](ios.md) / [android.md](android.md), both for `adaptive`. Read them before scoring if Setup hasn't already. The report skeleton mirrors [audit.md](audit.md); keep the two in sync when changing it.
+Esta é uma auditoria no nível do código, não uma crítica de design. Audite a partir do código-fonte (SwiftUI / UIKit / Compose / React Native / Flutter); nenhuma ferramenta de navegador nem `impeccable detect` se aplica. Dê as notas com base na(s) referência(s) da plataforma: [ios.md](ios.md) / [android.md](android.md), ambas para `adaptive`. Leia-as antes de dar as notas, se o Setup ainda não tiver feito isso. O esqueleto do relatório espelha o de [audit.md](audit.md); mantenha os dois sincronizados ao alterá-lo.
 
-## Diagnostic Scan
+## Varredura diagnóstica
 
-Run comprehensive checks across 5 dimensions. Score each dimension 0-4 using the criteria below.
+Execute verificações abrangentes em 5 dimensões. Dê a cada dimensão uma nota de 0 a 4 usando os critérios abaixo.
 
-### 1. Accessibility (VoiceOver / TalkBack)
+### 1. Acessibilidade (VoiceOver / TalkBack)
 
-**Check for**:
-- **Missing labels**: interactive elements without accessibility labels, traits/roles, or state announcements
-- **Reading and focus order**: illogical traversal, unreachable controls, focus lost on navigation
-- **Text scaling**: fixed point sizes defeating Dynamic Type (iOS) or px instead of sp (Android); layouts that clip or overlap at large sizes
-- **Touch targets**: below 44 pt (iOS) / 48 dp (Android), or crammed without spacing
-- **Reduce Motion ignored**: parallax and large slides with no crossfade alternative
-- **Contrast**: text failing contrast in either appearance, light or dark
+**Verifique**:
+- **Rótulos ausentes**: elementos interativos sem rótulos de acessibilidade, traits/papéis ou anúncios de estado
+- **Ordem de leitura e de foco**: percurso ilógico, controles inalcançáveis, foco perdido na navegação
+- **Escala de texto**: tamanhos fixos em pontos que anulam o Dynamic Type (iOS) ou px no lugar de sp (Android); layouts que cortam ou se sobrepõem em tamanhos grandes
+- **Alvos de toque**: abaixo de 44 pt (iOS) / 48 dp (Android), ou amontoados sem espaçamento
+- **Reduce Motion ignorado**: parallax e deslizamentos grandes sem alternativa de crossfade
+- **Contraste**: texto com contraste insuficiente em qualquer uma das aparências, clara ou escura
 
-**Score 0-4**: 0=Screen reader unusable, 1=Major gaps (unlabeled controls, no scaling), 2=Partial (labels exist, order or scaling breaks), 3=Good (minor gaps), 4=Excellent (labeled, ordered, scales cleanly, Reduce Motion honored)
+**Nota de 0 a 4**: 0=Inutilizável com leitor de tela, 1=Lacunas graves (controles sem rótulo, sem escala), 2=Parcial (rótulos existem, ordem ou escala quebram), 3=Bom (pequenas lacunas), 4=Excelente (rotulado, ordenado, escala bem, Reduce Motion respeitado)
 
-### 2. Performance
+### 2. Desempenho
 
-**Check for**:
-- **Slow startup**: heavy work on launch before first frame
-- **Unvirtualized lists**: long content without FlatList / LazyColumn / List recycling
-- **Main-thread jank**: synchronous work in scroll or gesture paths, dropped frames on 60/120 Hz
-- **Wasted rendering**: unnecessary re-renders (React Native) or recompositions (Compose); missing memoization/keys
-- **Image handling**: full-size images decoded for thumbnails, no caching
-- **App weight**: bloated JS bundle or binary, unused dependencies
+**Verifique**:
+- **Inicialização lenta**: trabalho pesado na abertura antes do primeiro quadro
+- **Listas não virtualizadas**: conteúdo longo sem reciclagem de FlatList / LazyColumn / List
+- **Travamentos na thread principal**: trabalho síncrono em caminhos de rolagem ou de gesto, quadros perdidos em 60/120 Hz
+- **Renderização desperdiçada**: re-renderizações (React Native) ou recomposições (Compose) desnecessárias; memoização/keys ausentes
+- **Tratamento de imagens**: imagens em tamanho total decodificadas para miniaturas, sem cache
+- **Peso do app**: bundle JS ou binário inchado, dependências não utilizadas
 
-**Score 0-4**: 0=Janky everywhere, 1=Major problems (unvirtualized lists, slow launch), 2=Partial, 3=Good (minor improvements possible), 4=Excellent (fast launch, smooth scroll, lean)
+**Nota de 0 a 4**: 0=Travando em todo lugar, 1=Problemas graves (listas não virtualizadas, abertura lenta), 2=Parcial, 3=Bom (pequenas melhorias possíveis), 4=Excelente (abertura rápida, rolagem fluida, enxuto)
 
-### 3. Appearance & Theming
+### 3. Aparência e temas
 
-**Check for**:
-- **Hard-coded colors**: raw hex instead of semantic system colors (iOS) / Material color roles (Android) / design tokens
-- **Broken dark appearance**: missing dark variants, poor contrast in dark, quick inverts
-- **Dynamic Color** (Android 12+): no static fallback scheme, or ignored where it fits
-- **Off-platform materials**: hand-rolled visual materials where system materials or tonal elevation are expected
+**Verifique**:
+- **Cores fixas no código**: hex bruto em vez de cores semânticas do sistema (iOS) / papéis de cor do Material (Android) / tokens de design
+- **Aparência escura quebrada**: variantes escuras ausentes, contraste ruim no escuro, inversões apressadas
+- **Dynamic Color** (Android 12+): sem esquema estático de fallback, ou ignorado onde caberia
+- **Materiais fora da plataforma**: materiais visuais feitos à mão onde se esperam materiais do sistema ou elevação tonal
 
-**Score 0-4**: 0=Hard-coded everything, 1=Minimal tokens, 2=Partial (tokens exist, inconsistently used), 3=Good (minor hard-coded values), 4=Excellent (semantic throughout, both appearances first-class)
+**Nota de 0 a 4**: 0=Tudo fixo no código, 1=Tokens mínimos, 2=Parcial (tokens existem, usados de forma inconsistente), 3=Bom (poucos valores fixos), 4=Excelente (semântico em tudo, ambas as aparências tratadas como prioridade)
 
-### 4. Platform Conformance (CRITICAL)
+### 4. Conformidade com a plataforma (CRÍTICO)
 
-Score against the loaded platform reference(s), including their slop tests. **Check for**:
-- **Broken system gestures**: edge-swipe back disabled (iOS), predictive Back hijacked (Android)
-- **Inset violations**: content under the notch, Dynamic Island, home indicator, status bar, or keyboard
-- **Off-platform navigation**: custom global nav, overloaded tab bars, iOS patterns on Android or vice versa
-- **Web-shaped controls**: HTML-style buttons, custom toggles, hover-dependent affordances
-- **Icon drift**: mixed icon sets instead of SF Symbols / Material Symbols
-- **System drift**: repeated shortcuts or decorative patterns that conflict with the product, platform, or established design system
+Dê a nota com base na(s) referência(s) de plataforma carregada(s), incluindo os testes de slop delas. **Verifique**:
+- **Gestos do sistema quebrados**: voltar por deslize da borda desativado (iOS), Back preditivo sequestrado (Android)
+- **Violações de insets**: conteúdo sob o notch, a Dynamic Island, o indicador de início, a barra de status ou o teclado
+- **Navegação fora da plataforma**: navegação global personalizada, barras de abas sobrecarregadas, padrões de iOS no Android ou vice-versa
+- **Controles com cara de web**: botões estilo HTML, toggles personalizados, affordances que dependem de hover
+- **Desvio de ícones**: conjuntos de ícones misturados em vez de SF Symbols / Material Symbols
+- **Desvio do sistema**: atalhos repetidos ou padrões decorativos que conflitam com o produto, a plataforma ou o design system estabelecido
 
-**Score 0-4**: 0=Web port (nothing native), 1=Heavy violations (3-4 kinds), 2=Some (1-2 noticeable), 3=Mostly conformant (subtle issues), 4=Fully native (a fluent user trusts every screen)
+**Nota de 0 a 4**: 0=Port da web (nada nativo), 1=Violações pesadas (3 a 4 tipos), 2=Algumas (1 a 2 perceptíveis), 3=Em grande parte conforme (problemas sutis), 4=Totalmente nativo (um usuário fluente confia em todas as telas)
 
-### 5. Adaptivity
+### 5. Adaptabilidade
 
-**Check for**:
-- **Stretched phone layouts**: tablet/iPad rendering a scaled-up phone UI instead of using size classes / window size classes
-- **Orientation breakage**: landscape clipping, ignored, or locked without reason
-- **Keyboard/IME handling**: inputs hidden behind the keyboard, no inset adjustment
-- **Multitasking**: iPad Split View / Android multi-window breaking layout
-- **Foldables**: hinge-unaware layouts on posture change (Android)
+**Verifique**:
+- **Layouts de celular esticados**: tablet/iPad renderizando uma UI de celular ampliada em vez de usar size classes / window size classes
+- **Quebra de orientação**: paisagem cortando, ignorada ou bloqueada sem motivo
+- **Tratamento de teclado/IME**: campos escondidos atrás do teclado, sem ajuste de inset
+- **Multitarefa**: Split View do iPad / multi-janela do Android quebrando o layout
+- **Dobráveis**: layouts que ignoram a dobradiça ao mudar de postura (Android)
 
-**Score 0-4**: 0=One screen size only, 1=Major breakage (landscape or tablet broken), 2=Partial, 3=Good (minor edge cases), 4=Excellent (adapts across sizes, orientations, and windowing)
+**Nota de 0 a 4**: 0=Apenas um tamanho de tela, 1=Quebras graves (paisagem ou tablet quebrados), 2=Parcial, 3=Bom (pequenos casos extremos), 4=Excelente (adapta-se a tamanhos, orientações e janelas)
 
-## Generate Report
+## Gerar o relatório
 
-### Audit Health Score
+### Pontuação de saúde da auditoria
 
-| # | Dimension | Score | Key Finding |
+| # | Dimensão | Nota | Achado principal |
 |---|-----------|-------|-------------|
-| 1 | Accessibility | ? | [most critical issue or "--"] |
-| 2 | Performance | ? | |
-| 3 | Appearance & Theming | ? | |
-| 4 | Platform Conformance | ? | |
-| 5 | Adaptivity | ? | |
-| **Total** | | **??/20** | **[Rating band]** |
+| 1 | Acessibilidade | ? | [problema mais crítico ou "--"] |
+| 2 | Desempenho | ? | |
+| 3 | Aparência e temas | ? | |
+| 4 | Conformidade com a plataforma | ? | |
+| 5 | Adaptabilidade | ? | |
+| **Total** | | **??/20** | **[Faixa de classificação]** |
 
-**Rating bands**: 18-20 Excellent (minor polish), 14-17 Good (address weak dimensions), 10-13 Acceptable (significant work needed), 6-9 Poor (major overhaul), 0-5 Critical (fundamental issues)
+**Faixas de classificação**: 18-20 Excelente (pequenos refinamentos), 14-17 Bom (trate as dimensões fracas), 10-13 Aceitável (trabalho significativo necessário), 6-9 Ruim (reformulação ampla), 0-5 Crítico (problemas fundamentais)
 
-### Platform Conformance Verdict
-**Start here.** Pass/fail: does this read as a native app or a ported website? List specific violations. Be brutally honest.
+### Veredito de conformidade com a plataforma
+**Comece por aqui.** Aprovado/reprovado: isto parece um app nativo ou um site portado? Liste as violações específicas. Seja brutalmente honesto.
 
-### Executive Summary
-- Audit Health Score: **??/20** ([rating band])
-- Total issues found (count by severity: P0/P1/P2/P3)
-- Top 3-5 critical issues
-- Recommended next steps
+### Resumo executivo
+- Pontuação de saúde da auditoria: **??/20** ([faixa de classificação])
+- Total de problemas encontrados (contagem por severidade: P0/P1/P2/P3)
+- Os 3 a 5 problemas mais críticos
+- Próximos passos recomendados
 
-### Detailed Findings by Severity
+### Achados detalhados por severidade
 
-Tag every issue with **P0-P3 severity**:
-- **P0 Blocking**: Prevents task completion. Fix immediately
-- **P1 Major**: Significant difficulty or platform-guideline violation. Fix before release
-- **P2 Minor**: Annoyance, workaround exists. Fix in next pass
-- **P3 Polish**: Nice-to-fix, no real user impact. Fix if time permits
+Marque cada problema com uma **severidade de P0 a P3**:
+- **P0 Bloqueante**: Impede a conclusão da tarefa. Corrija imediatamente
+- **P1 Grave**: Dificuldade significativa ou violação das diretrizes da plataforma. Corrija antes do lançamento
+- **P2 Menor**: Incômodo, existe solução alternativa. Corrija na próxima passada
+- **P3 Polish**: Bom de corrigir, sem impacto real no usuário. Corrija se houver tempo
 
-For each issue, document:
-- **[P?] Issue name**
-- **Location**: Screen, file, line
-- **Category**: Accessibility / Performance / Theming / Conformance / Adaptivity
-- **Impact**: How it affects users
-- **Guideline**: The HIG / Material rule it violates (if applicable)
-- **Recommendation**: How to fix it
-- **Suggested command**: Which command to use (prefer: /impeccable adapt, /impeccable animate, /impeccable audit, /impeccable bolder, /impeccable clarify, /impeccable colorize, /impeccable critique, /impeccable delight, /impeccable distill, /impeccable document, /impeccable harden, /impeccable layout, /impeccable onboard, /impeccable optimize, /impeccable overdrive, /impeccable polish, /impeccable quieter, /impeccable shape, /impeccable typeset)
+Para cada problema, documente:
+- **[P?] Nome do problema**
+- **Localização**: Tela, arquivo, linha
+- **Categoria**: Acessibilidade / Desempenho / Temas / Conformidade / Adaptabilidade
+- **Impacto**: Como afeta os usuários
+- **Diretriz**: A regra do HIG / Material que é violada (se aplicável)
+- **Recomendação**: Como corrigir
+- **Comando sugerido**: Qual comando usar (prefira: /impeccable adapt, /impeccable animate, /impeccable audit, /impeccable bolder, /impeccable clarify, /impeccable colorize, /impeccable critique, /impeccable delight, /impeccable distill, /impeccable document, /impeccable harden, /impeccable layout, /impeccable onboard, /impeccable optimize, /impeccable overdrive, /impeccable polish, /impeccable quieter, /impeccable shape, /impeccable typeset)
 
-### Patterns & Systemic Issues
+### Padrões e problemas sistêmicos
 
-Identify recurring problems that indicate systemic gaps rather than one-off mistakes:
-- "Hard-coded colors appear in 15+ screens, should use semantic colors"
-- "Touch targets consistently below 44 pt throughout the tab bar and list rows"
+Identifique problemas recorrentes que indiquem lacunas sistêmicas, e não erros pontuais:
+- "Cores fixas no código aparecem em mais de 15 telas; deveriam usar cores semânticas"
+- "Alvos de toque consistentemente abaixo de 44 pt em toda a barra de abas e nas linhas das listas"
 
-### Positive Findings
+### Achados positivos
 
-Note what's working well: good practices to maintain and replicate.
+Registre o que está funcionando bem: boas práticas a manter e replicar.
 
-## Recommended Actions
+## Ações recomendadas
 
-List recommended commands in priority order (P0 first, then P1, then P2):
+Liste os comandos recomendados em ordem de prioridade (P0 primeiro, depois P1, depois P2):
 
-1. **[P?] `/command-name`**: Brief description (specific context from audit findings)
-2. **[P?] `/command-name`**: Brief description (specific context)
+1. **[P?] `/command-name`**: Descrição breve (contexto específico dos achados da auditoria)
+2. **[P?] `/command-name`**: Descrição breve (contexto específico)
 
-**Rules**: Only recommend commands from: /impeccable adapt, /impeccable animate, /impeccable audit, /impeccable bolder, /impeccable clarify, /impeccable colorize, /impeccable critique, /impeccable delight, /impeccable distill, /impeccable document, /impeccable harden, /impeccable layout, /impeccable onboard, /impeccable optimize, /impeccable overdrive, /impeccable polish, /impeccable quieter, /impeccable shape, /impeccable typeset. Map findings to the most appropriate command. End with `/impeccable polish` as the final step if any fixes were recommended.
+**Regras**: Recomende apenas comandos dentre: /impeccable adapt, /impeccable animate, /impeccable audit, /impeccable bolder, /impeccable clarify, /impeccable colorize, /impeccable critique, /impeccable delight, /impeccable distill, /impeccable document, /impeccable harden, /impeccable layout, /impeccable onboard, /impeccable optimize, /impeccable overdrive, /impeccable polish, /impeccable quieter, /impeccable shape, /impeccable typeset. Associe os achados ao comando mais adequado. Termine com `/impeccable polish` como etapa final se alguma correção tiver sido recomendada.
 
-After presenting the summary, tell the user:
+Depois de apresentar o resumo, diga ao usuário:
 
-> You can ask me to run these one at a time, all at once, or in any order you prefer.
+> Você pode me pedir para executá-los um de cada vez, todos de uma vez ou na ordem que preferir.
 >
-> Re-run `/impeccable audit` after fixes to see your score improve.
+> Rode `/impeccable audit` novamente após as correções para ver sua pontuação melhorar.
 
-**IMPORTANT**: Be thorough but actionable. Too many P3 issues creates noise. Focus on what actually matters.
+**IMPORTANTE**: Seja minucioso, mas acionável. Problemas P3 demais geram ruído. Foque no que realmente importa.
 
-**NEVER**:
-- Report issues without explaining impact (why does this matter?)
-- Provide generic recommendations (be specific and actionable)
-- Skip positive findings (celebrate what works)
-- Forget to prioritize (everything can't be P0)
-- Report false positives without verification
+**NUNCA**:
+- Relate problemas sem explicar o impacto (por que isso importa?)
+- Dê recomendações genéricas (seja específico e acionável)
+- Omita os achados positivos (celebre o que funciona)
+- Esqueça de priorizar (nem tudo pode ser P0)
+- Relate falsos positivos sem verificação

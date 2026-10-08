@@ -1,26 +1,26 @@
-# Region map
+# Mapa de regiões
 
-A region map names what is actually visible in the approved comp before asset production. It is not a page build or an asset approval.
+Um mapa de regiões nomeia o que está de fato visível no comp (mockup) aprovado antes da produção de assets. Ele não é a construção de uma página nem uma aprovação de assets.
 
-1. Run `.kiro/skills/impeccable/scripts/impeccable comp-spec --comp <comp.png> --grid` and open the original and gridded images.
-2. Run `.kiro/skills/impeccable/scripts/impeccable comp-spec --schema` for the JSON fields. Write `regions.json` with a `regions` array. Each region needs a stable `id`, `kind`, `note`, and exactly one of `pixelBox`, normalized `box`, or `grid`. Use the original comp’s dimensions.
-3. Run `.kiro/skills/impeccable/scripts/impeccable comp-spec --comp <comp.png> --regions regions.json --inspect-map`. The output points to a report, overlay, exact crops and `COMPARE` sheets of masked references. The default prints findings; `--json` prints the entire report, with sheet paths in `comparisonSheets`.
-4. Open the comparison sheets first to inspect affected crops together, then open individual crops where more detail is needed. Compare their bounds with the original. Inspect excluded foreground pixels as well as geometry errors. Every overlapping non-container code box is masked in full, including empty space inside it. Bound separate text elements separately so artwork in the gaps stays visible; a container describes their layout extent and never replaces its children. Correct the map and inspect again; use a new output directory each time. Zero errors does not certify crop accuracy. Coverage warnings are hints, not proof of completeness.
+1. Rode `.kiro/skills/impeccable/scripts/impeccable comp-spec --comp <comp.png> --grid` e abra a imagem original e a imagem com grade.
+2. Rode `.kiro/skills/impeccable/scripts/impeccable comp-spec --schema` para ver os campos do JSON. Escreva `regions.json` com um array `regions`. Cada região precisa de um `id` estável, `kind`, `note` e exatamente um entre `pixelBox`, `box` normalizado ou `grid`. Use as dimensões do comp original.
+3. Rode `.kiro/skills/impeccable/scripts/impeccable comp-spec --comp <comp.png> --regions regions.json --inspect-map`. A saída aponta para um relatório, uma sobreposição, recortes exatos e folhas `COMPARE` de referências mascaradas. O padrão imprime os achados; `--json` imprime o relatório inteiro, com os caminhos das folhas em `comparisonSheets`.
+4. Abra primeiro as folhas de comparação para inspecionar juntos os recortes afetados e depois abra recortes individuais onde for preciso mais detalhe. Compare os limites deles com o original. Inspecione os pixels de primeiro plano excluídos, assim como os erros de geometria. Toda caixa de código sobreposta que não seja contêiner é mascarada por inteiro, incluindo o espaço vazio dentro dela. Delimite elementos de texto separados separadamente, para que a arte nos vãos continue visível; um contêiner descreve a extensão do layout deles e nunca substitui seus filhos. Corrija o mapa e inspecione de novo; use um novo diretório de saída a cada vez. Zero erros não certifica a precisão dos recortes. Avisos de cobertura são dicas, não prova de completude.
 
-If the request ends at mapping, stop with the map, inspection report and unresolved findings. To continue a build, measure the inspected map with `comp-spec --comp <comp.png> --regions regions.json` and follow [new-work.md](new-work.md).
+Se o pedido terminar no mapeamento, pare com o mapa, o relatório de inspeção e os achados não resolvidos. Para continuar uma construção, meça o mapa inspecionado com `comp-spec --comp <comp.png> --regions regions.json` e siga [new-work.md](new-work.md).
 
-`--auto` produces horizontal band scaffolding, not element identification. It is optional and does not replace authoring a map.
+`--auto` produz um esqueleto de faixas horizontais, não identificação de elementos. Ele é opcional e não substitui a autoria de um mapa.
 
-## Containment
+## Contenção
 
-`parentId` identifies an enclosing `container: true` region. Parent and children keep separate IDs and crops. Containment never transfers approval.
+`parentId` identifica uma região `container: true` que a envolve. Pai e filhos mantêm IDs e recortes separados. A contenção nunca transfere aprovação.
 
-## What varies independently
+## O que varia de forma independente
 
-Split regions by what varies independently: content the site swaps (room photos, products, people), moving parts (anything a hover or the signature interaction moves), and structure (frames, surrounds, ornament). A window with open shutters onto a room is three kinds of region: the surround as a plate with a transparent opening, the room as an image region beneath it, and each shutter as its own plate. Overlapping regions are composited in the page. `comp-spec` flags a raster region whose note names a frame and the view it opens onto (`baked-composite`), and the plan and asset review shows it to the user first.
+Divida as regiões pelo que varia de forma independente: conteúdo que o site troca (fotos de ambientes, produtos, pessoas), partes móveis (qualquer coisa que um hover ou a interação característica mova) e estrutura (molduras, entornos, ornamentos). Uma janela com venezianas abertas para um ambiente é composta de três tipos de região: o entorno como uma placa com uma abertura transparente, o ambiente como uma região de imagem por baixo dela e cada veneziana como sua própria placa. Regiões sobrepostas são compostas na página. O `comp-spec` sinaliza uma região raster cuja nota nomeia uma moldura e a vista para a qual ela se abre (`baked-composite`), e a revisão do plano e dos assets a mostra primeiro ao usuário.
 
-## Painted material
+## Material pintado
 
-When measuring, `comp-spec` flags a `text`, `control` or `chrome` region, containers included, whose crop looks painted (`painted-pixels`: many colours, soft gradients) and lists it in its summary. The plan and asset review shows flagged regions, and those marked `codeDrawn` (painted material you chose to draw in code), to the user first. Do not leave the catch to them: if a region is painted material (a figure, a photograph, a metal or paper surface), classify it `plate`, `image` or `texture` now.
+Ao medir, o `comp-spec` sinaliza uma região `text`, `control` ou `chrome`, incluindo contêineres, cujo recorte pareça pintado (`painted-pixels`: muitas cores, gradientes suaves) e a lista em seu resumo. A revisão do plano e dos assets mostra primeiro ao usuário as regiões sinalizadas e aquelas marcadas como `codeDrawn` (material pintado que você escolheu desenhar em código). Não deixe essa detecção a cargo dele: se uma região for material pintado (uma figura, uma fotografia, uma superfície de metal ou papel), classifique-a agora como `plate`, `image` ou `texture`.
 
-Comp crops are reference evidence only, never production assets. The map inspector marks its PNGs as comp-derived.
+Recortes do comp são apenas evidência de referência, nunca assets de produção. O inspetor do mapa marca seus PNGs como derivados do comp.

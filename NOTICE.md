@@ -1,11 +1,11 @@
-# Third-Party Notices
+# Avisos de terceiros
 
-This project includes content derived from third-party work, used under the terms of its original license.
+Este projeto inclui conteúdo derivado de trabalho de terceiros, utilizado nos termos de sua licença original.
 
 ## Platform Design Skills
 
-The `skill/reference/ios.md` and `skill/reference/android.md` platform reference files are distilled from ehmo's `platform-design-skills` (Apple Human Interface Guidelines and Material Design 3 rules), rewritten in Impeccable's voice.
+Os arquivos de referência de plataforma `skill/reference/ios.md` e `skill/reference/android.md` foram destilados do `platform-design-skills` de ehmo (regras das Apple Human Interface Guidelines e do Material Design 3), reescritos na voz do Impeccable.
 
-**Original work:** https://github.com/ehmo/platform-design-skills
-**Original license:** MIT
-**Author:** ehmo
+**Obra original:** https://github.com/ehmo/platform-design-skills
+**Licença original:** MIT
+**Autor:** ehmo

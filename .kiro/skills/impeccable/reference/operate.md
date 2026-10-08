@@ -1,61 +1,61 @@
-# Operate mode depth (and Read notes)
+# Profundidade do modo Operate (e notas sobre Read)
 
-When design SERVES the product: app UIs, admin dashboards, settings panels, data tables, tools, authenticated surfaces, anything where the user is in a task. The essentials live in SKILL.md's modes and [craft-floor.md](craft-floor.md); this file is extended depth, written for Operate surfaces. Read surfaces (docs, guides, long-form) take SKILL.md's Read mode plus this file's typography and consistency rules; their prose measure and navigation matter more than component density.
+Quando o design SERVE ao produto: UIs de apps, dashboards administrativos, painéis de configurações, tabelas de dados, ferramentas, superfícies autenticadas, qualquer coisa em que o usuário esteja executando uma tarefa. O essencial está nos modos do SKILL.md e em [craft-floor.md](craft-floor.md); este arquivo é a profundidade estendida, escrito para superfícies **Operate** (operar). Superfícies **Read** (ler) (documentação, guias, textos longos) seguem o modo Read do SKILL.md mais as regras de tipografia e consistência deste arquivo; nelas, a medida da prosa e a navegação importam mais do que a densidade de componentes.
 
-## The product slop test
+## O teste de desleixo do produto
 
-Familiarity is often a feature here. The test is whether a category-fluent user can trust the interface immediately or must pause at every subtly-off component.
+Aqui, a familiaridade muitas vezes é um recurso. O teste é se um usuário fluente na categoria consegue confiar na interface imediatamente ou precisa parar a cada componente sutilmente fora do lugar.
 
-Product UI's failure mode isn't flatness, it's strangeness without purpose: over-decorated buttons, mismatched form controls, gratuitous motion, display fonts where labels should be, invented affordances for standard tasks. The bar is earned familiarity. The tool should disappear into the task.
+O modo de falha de uma UI de produto não é a falta de personalidade, é a estranheza sem propósito: botões decorados demais, controles de formulário incompatíveis entre si, movimento gratuito, fontes de display onde deveriam estar rótulos, affordances inventadas para tarefas padrão. O padrão é a familiaridade conquistada. A ferramenta deve desaparecer dentro da tarefa.
 
-## Typography
+## Tipografia
 
-- **One family is often right.** Product UIs don't need display/body pairing. A well-tuned sans carries headings, buttons, labels, body, data.
-- **Fixed rem scale, not fluid.** Clamp-sized headings don't serve product UI. Users view at consistent DPI, and a fluid h1 that shrinks in a sidebar looks worse, not better.
-- **Tighter scale ratio.** 1.125–1.2 between steps is typical. More type elements here than on brand surfaces; exaggerated contrast creates noise.
-- **Line length still applies for prose** (65–75ch). Data and compact UI can run denser; tables at 120ch+ are fine.
+- **Uma família costuma bastar.** UIs de produto não precisam de pareamento display/corpo. Uma sans bem ajustada dá conta de títulos, botões, rótulos, corpo de texto e dados.
+- **Escala fixa em rem, não fluida.** Títulos dimensionados com clamp não servem a UIs de produto. Os usuários visualizam com DPI consistente, e um h1 fluido que encolhe numa barra lateral fica pior, não melhor.
+- **Razão de escala mais apertada.** 1,125–1,2 entre os degraus é o típico. Há mais elementos tipográficos aqui do que em superfícies de marca; um contraste exagerado cria ruído.
+- **O comprimento de linha ainda vale para a prosa** (65–75ch). Dados e UI compacta podem ser mais densos; tabelas com 120ch+ não têm problema.
 
-## Color
+## Cor
 
-Product defaults to Restrained. A single surface can earn Committed (a dashboard where one category color carries a report, an onboarding flow with a drenched welcome screen), but Restrained is the floor.
+O produto usa Restrained (contido) por padrão. Uma única superfície pode merecer Committed (comprometido) (um dashboard em que uma cor de categoria sustenta um relatório, um fluxo de onboarding com uma tela de boas-vindas encharcada de cor), mas Restrained é o piso.
 
-- State-rich semantic vocabulary: hover, focus, active, disabled, selected, loading, error, warning, success, info. Standardize these.
-- Accent color used for primary actions, current selection, and state indicators only, not decoration.
-- A second neutral layer for sidebars, toolbars, and panels (slightly cooler or warmer than the content surface).
+- Vocabulário semântico rico em estados: hover, focus, active, disabled, selected, loading, error, warning, success, info. Padronize-os.
+- A cor de destaque é usada apenas para ações primárias, seleção atual e indicadores de estado, não para decoração.
+- Uma segunda camada neutra para barras laterais, barras de ferramentas e painéis (levemente mais fria ou mais quente do que a superfície de conteúdo).
 
 ## Layout
 
-- Responsive behavior is structural (collapse sidebar, responsive table, breakpoint-driven columns), not fluid typography.
+- O comportamento responsivo é estrutural (recolher a barra lateral, tabela responsiva, colunas guiadas por breakpoints), não tipografia fluida.
 
-## Components
+## Componentes
 
-Every interactive component has: default, hover, focus, active, disabled, loading, error. Don't ship with half of these.
+Todo componente interativo tem: default, hover, focus, active, disabled, loading, error. Não entregue com metade deles.
 
-- Skeleton states for loading, not spinners in the middle of content.
-- Empty states that teach the interface, not "nothing here."
-- Consistent affordances across the surface. Same button shape. Same form-control vocabulary. Same icon style.
-- Overlays escape their container. An absolutely positioned dropdown inside an `overflow: hidden` or `overflow: auto` ancestor gets clipped; reach for `<dialog>`, the popover API, `position: fixed`, or a portal.
+- Estados skeleton para carregamento, não spinners no meio do conteúdo.
+- Estados vazios que ensinam a interface, não "nada por aqui".
+- Affordances consistentes em toda a superfície. O mesmo formato de botão. O mesmo vocabulário de controles de formulário. O mesmo estilo de ícone.
+- Sobreposições escapam do seu contêiner. Um dropdown posicionado de forma absoluta dentro de um ancestral com `overflow: hidden` ou `overflow: auto` é cortado; recorra a `<dialog>`, à API de popover, a `position: fixed` ou a um portal.
 
-## Motion
+## Movimento
 
-- 150–250 ms on most transitions. Users are in flow; don't make them wait for choreography.
-- Motion conveys state, not decoration. State change, feedback, loading, reveal: nothing else.
-- No orchestrated page-load sequences. Product loads into a task; users don't want to watch it load.
+- 150–250 ms na maioria das transições. Os usuários estão em fluxo; não os faça esperar por uma coreografia.
+- O movimento transmite estado, não decoração. Mudança de estado, feedback, carregamento, revelação: nada além disso.
+- Nada de sequências orquestradas de carregamento de página. O produto carrega dentro de uma tarefa; os usuários não querem assistir ao carregamento.
 
-## Product constraints
+## Restrições de produto
 
-- Decorative motion that doesn't convey state.
-- Inconsistent component vocabulary across screens. If the "save" button looks different in two places, one is wrong.
-- Display fonts in UI labels, buttons, data.
-- Reinventing standard affordances for flavor (custom scrollbars, weird form controls, non-standard modals).
-- Heavy color or full-saturation accents on inactive states.
-- Modal as first thought. Modals are usually laziness. Exhaust inline / progressive alternatives first.
+- Movimento decorativo que não transmite estado.
+- Vocabulário de componentes inconsistente entre telas. Se o botão "salvar" tem aparência diferente em dois lugares, um deles está errado.
+- Fontes de display em rótulos, botões e dados da UI.
+- Reinventar affordances padrão por estilo (barras de rolagem personalizadas, controles de formulário esquisitos, modais fora do padrão).
+- Cor pesada ou destaques em saturação total em estados inativos.
+- Modal como primeira ideia. Modais geralmente são preguiça. Esgote primeiro as alternativas inline / progressivas.
 
-## Product permissions
+## Permissões de produto
 
-Product can afford things brand surfaces can't.
+O produto pode se dar ao luxo de coisas que superfícies de marca não podem.
 
-- System fonts and familiar sans defaults.
-- Standard navigation patterns: top bar + side nav, breadcrumbs, tabs, command palettes.
-- Density. Tables with many rows, panels with many labels, dense information when users need it.
-- Consistency over surprise. The same visual vocabulary screen to screen is a virtue; delight is saved for moments, not pages.
+- Fontes do sistema e sans familiares como padrão.
+- Padrões de navegação convencionais: barra superior + navegação lateral, breadcrumbs, abas, paletas de comandos.
+- Densidade. Tabelas com muitas linhas, painéis com muitos rótulos, informação densa quando os usuários precisam dela.
+- Consistência acima de surpresa. O mesmo vocabulário visual de tela em tela é uma virtude; o encantamento fica reservado para momentos, não para páginas.

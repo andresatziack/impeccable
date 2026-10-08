@@ -1,33 +1,33 @@
-> **Additional context needed**: which section is the target, and what must stay untouched.
+> **Contexto adicional necessário**: qual seção é o alvo e o que deve permanecer intocado.
 
-An open direction round owns the word first: "bolder" said while a direction decision is on the table is the Bolder hand register steer, a fresh deal of foreign forms (see new-work.md), not this command. This command refines a surface whose world already shipped.
+Uma rodada de direção em aberto tem prioridade sobre a palavra: "bolder" dito enquanto uma decisão de direção está em discussão é o ajuste para o registro Bolder (mais ousado) da mão sorteada, uma nova rodada de formas estrangeiras (veja new-work.md), e não este comando. Este comando refina uma superfície cujo mundo visual já foi entregue.
 
-"Bolder" is an amplification request, and almost always it is scoped to something that already exists. The surrounding page, its system, and its conventions are the given. Your job is to raise one part to the conviction the rest already implies, without rebuilding anything the brief did not name. The reflex answer, reaching for more effects, is the opposite of bold; reject it first.
+"Bolder" é um pedido de amplificação e, quase sempre, se restringe a algo que já existe. A página ao redor, seu sistema e suas convenções são dados. Sua tarefa é elevar uma parte à convicção que o restante já sugere, sem reconstruir nada que o briefing não tenha nomeado. A resposta reflexa, recorrer a mais efeitos, é o oposto de ousadia; rejeite-a primeiro.
 
-## Scope is sovereign
+## O escopo é soberano
 
-"Everything else stays" is a literal instruction. Touch only the named target. Do not restyle its neighbors, do not migrate the page to a new idea, do not add colors, fonts, radii, shadows, or system primitives the surface does not already own. If the existing system genuinely cannot express the direction, do not expand it on your own. Ask the user directly to clarify what you cannot infer. Name the exact addition and the job it would do.
+"Todo o resto permanece" é uma instrução literal. Mexa apenas no alvo nomeado. Não reestilize os vizinhos, não migre a página para uma nova ideia, não acrescente cores, fontes, raios, sombras ou primitivas de sistema que a superfície ainda não possua. Se o sistema existente realmente não consegue expressar a direção, não o expanda por conta própria. Peça diretamente ao usuário que esclareça o que você não consegue inferir. Nomeie a adição exata e a função que ela cumpriria.
 
-## Why it reads flat
+## Por que parece sem graça
 
-A section usually reads flat for reasons its neighbors have already solved. Look at what the rest of the page does that this section does not: the display type at full strength, the structural devices that carry meaning, the signature motif, the density and pacing. A flat section is typically one that quietly opts out of the system's own strongest moves. The most reliable bolder pass brings the target up to the expressive level its neighbors already reach, in the system's own vocabulary rather than a new one.
+Uma seção geralmente parece sem graça por motivos que seus vizinhos já resolveram. Observe o que o restante da página faz e esta seção não faz: a tipografia de display com força total, os recursos estruturais que carregam significado, o motivo característico, a densidade e o ritmo. Uma seção sem graça costuma ser aquela que discretamente abre mão dos movimentos mais fortes do próprio sistema. A passada de ousadia mais confiável leva o alvo ao nível expressivo que seus vizinhos já alcançam, no vocabulário do próprio sistema, e não em um novo.
 
-## The amplification
+## A amplificação
 
-- **Amplify what the system already owns.** Reuse its motif and its type scale at full strength, turned up for this section rather than invented for it. The bolder version should look more like the same brand, not less.
-- **Keep content true.** Existing claims are part of the scope: preserve them unless the user supplies replacements. If real evidence is essential to the direction but absent, ask for it.
-- **Commit, then clarify.** Half-measures read as noise. Make the one decisive move completely, then quiet everything around it so the move is legible. If every element got louder, the section got flatter.
-- **Give it its own rhythm.** The target should read as a peak in the scroll, a shift in density or pace from what surrounds it, not simply more of the same.
+- **Amplifique o que o sistema já possui.** Reutilize seu motivo e sua escala tipográfica com força total, intensificados para esta seção em vez de inventados para ela. A versão mais ousada deve parecer mais a mesma marca, não menos.
+- **Mantenha o conteúdo verdadeiro.** As afirmações existentes fazem parte do escopo: preserve-as, a menos que o usuário forneça substitutas. Se uma evidência real for essencial para a direção, mas estiver ausente, peça por ela.
+- **Comprometa-se e depois esclareça.** Meias medidas soam como ruído. Faça o único movimento decisivo por completo e depois silencie tudo ao redor para que o movimento fique legível. Se todos os elementos ficaram mais altos, a seção ficou mais sem graça.
+- **Dê a ela seu próprio ritmo.** O alvo deve ser lido como um pico na rolagem, uma mudança de densidade ou de ritmo em relação ao que o cerca, e não simplesmente mais do mesmo.
 
-## The skeleton test
+## O teste do esqueleto
 
-Strip the copy out of your planned section and study the bare structure. Does the skeleton still say what this section is and why it matters, through hierarchy and the system's devices alone? If it only works once the words return, the boldness is in the text size, not the design. A placeholder for an image or artifact names a job, an anchor and a piece of evidence, not a cue to drop in a decorative photo; fill that job with whatever the subject actually has.
+Retire a copy da seção planejada e estude a estrutura nua. O esqueleto ainda diz o que esta seção é e por que ela importa, apenas por meio da hierarquia e dos recursos do sistema? Se ela só funciona quando as palavras voltam, a ousadia está no tamanho do texto, não no design. Um espaço reservado para uma imagem ou um artefato nomeia uma função, uma âncora e uma evidência, e não é um convite para inserir uma foto decorativa; preencha essa função com o que o assunto realmente tem.
 
-## Before you finish
+## Antes de terminar
 
-- Everything outside the named target is unchanged.
-- No new color, font, or system primitive appeared without being asked for.
-- The conventions the section carried, including anything that drives an action, still work the same way.
-- The section is unmistakably the same brand, only more sure of itself.
+- Tudo fora do alvo nomeado está inalterado.
+- Nenhuma cor, fonte ou primitiva de sistema nova apareceu sem ter sido pedida.
+- As convenções que a seção carregava, incluindo qualquer coisa que conduza a uma ação, continuam funcionando da mesma forma.
+- A seção é inconfundivelmente a mesma marca, apenas mais segura de si.
 
-When the target holds its own without pulling the page apart, hand off to `/impeccable polish` for the final pass.
+Quando o alvo se sustentar sozinho sem desmontar a página, passe para `/impeccable polish` para a passada final.

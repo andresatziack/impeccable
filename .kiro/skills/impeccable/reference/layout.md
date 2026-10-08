@@ -1,84 +1,84 @@
-Layout turns product priority into reading order, grouping, rhythm, and usable space. Diagnose the structural problem before moving boxes.
+O layout transforma a prioridade do produto em ordem de leitura, agrupamento, ritmo e espaço utilizável. Diagnostique o problema estrutural antes de mover caixas.
 
 ---
 
-## Visitor mode
+## Modo do visitante
 
-- **Persuade + Experience:** composition may be asymmetric, fluid, or intentionally disruptive when the selected world earns it.
-- **Operate + Read:** predictable structure, stable density, and navigable linearity are affordances.
-- **Native:** follow [ios.md](ios.md) or [android.md](android.md) for navigation, insets, adaptation, and touch targets.
+- **Persuade (persuadir) + Experience (experiência):** a composição pode ser assimétrica, fluida ou intencionalmente disruptiva quando o mundo visual selecionado a justifica.
+- **Operate (operar) + Read (ler):** estrutura previsível, densidade estável e linearidade navegável são affordances.
+- **Nativo:** siga [ios.md](ios.md) ou [android.md](android.md) para navegação, insets, adaptação e alvos de toque.
 
-Preserve the established visual world. A layout command changes structure inside it; identity replacement belongs to [new-work.md](new-work.md).
+Preserve o mundo visual estabelecido. Um comando de layout muda a estrutura dentro dele; a substituição da identidade pertence a [new-work.md](new-work.md).
 
-## Two isolated assessments
+## Duas avaliações isoladas
 
-When a sub-agent tool is available and permitted, run these independently; otherwise run them yourself in this order.
+Quando uma ferramenta de subagente estiver disponível e permitida, execute estas avaliações de forma independente; caso contrário, execute-as você mesmo nesta ordem.
 
-1. **Layout assessment:** inspect representative states and viewports. Answer every question below with rendered or source evidence:
-   - **Reading order:** Apply the squint test. With detail blurred, can you still identify the primary element, the secondary element, and the major groups in order?
-   - **Grouping:** Are related items close and distinct groups separated, or are containers compensating for weak proximity?
-   - **Rhythm:** Do tight and generous intervals create a deliberate cadence, or is one spacing value repeated until everything has equal weight?
-   - **Structure:** Does the topology match the content and task? Are repeated cards, columns, or sections genuinely equivalent, or merely a framework default?
-   - **Density:** Does the amount of information per region fit use frequency, decision complexity, and visitor mode?
-   - **Adaptation:** At narrow, intermediate, wide, zoomed, and localized states, what reorders, collapses, wraps, scrolls, or remains fixed? Does DOM and focus order still agree with the visual order?
-   - **Extremes:** Do long content, empty states, overlays, sticky elements, safe areas, and small touch targets expose structural failures?
-2. **Mechanical scan:** run:
+1. **Avaliação de layout:** inspecione estados e viewports representativos. Responda a cada pergunta abaixo com evidência renderizada ou do código-fonte:
+   - **Ordem de leitura:** aplique o teste de apertar os olhos. Com os detalhes borrados, você ainda consegue identificar, em ordem, o elemento primário, o elemento secundário e os grupos principais?
+   - **Agrupamento:** itens relacionados estão próximos e grupos distintos estão separados, ou os contêineres estão compensando uma proximidade fraca?
+   - **Ritmo:** intervalos compactos e generosos criam uma cadência deliberada, ou um único valor de espaçamento se repete até que tudo tenha o mesmo peso?
+   - **Estrutura:** a topologia corresponde ao conteúdo e à tarefa? Cards, colunas ou seções repetidos são genuinamente equivalentes, ou apenas um padrão do framework?
+   - **Densidade:** a quantidade de informação por região condiz com a frequência de uso, a complexidade da decisão e o modo do visitante?
+   - **Adaptação:** nos estados estreito, intermediário, largo, com zoom e localizado, o que é reordenado, recolhido, quebrado em linhas, rolado ou permanece fixo? A ordem do DOM e do foco ainda concorda com a ordem visual?
+   - **Extremos:** conteúdo longo, estados vazios, overlays, elementos fixos (sticky), áreas seguras e alvos de toque pequenos expõem falhas estruturais?
+2. **Varredura mecânica:** execute:
 
 ```bash
 .kiro/skills/impeccable/scripts/impeccable detect --json --scope layout [target files or dirs]
 ```
 
-Also inspect arbitrary spacing, overflow, stacking, and container behavior the detector cannot resolve. Keep mechanical evidence out of the first assessment, then synthesize both passes before editing. A clean scan cannot prove hierarchy or rhythm.
+Inspecione também espaçamentos arbitrários, overflow, empilhamento e comportamento de contêiner que o detector não consegue resolver. Mantenha a evidência mecânica fora da primeira avaliação e depois sintetize as duas passagens antes de editar. Uma varredura limpa não consegue provar hierarquia nem ritmo.
 
-## Set the spatial thesis
+## Defina a tese espacial
 
-Before editing, name:
+Antes de editar, nomeie:
 
-- the primary reading or task path;
-- what belongs together and what must separate;
-- which element leads and which supports;
-- the intended density and spacing rhythm;
-- how the structure changes across containers, viewports, input modes, and content extremes.
+- o caminho principal de leitura ou de tarefa;
+- o que pertence junto e o que precisa se separar;
+- qual elemento lidera e qual dá suporte;
+- a densidade e o ritmo de espaçamento pretendidos;
+- como a estrutura muda entre contêineres, viewports, modos de entrada e extremos de conteúdo.
 
-Choose the simplest structural model that expresses those relationships. Use layout primitives according to the relationships they control, and name reusable spacing and container roles semantically.
+Escolha o modelo estrutural mais simples que expresse essas relações. Use as primitivas de layout de acordo com as relações que elas controlam e nomeie semanticamente os papéis reutilizáveis de espaçamento e de contêiner.
 
-## Apply
+## Aplique
 
-- Group by meaning. Use proximity before adding containers or decoration.
-- Create rhythm through deliberate contrast between tight and generous intervals.
-- Use a documented spacing scale rather than one-off values. A 4-unit base usually provides the useful middle steps that an 8-only scale misses.
-- Let hierarchy follow product priority, not framework defaults.
-- Keep distinct content visually distinct without turning every group into an isolated component.
-- Make responsive behavior structural: reorder, collapse, reflow, or reveal based on what remains important.
-- Prefer container-aware components when the same component appears in different contexts.
-- Use `gap` for sibling rhythm when it expresses the relationship more directly than child margins.
-- Keep touch targets usable even when their visible marks are small.
-- Use depth only when it clarifies state or hierarchy.
-- Make optical corrections only after inspecting the rendered result.
+- Agrupe pelo significado. Use a proximidade antes de adicionar contêineres ou decoração.
+- Crie ritmo por meio de contraste deliberado entre intervalos compactos e generosos.
+- Use uma escala de espaçamento documentada em vez de valores avulsos. Uma base de 4 unidades geralmente oferece os passos intermediários úteis que uma escala só de 8 deixa de fora.
+- Deixe a hierarquia seguir a prioridade do produto, não os padrões do framework.
+- Mantenha conteúdos distintos visualmente distintos sem transformar cada grupo em um componente isolado.
+- Torne o comportamento responsivo estrutural: reordene, recolha, refaça o fluxo ou revele com base no que continua importante.
+- Prefira componentes sensíveis ao contêiner quando o mesmo componente aparecer em contextos diferentes.
+- Use `gap` para o ritmo entre irmãos quando ele expressar a relação de forma mais direta do que margens nos filhos.
+- Mantenha os alvos de toque utilizáveis mesmo quando suas marcas visíveis forem pequenas.
+- Use profundidade apenas quando ela esclarecer estado ou hierarquia.
+- Faça correções ópticas somente depois de inspecionar o resultado renderizado.
 
-Variation is not a goal by itself. Repetition should support recognition; break it only when content or priority changes.
+Variação não é um objetivo em si. A repetição deve apoiar o reconhecimento; quebre-a apenas quando o conteúdo ou a prioridade mudarem.
 
-## Verify
+## Verifique
 
-- The squint test still reveals the primary, secondary, and major groups in order.
-- The reading and task path remains clear at every supported size.
-- Related content groups naturally; unrelated content does not blur together.
-- Tight and generous spacing create intentional rhythm instead of monotonous repetition.
-- Density matches use frequency and content complexity.
-- Long text, empty states, localization, zoom, and dynamic content do not break the structure.
-- Keyboard, touch, and assistive-technology order agree with the visual order.
-- The final mechanical scan has no unexplained findings.
+- O teste de apertar os olhos ainda revela, em ordem, o primário, o secundário e os grupos principais.
+- O caminho de leitura e de tarefa permanece claro em todos os tamanhos suportados.
+- Conteúdos relacionados se agrupam naturalmente; conteúdos não relacionados não se misturam.
+- Espaçamentos compactos e generosos criam um ritmo intencional em vez de uma repetição monótona.
+- A densidade corresponde à frequência de uso e à complexidade do conteúdo.
+- Texto longo, estados vazios, localização, zoom e conteúdo dinâmico não quebram a estrutura.
+- A ordem de teclado, de toque e de tecnologias assistivas concorda com a ordem visual.
+- A varredura mecânica final não tem achados sem explicação.
 
-Answer each item with rendered or source evidence, then rerun the scan. Do not substitute a bare “yes” for verification.
+Responda a cada item com evidência renderizada ou do código-fonte e depois execute a varredura novamente. Não substitua a verificação por um “sim” vazio.
 
-When the structure holds, hand off to `/impeccable polish`.
+Quando a estrutura se sustentar, passe para `/impeccable polish`.
 
-## Live-mode signature params
+## Parâmetros de assinatura do modo live
 
-Every variant declares a coarse `density` parameter and authors spacing against `var(--p-density, 1)`.
+Toda variante declara um parâmetro geral `density` e constrói o espaçamento em função de `var(--p-density, 1)`.
 
 ```json
 {"id":"density","kind":"range","min":0.6,"max":1.4,"step":0.05,"default":1,"label":"Density"}
 ```
 
-Add one structural parameter only when the topology genuinely branches. Follow [live.md](live.md)'s parameter contract.
+Adicione um parâmetro estrutural apenas quando a topologia de fato se ramificar. Siga o contrato de parâmetros de [live.md](live.md).

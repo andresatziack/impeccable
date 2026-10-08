@@ -1,80 +1,80 @@
-Typography carries information, hierarchy, and voice. Improve it inside the established visual world; do not replace the identity unless the user asked to.
+A tipografia carrega informação, hierarquia e voz. Melhore-a dentro do mundo visual estabelecido; não substitua a identidade a menos que o usuário tenha pedido.
 
 ---
 
-## Visitor mode
+## Modo do visitante
 
-- **Persuade + Experience:** display type may carry the voice. Use decisive contrast and responsive scale when the composition benefits.
-- **Operate + Read:** stability, scanability, and measure come first. A single well-tuned family and fixed role scale are often right.
-- **Native:** follow [ios.md](ios.md) or [android.md](android.md), including platform scaling and accessibility behavior.
+- **Persuade (persuadir) + Experience (experiência):** a tipografia de display pode carregar a voz. Use contraste decidido e escala responsiva quando a composição se beneficiar.
+- **Operate (operar) + Read (ler):** estabilidade, escaneabilidade e medida vêm primeiro. Uma única família bem ajustada e uma escala fixa de papéis costumam ser o certo.
+- **Nativo:** siga [ios.md](ios.md) ou [android.md](android.md), incluindo o dimensionamento da plataforma e o comportamento de acessibilidade.
 
-If typography replacement would create a new identity, route through [new-work.md](new-work.md) and update DESIGN.md. Otherwise preserve confirmed families and improve their use.
+Se a substituição da tipografia criar uma nova identidade, encaminhe por [new-work.md](new-work.md) e atualize o DESIGN.md. Caso contrário, preserve as famílias confirmadas e melhore o uso delas.
 
-## Two isolated assessments
+## Duas avaliações isoladas
 
-When a sub-agent tool is available and permitted, run these independently; otherwise run them yourself in this order. Do not let detector findings anchor the design assessment.
+Quando uma ferramenta de subagente estiver disponível e permitida, execute estas avaliações de forma independente; caso contrário, execute-as você mesmo nesta ordem. Não deixe os achados do detector ancorarem a avaliação de design.
 
-1. **Typographic assessment:** inspect representative pages and styles. Answer every question below with a file, selector, or computed value:
-   - **Authority and fit:** Which faces, weights, and roles are established? Do they fit the product and selected world, or are they unexamined defaults? Is every family necessary?
-   - **Hierarchy:** Can heading, body, label, metadata, and data roles be distinguished at a glance? Are adjacent sizes or weights too close to carry different jobs?
-   - **Scale and consistency:** Is there a deliberate role scale, or a collection of arbitrary values? Do repeated roles stay identical across screens and states?
-   - **Reading:** Does body copy stay within a comfortable 45–75 character measure? Are line height, paragraph rhythm, contrast, and tracking tuned to the actual face, width, language, and surface?
-   - **Stress:** What happens with long headings, localization expansion, zoom, narrow containers, missing weights, and font fallback?
-   - **Delivery:** Are only used assets loaded? Do fallback metrics, loading strategy, and variable-font settings avoid invisible text and disruptive reflow?
-2. **Mechanical scan:** run:
+1. **Avaliação tipográfica:** inspecione páginas e estilos representativos. Responda a cada pergunta abaixo com um arquivo, seletor ou valor computado:
+   - **Autoridade e adequação:** quais fontes, pesos e papéis estão estabelecidos? Eles combinam com o produto e com o mundo visual selecionado, ou são padrões não examinados? Cada família é necessária?
+   - **Hierarquia:** os papéis de título, corpo, rótulo, metadados e dados podem ser distinguidos num relance? Tamanhos ou pesos adjacentes estão próximos demais para cumprir funções diferentes?
+   - **Escala e consistência:** existe uma escala de papéis deliberada, ou uma coleção de valores arbitrários? Os papéis repetidos permanecem idênticos entre telas e estados?
+   - **Leitura:** o texto de corpo fica dentro de uma medida confortável de 45–75 caracteres? Altura de linha, ritmo de parágrafos, contraste e tracking estão ajustados à fonte, à largura, ao idioma e à superfície reais?
+   - **Estresse:** o que acontece com títulos longos, expansão por localização, zoom, contêineres estreitos, pesos ausentes e fallback de fonte?
+   - **Entrega:** apenas os recursos usados são carregados? As métricas de fallback, a estratégia de carregamento e as configurações de fontes variáveis evitam texto invisível e reflow disruptivo?
+2. **Varredura mecânica:** execute:
 
 ```bash
 .kiro/skills/impeccable/scripts/impeccable detect --json --scope type [target files or dirs]
 ```
 
-Also inspect dynamic or arbitrary font values the detector cannot interpret. Synthesize both assessments before editing, noting what each caught alone. A clean scan is a floor, not proof of good typography.
+Inspecione também valores de fonte dinâmicos ou arbitrários que o detector não consegue interpretar. Sintetize as duas avaliações antes de editar, anotando o que cada uma detectou sozinha. Uma varredura limpa é um piso, não uma prova de boa tipografia.
 
-## Set the system
+## Defina o sistema
 
-Before editing, state:
+Antes de editar, declare:
 
-- the roles the interface needs;
-- the intended contrast between those roles;
-- the reading measure and density;
-- which existing faces and weights are authoritative;
-- any performance, localization, or accessibility constraints.
+- os papéis de que a interface precisa;
+- o contraste pretendido entre esses papéis;
+- a medida de leitura e a densidade;
+- quais fontes e pesos existentes têm autoridade;
+- quaisquer restrições de desempenho, localização ou acessibilidade.
 
-Use the fewest roles and families that make the hierarchy unmistakable. Combine size, weight, space, and tone deliberately instead of asking size alone to do all the work. Role names and tokens should describe purpose rather than values.
+Use o menor número de papéis e famílias que torne a hierarquia inconfundível. Combine tamanho, peso, espaço e tom de forma deliberada em vez de pedir que o tamanho sozinho faça todo o trabalho. Nomes de papéis e tokens devem descrever o propósito, não os valores.
 
-## Apply
+## Aplique
 
-- Keep body copy comfortably readable and zoomable. Use 1rem / 16px as the ordinary web body floor unless a dense role, platform convention, or user setting justifies otherwise.
-- Keep prose in the 45–75ch range. Tune line height inversely with measure: wider lines generally need more leading.
-- Compensate light text on dark surfaces on all three perceptual axes: slightly more line height, a touch more tracking, and one step more weight when the face needs it.
-- Tune line height to the face, width, language, and contrast, not a universal ratio.
-- Keep repeated roles consistent across screens and states.
-- Use numeric, tabular, code, and label features when their content benefits.
-- Load only used font assets and weights. Provide metric-compatible fallbacks and avoid blocking text.
-- Let marketing display type respond to available space when useful; keep dense product and reading surfaces spatially predictable.
-- Preserve browser zoom, user font settings, Dynamic Type, and platform text scaling.
-- Use paragraph spacing or first-line indentation as the primary paragraph rhythm; combining both usually double-marks the boundary.
+- Mantenha o texto de corpo confortavelmente legível e ampliável. Use 1rem / 16px como piso comum do corpo na web, a menos que um papel denso, uma convenção da plataforma ou uma configuração do usuário justifique outra coisa.
+- Mantenha a prosa na faixa de 45–75ch. Ajuste a altura de linha inversamente à medida: linhas mais largas geralmente precisam de mais entrelinha.
+- Compense texto claro sobre superfícies escuras nos três eixos perceptivos: um pouco mais de altura de linha, um toque a mais de tracking e um passo a mais de peso quando a fonte precisar.
+- Ajuste a altura de linha à fonte, à largura, ao idioma e ao contraste, não a uma proporção universal.
+- Mantenha os papéis repetidos consistentes entre telas e estados.
+- Use recursos numéricos, tabulares, de código e de rótulo quando o conteúdo se beneficiar deles.
+- Carregue apenas os arquivos de fonte e os pesos usados. Forneça fallbacks com métricas compatíveis e evite bloquear o texto.
+- Deixe a tipografia de display de marketing responder ao espaço disponível quando for útil; mantenha superfícies densas de produto e de leitura espacialmente previsíveis.
+- Preserve o zoom do navegador, as configurações de fonte do usuário, o Dynamic Type e o dimensionamento de texto da plataforma.
+- Use o espaçamento entre parágrafos ou o recuo da primeira linha como ritmo principal de parágrafo; combinar os dois geralmente marca a fronteira duas vezes.
 
-Do not make type decorative at the expense of comprehension, or introduce a second family without a clear role it alone can perform.
+Não torne a tipografia decorativa às custas da compreensão, nem introduza uma segunda família sem um papel claro que só ela possa desempenhar.
 
-## Verify
+## Verifique
 
-- Primary, secondary, body, and metadata roles are recognizable without reading the copy.
-- Long text remains comfortable across relevant widths and languages.
-- The typography belongs to the product and its established world.
-- Loading does not create disruptive reflow or invisible text.
-- Zoom, text scaling, focus, contrast, and reduced viewport paths remain usable.
-- The final mechanical scan has no unexplained findings.
+- Os papéis primário, secundário, de corpo e de metadados são reconhecíveis sem ler o texto.
+- Textos longos continuam confortáveis nas larguras e idiomas relevantes.
+- A tipografia pertence ao produto e ao seu mundo visual estabelecido.
+- O carregamento não cria reflow disruptivo nem texto invisível.
+- Os caminhos de zoom, dimensionamento de texto, foco, contraste e viewport reduzido continuam utilizáveis.
+- A varredura mecânica final não tem achados sem explicação.
 
-Answer each item with rendered or source evidence, then rerun the scan. Do not substitute a bare “yes” for verification.
+Responda a cada item com evidência renderizada ou do código-fonte e depois execute a varredura novamente. Não substitua a verificação por um “sim” vazio.
 
-When the hierarchy holds, hand off to `/impeccable polish`.
+Quando a hierarquia se sustentar, passe para `/impeccable polish`.
 
-## Live-mode signature params
+## Parâmetros de assinatura do modo live
 
-Every variant declares a coarse `scale` parameter and authors its type ramp against `var(--p-scale, 1)`.
+Toda variante declara um parâmetro geral `scale` e constrói sua escala tipográfica em função de `var(--p-scale, 1)`.
 
 ```json
 {"id":"scale","kind":"range","min":0.85,"max":1.3,"step":0.05,"default":1,"label":"Scale"}
 ```
 
-Add at most one pairing or weight parameter when it represents a real system choice. Follow [live.md](live.md)'s parameter contract.
+Adicione no máximo um parâmetro de combinação ou de peso quando ele representar uma escolha real do sistema. Siga o contrato de parâmetros de [live.md](live.md).

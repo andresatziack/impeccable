@@ -1,70 +1,70 @@
-> **Additional context needed**: the brand's emotional range.
+> **Contexto adicional necessário**: a amplitude emocional da marca.
 
-Make the experience memorable at moments that earn it. Delight is not a layer of generic whimsy; it is product character revealed through a useful interaction, a humane response, or an unexpectedly considered detail.
+Torne a experiência memorável nos momentos que merecem isso. Encantamento não é uma camada de extravagância genérica; é o caráter do produto revelado por meio de uma interação útil, de uma resposta humana ou de um detalhe inesperadamente bem pensado.
 
 ---
 
-## Visitor mode
+## Modo do visitante
 
-- **Persuade + Experience:** personality may run through voice, composition, motion, and discovery, provided the artifact remains the focus.
-- **Operate + Read:** concentrate delight at meaningful moments such as first use, completion, recovery, or mastery. Reliability carries everything else.
+- **Persuade (persuadir) + Experience (experiência):** a personalidade pode percorrer a voz, a composição, o movimento e a descoberta, desde que o artefato continue sendo o foco.
+- **Operate (operar) + Read (ler):** concentre o encantamento em momentos significativos, como o primeiro uso, a conclusão, a recuperação ou o domínio. A confiabilidade sustenta todo o resto.
 
-## Find the opportunity
+## Encontre a oportunidade
 
-Inspect the target, DESIGN.md, product voice, repeated-use frequency, and emotional context. Look for:
+Examine o alvo, o DESIGN.md, a voz do produto, a frequência de uso repetido e o contexto emocional. Procure:
 
-- effort worth acknowledging;
-- waiting that can become informative;
-- an empty or first-use state that can orient;
-- an error or recovery moment that needs empathy;
-- an interaction whose physical or verbal response could express the brand;
-- a useful capability people might enjoy discovering.
+- um esforço que mereça reconhecimento;
+- uma espera que possa se tornar informativa;
+- um estado vazio ou de primeiro uso que possa orientar;
+- um momento de erro ou de recuperação que precise de empatia;
+- uma interação cuja resposta física ou verbal possa expressar a marca;
+- uma capacidade útil que as pessoas talvez gostem de descobrir.
 
-Do not manufacture a celebration for an ordinary click. Ask only when the brand's emotional range or the stakes cannot be inferred.
+Não fabrique uma comemoração para um clique comum. Pergunte apenas quando a amplitude emocional da marca ou o que está em jogo não puderem ser inferidos.
 
-## Define one delight thesis
+## Defina uma tese de encantamento
 
-State in one sentence what the user should feel and why that feeling belongs to this product. Then choose the smallest system that can deliver it:
+Declare em uma frase o que o usuário deve sentir e por que esse sentimento pertence a este produto. Depois, escolha o menor sistema capaz de entregá-lo:
 
-- a distinctive response to a meaningful action;
-- product-specific language that clarifies while carrying voice;
-- an interaction or transition with a recognizable material behavior;
-- an illustration, sound, haptic, or environmental detail grounded in the product world;
-- a discovery reward that reveals real utility.
+- uma resposta característica a uma ação significativa;
+- uma linguagem específica do produto que esclareça enquanto carrega a voz;
+- uma interação ou transição com um comportamento material reconhecível;
+- uma ilustração, um som, um retorno háptico ou um detalhe ambiental ancorado no mundo do produto;
+- uma recompensa de descoberta que revele utilidade real.
 
-Derive the treatment from product mechanism and visual world, not a stock catalog.
+Derive o tratamento do mecanismo do produto e do mundo visual, não de um catálogo pronto.
 
-## Build for the emotional moment
+## Construa para o momento emocional
 
-- **Success:** match the response to the effort and consequence. Major milestones can expand; routine saves should simply feel certain.
-- **Waiting:** show truthful progress, useful context, or product-specific activity. Never fake work or delay completion to stage a flourish.
-- **Empty and first use:** make the next action clear before adding personality.
-- **Error and recovery:** lead with the problem and recovery. Warmth may reduce stress; jokes must not trivialize loss, money, privacy, or blocked work.
-- **Repeated interaction:** keep the response satisfying after the hundredth use. Variation is useful only when it remains coherent and predictable enough to trust.
-- **Discovery:** reward curiosity without hiding required functionality.
+- **Sucesso:** ajuste a resposta ao esforço e à consequência. Grandes marcos podem se expandir; salvamentos rotineiros devem simplesmente transmitir certeza.
+- **Espera:** mostre um progresso verdadeiro, um contexto útil ou uma atividade específica do produto. Nunca finja trabalho nem atrase a conclusão para encenar um floreio.
+- **Vazio e primeiro uso:** deixe clara a próxima ação antes de acrescentar personalidade.
+- **Erro e recuperação:** comece pelo problema e pela recuperação. O acolhimento pode reduzir o estresse; piadas não devem banalizar perdas, dinheiro, privacidade ou trabalho bloqueado.
+- **Interação repetida:** mantenha a resposta satisfatória depois do centésimo uso. A variação só é útil quando permanece coerente e previsível o bastante para inspirar confiança.
+- **Descoberta:** recompense a curiosidade sem esconder funcionalidades obrigatórias.
 
-Copy must use the product's language. Generic whimsy is worse than neutral clarity.
+A copy deve usar a linguagem do produto. A extravagância genérica é pior do que a clareza neutra.
 
-## Protect the experience
+## Proteja a experiência
 
-Delight must not:
+O encantamento não deve:
 
-- delay, block, or obscure the primary task;
-- override platform conventions or accessibility;
-- add unrequested factual claims;
-- play sound without consent or ignore mute settings;
-- become mandatory, unskippable, or exhausting on repeat;
-- add a dependency or asset cost disproportionate to the moment.
+- atrasar, bloquear ou ocultar a tarefa principal;
+- sobrepor convenções de plataforma ou a acessibilidade;
+- acrescentar afirmações factuais não solicitadas;
+- tocar som sem consentimento ou ignorar as configurações de silêncio;
+- tornar-se obrigatório, impossível de pular ou cansativo na repetição;
+- acrescentar uma dependência ou um custo de assets desproporcional ao momento.
 
-For authored motion, load [animate.md](animate.md). Respect screen readers, keyboard use, touch, localization, and cultural context. Nonessential loops stop when hidden. Make celebration intensity proportional to frequency and consequence.
+Para movimento autoral, carregue [animate.md](animate.md). Respeite leitores de tela, uso por teclado, toque, localização e contexto cultural. Loops não essenciais param quando ocultos. Torne a intensidade da comemoração proporcional à frequência e à consequência.
 
-## Verify
+## Verifique
 
-- The moment is specific enough that a neighboring product could not use it unchanged.
-- It improves comprehension, confidence, motivation, or emotional recovery.
-- The interface remains fast and obvious without the flourish.
-- Repetition does not turn charm into friction.
-- Muted, keyboard, touch, and localized paths work.
-- The result feels like the selected world, not a generic “delight” treatment.
+- O momento é específico o bastante para que um produto vizinho não pudesse usá-lo sem alterações.
+- Ele melhora a compreensão, a confiança, a motivação ou a recuperação emocional.
+- A interface continua rápida e óbvia sem o floreio.
+- A repetição não transforma o charme em atrito.
+- Os caminhos sem som, por teclado, por toque e localizados funcionam.
+- O resultado parece pertencer ao mundo visual selecionado, não a um tratamento genérico de "encantamento".
 
-When the personality feels earned, hand off to `/impeccable polish` for the final pass.
+Quando a personalidade parecer merecida, passe para `/impeccable polish` para a passada final.

@@ -1,44 +1,44 @@
-# Craft floor
+# Padrão mínimo de qualidade
 
-Load this after the direction is settled, and build without announcing the checklist. A pinned brief or the committed visual world overrides anything here; your own habit does not. When the design hook is active it already enforces the mechanical checks below as you edit: act on its findings instead of re-auditing each rule.
+Carregue isto depois que a direção estiver definida e construa sem anunciar o checklist. Um briefing fixado ou o mundo visual assumido prevalecem sobre qualquer coisa aqui; o seu próprio hábito, não. Quando o hook de design está ativo, ele já impõe as verificações mecânicas abaixo enquanto você edita: aja sobre os achados dele em vez de reauditar cada regra.
 
-## Verify
+## Verifique
 
-Each of these is a check on the built result, not an intention. Run them together in the batched inspection rounds, not as separate screenshot trips; the checks share one render.
+Cada item abaixo é uma verificação do resultado construído, não uma intenção. Execute-os juntos nas rodadas de inspeção em lote, não como idas separadas para capturas de tela; as verificações compartilham uma única renderização.
 
-- **Contrast:** body and placeholder text ≥4.5:1, large text ≥3:1. On colored surfaces tint secondary text from that hue or the foreground; never gray.
-- **Depth:** shadows carry an offset and a soft blur. A zero-offset colored halo is decoration.
-- **Spacing:** tight groups, generous separation, more space above a heading than below it. Read the computed values.
-- **Type:** body measure 65–75ch, display max 6rem, tracking floor -0.04em, balanced headings, obvious scale and weight steps. Run the real copy at every breakpoint and fix what overflows.
-- **Motion:** one authored moment, not scattered effects and not one identical entrance on every section. Exponential ease-out from an already-visible default. Reach past transform and opacity: blur, backdrop-filter, clip-path, mask, and shadow belong to the palette when they stay smooth.
-- **States:** hover, disabled, loading, error, empty. Plus real content, working controls, responsive composition, keyboard focus.
-- **Browser surfaces:** the parts you did not draw still carry the design. Text selection, the caret, custom scrollbars, focus rings, underline offset, and the numerals in tabular data all ship with browser defaults that belong to no design system. Theme them from the palette. This is the cheapest signal that a page was built rather than assembled, and the one models skip most reliably.
-- **Copy:** the product's own language. Controls name their action; errors name the problem and the recovery.
-- **Coverage:** every brief requirement present and findable within seconds.
+- **Contraste:** texto de corpo e de placeholder ≥4,5:1, texto grande ≥3:1. Em superfícies coloridas, tinja o texto secundário a partir daquele matiz ou da cor de primeiro plano; nunca cinza.
+- **Profundidade:** sombras têm deslocamento e desfoque suave. Um halo colorido sem deslocamento é decoração.
+- **Espaçamento:** grupos compactos, separação generosa, mais espaço acima de um título do que abaixo dele. Leia os valores computados.
+- **Tipografia:** medida do corpo de 65–75ch, display no máximo 6rem, tracking mínimo de -0.04em, títulos balanceados, saltos óbvios de escala e peso. Rode a copy real em cada breakpoint e corrija o que transbordar.
+- **Movimento:** um momento autoral, não efeitos espalhados nem uma entrada idêntica em cada seção. Ease-out exponencial a partir de um padrão já visível. Vá além de transform e opacity: blur, backdrop-filter, clip-path, mask e sombra fazem parte da paleta quando permanecem fluidos.
+- **Estados:** hover, desabilitado, carregando, erro, vazio. Além de conteúdo real, controles funcionando, composição responsiva, foco de teclado.
+- **Superfícies do navegador:** as partes que você não desenhou também carregam o design. Seleção de texto, o cursor de texto, barras de rolagem personalizadas, anéis de foco, deslocamento do sublinhado e os numerais em dados tabulares vêm todos com padrões do navegador que não pertencem a nenhum design system. Aplique a eles o tema da paleta. Esse é o sinal mais barato de que uma página foi construída e não montada, e o que os modelos pulam com mais regularidade.
+- **Copy:** a linguagem do próprio produto. Controles nomeiam sua ação; erros nomeiam o problema e a forma de recuperação.
+- **Cobertura:** cada requisito do briefing presente e encontrável em segundos.
 
-## Refuse
+## Recuse
 
-These are the category's defaults, not bans: the brief's own words can earn any of them. Reaching for one when the axis is free means you were not deciding; recognizing that means rewriting the element, not softening it.
+Estes são os padrões da categoria, não proibições: as próprias palavras do briefing podem justificar qualquer um deles. Recorrer a um deles quando o eixo está livre significa que você não estava decidindo; reconhecer isso significa reescrever o elemento, não suavizá-lo.
 
-Page scaffolds:
+Esqueletos de página:
 
-- Same-size cards of icon plus heading plus text as the page structure. Cards are the lazy container; nested cards are always wrong.
-- The hero-metric template: big number, small label, supporting stats, accent.
-- A kicker or eyebrow above a heading. This one is a ban, not a default: no brief earns it back. The heading carries its own weight; delete the label and let the heading speak.
-- Section numbers (01 / 02 / 03) unless the sequence itself carries information the reader needs.
-- A modal for a task that needs neither interruption nor protected focus.
+- Cards do mesmo tamanho com ícone mais título mais texto como estrutura da página. Cards são o contêiner preguiçoso; cards aninhados estão sempre errados.
+- O template de métrica no hero: número grande, rótulo pequeno, estatísticas de apoio, cor de destaque.
+- Um kicker ou eyebrow (sobretítulo) acima de um título. Este é uma proibição, não um padrão: nenhum briefing o justifica. O título carrega seu próprio peso; apague o rótulo e deixe o título falar.
+- Números de seção (01 / 02 / 03), a menos que a própria sequência carregue informação de que o leitor precisa.
+- Um modal para uma tarefa que não precisa nem de interrupção nem de foco protegido.
 
-Surface habits:
+Hábitos de superfície:
 
-- Gradient text. Emphasis comes from weight or size.
-- Glass and blur as decoration rather than as a specific effect.
-- A colored `border-left` or `border-right` above 1px on cards, list items, callouts, or alerts.
-- Hard offset shadows (`box-shadow: 4px 4px 0`) outside a world that is actually neobrutalist. The zero-blur block shadow is a costume, not a depth system; a world that did not choose it never earns it as a default.
-- Sparklines, progress rings, and soft-shadowed rounded rectangles standing in for content.
-- Monospace as a costume for "technical" rather than for code, data, or measurement.
-- A system display face (Impact, Arial Black, the platform sans) as the display voice of an own-world page. Source and self-host a face whose character matches the approved lettering; the closest installed font is a failure, not a fallback.
-- Unicode glyphs or emoji standing in for an icon system. Icons are drawn, from a real library or authored SVG, in one consistent stroke and weight.
-- Geometric masks standing in for organic contours. A circle, polygon, or radial-gradient cutout approximating a photographic subject's edge is the cheap version of the effect and reads worse than omitting it. Derive an alpha matte from the actual image, or produce a cut-out asset.
-- Light or dark picked by category. Pick it from the use scene: who, where, under what ambient light.
+- Texto com gradiente. A ênfase vem do peso ou do tamanho.
+- Vidro e blur como decoração em vez de como um efeito específico.
+- Um `border-left` ou `border-right` colorido acima de 1px em cards, itens de lista, destaques ou alertas.
+- Sombras duras deslocadas (`box-shadow: 4px 4px 0`) fora de um mundo visual que seja de fato neobrutalista. A sombra em bloco sem desfoque é uma fantasia, não um sistema de profundidade; um mundo visual que não a escolheu nunca a justifica como padrão.
+- Sparklines, anéis de progresso e retângulos arredondados com sombra suave ocupando o lugar de conteúdo.
+- Monoespaçada como fantasia de "técnico" em vez de para código, dados ou medidas.
+- Uma fonte de display do sistema (Impact, Arial Black, a sans da plataforma) como voz de display de uma página com mundo visual próprio. Obtenha e hospede você mesmo uma fonte cujo caráter combine com o letreiramento aprovado; a fonte instalada mais próxima é uma falha, não um fallback.
+- Glifos Unicode ou emoji ocupando o lugar de um sistema de ícones. Ícones são desenhados, de uma biblioteca real ou em SVG autoral, com um traço e um peso consistentes.
+- Máscaras geométricas ocupando o lugar de contornos orgânicos. Um recorte em círculo, polígono ou radial-gradient aproximando a borda de um objeto fotográfico é a versão barata do efeito e fica pior do que omiti-lo. Derive uma máscara alfa da imagem real ou produza um asset recortado.
+- Claro ou escuro escolhido pela categoria. Escolha pela cena de uso: quem, onde, sob que luz ambiente.
 
-The floor holds the mechanics; it never picks the direction. With every check green, spend the page on the committed world, and when torn between refined and committed, commit.
+O padrão mínimo garante a mecânica; ele nunca escolhe a direção. Com todas as verificações em verde, invista a página no mundo visual assumido e, quando estiver dividido entre refinado e comprometido, comprometa-se.

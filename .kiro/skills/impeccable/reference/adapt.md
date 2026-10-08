@@ -1,220 +1,220 @@
-> **Additional context needed**: target platforms/devices and usage contexts.
+> **Contexto adicional necessário**: plataformas/dispositivos-alvo e contextos de uso.
 
-Adapt an existing design to a different context: another screen size, device, platform, or use case. The trap is treating adaptation as scaling. The job is rethinking the experience for the new context.
+Adapte um design existente para um contexto diferente: outro tamanho de tela, dispositivo, plataforma ou caso de uso. A armadilha é tratar a adaptação como mudança de escala. O trabalho é repensar a experiência para o novo contexto.
 
-**Web only** (mobile web included). Native platforms (`ios` / `android` / `adaptive`) route to [adapt.native.md](adapt.native.md) instead; if the project is native, switch to it now.
+**Apenas web** (incluindo web mobile). Plataformas nativas (`ios` / `android` / `adaptive`) seguem para [adapt.native.md](adapt.native.md); se o projeto for nativo, mude para ele agora.
 
 ---
 
-## Assess Adaptation Challenge
+## Avalie o desafio de adaptação
 
-Understand what needs adaptation and why:
+Entenda o que precisa ser adaptado e por quê:
 
-1. **Identify the source context**:
-   - What was it designed for originally? (Desktop web? Mobile app?)
-   - What assumptions were made? (Large screen? Mouse input? Fast connection?)
-   - What works well in current context?
+1. **Identifique o contexto de origem**:
+   - Para o que foi projetado originalmente? (Web desktop? App mobile?)
+   - Que suposições foram feitas? (Tela grande? Entrada por mouse? Conexão rápida?)
+   - O que funciona bem no contexto atual?
 
-2. **Understand target context**:
-   - **Device**: Mobile, tablet, desktop, TV, watch, print?
-   - **Input method**: Touch, mouse, keyboard, voice, gamepad?
-   - **Screen constraints**: Size, resolution, orientation?
-   - **Connection**: Fast wifi, slow 3G, offline?
-   - **Usage context**: On-the-go vs desk, quick glance vs focused reading?
-   - **User expectations**: What do users expect on this platform?
+2. **Entenda o contexto-alvo**:
+   - **Dispositivo**: mobile, tablet, desktop, TV, relógio, impressão?
+   - **Método de entrada**: toque, mouse, teclado, voz, gamepad?
+   - **Restrições de tela**: tamanho, resolução, orientação?
+   - **Conexão**: wi-fi rápido, 3G lento, offline?
+   - **Contexto de uso**: em movimento ou na mesa, olhada rápida ou leitura concentrada?
+   - **Expectativas do usuário**: o que os usuários esperam nesta plataforma?
 
-3. **Identify adaptation challenges**:
-   - What won't fit? (Content, navigation, features)
-   - What won't work? (Hover states on touch, tiny touch targets)
-   - What's inappropriate? (Desktop patterns on mobile, mobile patterns on desktop)
+3. **Identifique os desafios de adaptação**:
+   - O que não vai caber? (Conteúdo, navegação, funcionalidades)
+   - O que não vai funcionar? (Estados de hover no toque, alvos de toque minúsculos)
+   - O que é inadequado? (Padrões de desktop no mobile, padrões de mobile no desktop)
 
-**CRITICAL**: Adaptation is rethinking the experience for the new context, not scaling pixels.
+**CRÍTICO**: adaptar é repensar a experiência para o novo contexto, não escalar pixels.
 
-## Plan Adaptation Strategy
+## Planeje a estratégia de adaptação
 
-Create context-appropriate strategy:
+Crie uma estratégia adequada ao contexto:
 
-### Mobile Adaptation (Desktop → Mobile)
+### Adaptação para mobile (desktop → mobile)
 
-**Layout Strategy**:
-- Single column instead of multi-column
-- Vertical stacking instead of side-by-side
-- Full-width components instead of fixed widths
-- Bottom navigation instead of top/side navigation
+**Estratégia de layout**:
+- Uma coluna em vez de várias colunas
+- Empilhamento vertical em vez de lado a lado
+- Componentes de largura total em vez de larguras fixas
+- Navegação inferior em vez de navegação superior/lateral
 
-**Interaction Strategy**:
-- Touch targets 44x44px minimum (not hover-dependent)
-- Swipe gestures where appropriate (lists, carousels)
-- Bottom sheets instead of dropdowns
-- Thumbs-first design (controls within thumb reach)
-- Larger tap areas with more spacing
+**Estratégia de interação**:
+- Alvos de toque de no mínimo 44x44px (sem depender de hover)
+- Gestos de deslizar onde fizer sentido (listas, carrosséis)
+- Bottom sheets em vez de dropdowns
+- Design pensado primeiro para o polegar (controles ao alcance do polegar)
+- Áreas de toque maiores e com mais espaçamento
 
-**Content Strategy**:
-- Progressive disclosure (don't show everything at once)
-- Prioritize primary content (secondary content in tabs/accordions)
-- Shorter text (more concise)
-- Larger text (16px minimum)
+**Estratégia de conteúdo**:
+- Divulgação progressiva (não mostre tudo de uma vez)
+- Priorize o conteúdo principal (conteúdo secundário em abas/acordeões)
+- Textos mais curtos (mais concisos)
+- Texto maior (mínimo de 16px)
 
-**Navigation Strategy**:
-- Hamburger menu or bottom navigation
-- Reduce navigation complexity
-- Sticky headers for context
-- Back button in navigation flow
+**Estratégia de navegação**:
+- Menu hambúrguer ou navegação inferior
+- Reduza a complexidade da navegação
+- Cabeçalhos fixos para dar contexto
+- Botão de voltar no fluxo de navegação
 
-### Tablet Adaptation (Hybrid Approach)
+### Adaptação para tablet (abordagem híbrida)
 
-**Layout Strategy**:
-- Two-column layouts (not single or three-column)
-- Side panels for secondary content
-- Master-detail views (list + detail)
-- Adaptive based on orientation (portrait vs landscape)
+**Estratégia de layout**:
+- Layouts de duas colunas (nem uma nem três colunas)
+- Painéis laterais para conteúdo secundário
+- Visualizações mestre-detalhe (lista + detalhe)
+- Adaptação conforme a orientação (retrato vs. paisagem)
 
-**Interaction Strategy**:
-- Support both touch and pointer
-- Touch targets 44x44px but allow denser layouts than phone
-- Side navigation drawers
-- Multi-column forms where appropriate
+**Estratégia de interação**:
+- Suporte tanto a toque quanto a ponteiro
+- Alvos de toque de 44x44px, mas permitindo layouts mais densos que no celular
+- Gavetas de navegação lateral
+- Formulários de várias colunas onde fizer sentido
 
-### Desktop Adaptation (Mobile → Desktop)
+### Adaptação para desktop (mobile → desktop)
 
-**Layout Strategy**:
-- Multi-column layouts (use horizontal space)
-- Side navigation always visible
-- Multiple information panels simultaneously
-- Fixed widths with max-width constraints (don't stretch to 4K)
+**Estratégia de layout**:
+- Layouts de várias colunas (aproveite o espaço horizontal)
+- Navegação lateral sempre visível
+- Vários painéis de informação simultaneamente
+- Larguras fixas com restrições de max-width (não estique até 4K)
 
-**Interaction Strategy**:
-- Hover states for additional information
-- Keyboard shortcuts
-- Right-click context menus
-- Drag and drop where helpful
-- Multi-select with Shift/Cmd
+**Estratégia de interação**:
+- Estados de hover para informações adicionais
+- Atalhos de teclado
+- Menus de contexto no clique direito
+- Arrastar e soltar onde ajudar
+- Seleção múltipla com Shift/Cmd
 
-**Content Strategy**:
-- Show more information upfront (less progressive disclosure)
-- Data tables with many columns
-- Richer visualizations
-- More detailed descriptions
+**Estratégia de conteúdo**:
+- Mostre mais informações de imediato (menos divulgação progressiva)
+- Tabelas de dados com muitas colunas
+- Visualizações mais ricas
+- Descrições mais detalhadas
 
-### Print Adaptation (Screen → Print)
+### Adaptação para impressão (tela → impressão)
 
-**Layout Strategy**:
-- Page breaks at logical points
-- Remove navigation, footer, interactive elements
-- Black and white (or limited color)
-- Proper margins for binding
+**Estratégia de layout**:
+- Quebras de página em pontos lógicos
+- Remova navegação, rodapé e elementos interativos
+- Preto e branco (ou cor limitada)
+- Margens adequadas para encadernação
 
-**Content Strategy**:
-- Expand shortened content (show full URLs, hidden sections)
-- Add page numbers, headers, footers
-- Include metadata (print date, page title)
-- Convert charts to print-friendly versions
+**Estratégia de conteúdo**:
+- Expanda o conteúdo abreviado (mostre URLs completas, seções ocultas)
+- Adicione números de página, cabeçalhos e rodapés
+- Inclua metadados (data de impressão, título da página)
+- Converta gráficos em versões adequadas para impressão
 
-### Email Adaptation (Web → Email)
+### Adaptação para e-mail (web → e-mail)
 
-**Layout Strategy**:
-- Narrow width (600px max)
-- Single column only
-- Inline CSS (no external stylesheets)
-- Table-based layouts (for email client compatibility)
+**Estratégia de layout**:
+- Largura estreita (máximo de 600px)
+- Somente uma coluna
+- CSS inline (sem folhas de estilo externas)
+- Layouts baseados em tabelas (para compatibilidade com clientes de e-mail)
 
-**Interaction Strategy**:
-- Large, obvious CTAs (buttons not text links)
-- No hover states (not reliable)
-- Deep links to web app for complex interactions
+**Estratégia de interação**:
+- CTAs grandes e óbvios (botões, não links de texto)
+- Sem estados de hover (não são confiáveis)
+- Deep links para o web app em interações complexas
 
-## Implement Adaptations
+## Implemente as adaptações
 
-Apply changes systematically:
+Aplique as mudanças de forma sistemática:
 
-### Responsive Breakpoints
+### Breakpoints responsivos
 
-Choose appropriate breakpoints:
+Escolha breakpoints adequados:
 - Mobile: 320px-767px
 - Tablet: 768px-1023px
 - Desktop: 1024px+
-- Or content-driven breakpoints (where design breaks)
+- Ou breakpoints guiados pelo conteúdo (onde o design quebra)
 
-### Layout Adaptation Techniques
+### Técnicas de adaptação de layout
 
-- **CSS Grid/Flexbox**: Reflow layouts automatically
-- **Container Queries**: Adapt based on container, not viewport
-- **`clamp()`**: Fluid sizing between min and max
-- **Media queries**: Different styles for different contexts
-- **Display properties**: Show/hide elements per context
+- **CSS Grid/Flexbox**: refluxo automático dos layouts
+- **Container Queries**: adapte com base no contêiner, não na viewport
+- **`clamp()`**: dimensionamento fluido entre mínimo e máximo
+- **Media queries**: estilos diferentes para contextos diferentes
+- **Propriedades de display**: mostre/oculte elementos conforme o contexto
 
-### Touch Adaptation
+### Adaptação para toque
 
-- Increase touch target sizes (44x44px minimum)
-- Add more spacing between interactive elements
-- Remove hover-dependent interactions
-- Add touch feedback (ripples, highlights)
-- Consider thumb zones (easier to reach bottom than top)
+- Aumente o tamanho dos alvos de toque (mínimo de 44x44px)
+- Adicione mais espaçamento entre elementos interativos
+- Remova interações que dependem de hover
+- Adicione feedback de toque (ripples, destaques)
+- Considere as zonas do polegar (é mais fácil alcançar a parte de baixo do que a de cima)
 
-### Content Adaptation
+### Adaptação de conteúdo
 
-- Use `display: none` sparingly (still downloads)
-- Progressive enhancement (core content first, enhancements on larger screens)
-- Lazy loading for off-screen content
-- Responsive images (`srcset`, `picture` element)
+- Use `display: none` com moderação (o conteúdo ainda é baixado)
+- Aprimoramento progressivo (conteúdo essencial primeiro, aprimoramentos em telas maiores)
+- Lazy loading para conteúdo fora da tela
+- Imagens responsivas (`srcset`, elemento `picture`)
 
-### Navigation Adaptation
+### Adaptação de navegação
 
-- Transform complex nav to hamburger/drawer on mobile
-- Bottom nav bar for mobile apps
-- Persistent side navigation on desktop
-- Breadcrumbs on smaller screens for context
+- Transforme navegação complexa em hambúrguer/gaveta no mobile
+- Barra de navegação inferior para apps mobile
+- Navegação lateral persistente no desktop
+- Breadcrumbs em telas menores para dar contexto
 
-**IMPORTANT**: Test on real devices. Device emulation in DevTools is helpful but not perfect.
+**IMPORTANTE**: teste em dispositivos reais. A emulação de dispositivos no DevTools ajuda, mas não é perfeita.
 
-**NEVER**:
-- Hide core functionality on mobile (if it matters, make it work)
-- Assume desktop = powerful device (consider accessibility, older machines)
-- Use different information architecture across contexts (confusing)
-- Break user expectations for platform (mobile users expect mobile patterns)
-- Forget landscape orientation on mobile/tablet
-- Use generic breakpoints blindly (use content-driven breakpoints)
-- Ignore touch on desktop (many desktop devices have touch)
+**NUNCA**:
+- Esconda funcionalidades essenciais no mobile (se importa, faça funcionar)
+- Presuma que desktop = dispositivo potente (considere acessibilidade, máquinas mais antigas)
+- Use arquiteturas de informação diferentes entre contextos (confunde)
+- Quebre as expectativas do usuário para a plataforma (usuários de mobile esperam padrões de mobile)
+- Esqueça a orientação paisagem no mobile/tablet
+- Use breakpoints genéricos às cegas (use breakpoints guiados pelo conteúdo)
+- Ignore o toque no desktop (muitos dispositivos desktop têm tela sensível ao toque)
 
-## Verify Adaptations
+## Verifique as adaptações
 
-Test thoroughly across contexts:
+Teste a fundo em todos os contextos:
 
-- **Real devices**: Test on actual phones, tablets, desktops
-- **Different orientations**: Portrait and landscape
-- **Different browsers**: Safari, Chrome, Firefox, Edge
-- **Different OS**: iOS, Android, Windows, macOS
-- **Different input methods**: Touch, mouse, keyboard
-- **Edge cases**: Very small screens (320px), very large screens (4K)
-- **Slow connections**: Test on throttled network
+- **Dispositivos reais**: teste em celulares, tablets e desktops de verdade
+- **Orientações diferentes**: retrato e paisagem
+- **Navegadores diferentes**: Safari, Chrome, Firefox, Edge
+- **Sistemas operacionais diferentes**: iOS, Android, Windows, macOS
+- **Métodos de entrada diferentes**: toque, mouse, teclado
+- **Casos extremos**: telas muito pequenas (320px), telas muito grandes (4K)
+- **Conexões lentas**: teste com a rede limitada
 
-**Custom controls** (sliders, drag surfaces, scrollable control strips): a before/after slider can pass every width check above and still refuse to drag on iOS, so exercise each one in scope in the same batched round as the checks above:
+**Controles personalizados** (sliders, superfícies de arrastar, faixas de controles roláveis): um slider de antes/depois pode passar em todas as verificações de largura acima e ainda assim se recusar a arrastar no iOS, então exercite cada um que estiver no escopo na mesma rodada em lote das verificações acima:
 
-- **Primary gesture**: Tap it and confirm it responds as designed, then drag it with the target input method; the drag must complete, not just start
-- **Scroll across it**: A swipe along the page's scroll axis across the control scrolls the page or container without activating it; a drag that starts on the control along its axis moves the control, not the page. Neither failure throws an error, so try both
-- **Evidence**: Say what produced the evidence: an emulated viewport, synthesized touch input through a browser tool, which engine ran it (Chromium is not Safari), or a physical device. Screenshots and resized viewports verify layout, never a gesture. Name what stayed untested and move on; unreachable hardware is a reported gap, not a blocker
+- **Gesto principal**: toque no controle e confirme que ele responde como projetado; depois arraste-o com o método de entrada-alvo; o arrasto precisa ser concluído, não apenas começar
+- **Rolagem por cima dele**: um deslizar ao longo do eixo de rolagem da página por cima do controle rola a página ou o contêiner sem ativá-lo; um arrasto que começa no controle, ao longo do eixo dele, move o controle, não a página. Nenhuma das duas falhas gera erro, então teste ambas
+- **Evidência**: diga o que produziu a evidência: uma viewport emulada, entrada de toque sintetizada por uma ferramenta de navegador, qual engine a executou (Chromium não é Safari) ou um dispositivo físico. Capturas de tela e viewports redimensionadas verificam o layout, nunca um gesto. Nomeie o que ficou sem teste e siga em frente; hardware inacessível é uma lacuna relatada, não um bloqueio
 
-When the adaptation feels native to each context, hand off to `/impeccable polish` for the final pass.
+Quando a adaptação parecer nativa em cada contexto, passe para `/impeccable polish` para a passada final.
 
 ---
 
-## Reference Material
+## Material de referência
 
-The sections below were previously `responsive-design.md` and live inline now so the adapt flow has its deep responsive reference in one place.
+As seções abaixo eram antes `responsive-design.md` e agora ficam inline, para que o fluxo de adapt tenha sua referência aprofundada de responsividade em um só lugar.
 
-### Responsive Design
+### Design responsivo
 
-#### Mobile-First: Write It Right
+#### Mobile-first: escreva do jeito certo
 
-Start with base styles for mobile, use `min-width` queries to layer complexity. Desktop-first (`max-width`) means mobile loads unnecessary styles first.
+Comece com estilos base para mobile e use queries `min-width` para adicionar complexidade em camadas. Desktop-first (`max-width`) faz o mobile carregar estilos desnecessários primeiro.
 
-#### Breakpoints: Content-Driven
+#### Breakpoints: guiados pelo conteúdo
 
-Don't chase device sizes; let content tell you where to break. Start narrow, stretch until design breaks, add breakpoint there. Three breakpoints usually suffice (640, 768, 1024px). Use `clamp()` for fluid values without breakpoints.
+Não persiga tamanhos de dispositivos; deixe o conteúdo dizer onde quebrar. Comece estreito, estique até o design quebrar e adicione um breakpoint ali. Três breakpoints costumam bastar (640, 768, 1024px). Use `clamp()` para valores fluidos sem breakpoints.
 
-#### Detect Input Method, Not Just Screen Size
+#### Detecte o método de entrada, não só o tamanho da tela
 
-**Screen size doesn't tell you input method.** A laptop with touchscreen, a tablet with keyboard. Use pointer and hover queries:
+**O tamanho da tela não diz qual é o método de entrada.** Um notebook com tela sensível ao toque, um tablet com teclado. Use as queries de pointer e hover:
 
 ```css
 /* Fine pointer (mouse, trackpad) */
@@ -238,11 +238,11 @@ Don't chase device sizes; let content tell you where to break. Start narrow, str
 }
 ```
 
-**Critical**: Don't rely on hover for functionality. Touch users can't hover.
+**Crítico**: não dependa de hover para funcionalidades. Usuários de toque não conseguem passar o mouse por cima.
 
-#### Safe Areas: Handle the Notch
+#### Áreas seguras: lide com o notch
 
-Modern phones have notches, rounded corners, and home indicators. Use `env()`:
+Celulares modernos têm notches, cantos arredondados e indicadores de início. Use `env()`:
 
 ```css
 body {
@@ -258,14 +258,14 @@ body {
 }
 ```
 
-**Enable viewport-fit** in your meta tag:
+**Ative o viewport-fit** na sua meta tag:
 ```html
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 ```
 
-#### Responsive Images: Get It Right
+#### Imagens responsivas: faça do jeito certo
 
-##### srcset with Width Descriptors
+##### srcset com descritores de largura
 
 ```html
 <img
@@ -280,14 +280,14 @@ body {
 >
 ```
 
-**How it works**:
-- `srcset` lists available images with their actual widths (`w` descriptors)
-- `sizes` tells the browser how wide the image will display
-- Browser picks the best file based on viewport width AND device pixel ratio
+**Como funciona**:
+- `srcset` lista as imagens disponíveis com suas larguras reais (descritores `w`)
+- `sizes` informa ao navegador com que largura a imagem será exibida
+- O navegador escolhe o melhor arquivo com base na largura da viewport E na densidade de pixels do dispositivo
 
-##### Picture Element for Art Direction
+##### Elemento picture para direção de arte
 
-When you need different crops/compositions (not just resolutions):
+Quando você precisa de recortes/composições diferentes (não apenas resoluções):
 
 ```html
 <picture>
@@ -297,22 +297,22 @@ When you need different crops/compositions (not just resolutions):
 </picture>
 ```
 
-#### Layout Adaptation Patterns
+#### Padrões de adaptação de layout
 
-**Navigation**: Three stages: hamburger + drawer on mobile, horizontal compact on tablet, full with labels on desktop. **Tables**: Transform to cards on mobile using `display: block` and `data-label` attributes. **Progressive disclosure**: Use `<details>/<summary>` for content that can collapse on mobile.
+**Navegação**: três estágios: hambúrguer + gaveta no mobile, horizontal compacta no tablet, completa com rótulos no desktop. **Tabelas**: transforme em cards no mobile usando `display: block` e atributos `data-label`. **Divulgação progressiva**: use `<details>/<summary>` para conteúdo que pode ser recolhido no mobile.
 
-#### Testing: Don't Trust DevTools Alone
+#### Testes: não confie só no DevTools
 
-DevTools device emulation is useful for layout but misses:
+A emulação de dispositivos do DevTools é útil para o layout, mas deixa escapar:
 
-- Actual touch interactions
-- Real CPU/memory constraints
-- Network latency patterns
-- Font rendering differences
-- Browser chrome/keyboard appearances
+- Interações reais de toque
+- Restrições reais de CPU/memória
+- Padrões de latência de rede
+- Diferenças de renderização de fontes
+- O aparecimento da interface do navegador e do teclado
 
-**Test on at least**: One real iPhone, one real Android, a tablet if relevant. Cheap Android phones reveal performance issues you'll never see on simulators.
+**Teste no mínimo em**: um iPhone real, um Android real e um tablet, se relevante. Celulares Android baratos revelam problemas de desempenho que você nunca verá em simuladores.
 
 ---
 
-**Avoid**: Desktop-first design. Device detection instead of feature detection. Separate mobile/desktop codebases. Ignoring tablet and landscape. Assuming all mobile devices are powerful.
+**Evite**: design desktop-first. Detecção de dispositivo em vez de detecção de recursos. Bases de código separadas para mobile/desktop. Ignorar tablet e paisagem. Presumir que todos os dispositivos mobile são potentes.

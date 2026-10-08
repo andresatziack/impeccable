@@ -1,10 +1,10 @@
 # Impeccable CLI
 
-Detect UI anti-patterns and design quality issues from the command line, and install the Impeccable design skill into your AI coding harness. The detector scans HTML, CSS, JSX, TSX, Vue, and Svelte files for 59 deterministic rules, including AI-generated UI tells, accessibility violations, and general design quality problems.
+Detecte antipadrões de UI e problemas de qualidade de design pela linha de comando e instale a skill de design Impeccable no seu harness (ferramenta de agente) de programação com IA. O detector analisa arquivos HTML, CSS, JSX, TSX, Vue e Svelte com 59 regras determinísticas, incluindo sinais de UI gerada por IA, violações de acessibilidade e problemas gerais de qualidade de design.
 
-The npm package is a small launcher. It runs the `impeccable` engine binary for your platform, installed alongside it as an optional dependency (`@impeccable/cli-<os>-<arch>`), and falls back to a per-user cache or a one-time download when that package is missing.
+O pacote npm é um pequeno launcher (inicializador). Ele executa o binário do motor `impeccable` para a sua plataforma, instalado junto como dependência opcional (`@impeccable/cli-<os>-<arch>`), e recorre a um cache por usuário ou a um download único quando esse pacote está ausente.
 
-## Quick Start
+## Início rápido
 
 ```bash
 # Install skills into your AI harness (Claude, Cursor, Gemini, etc.)
@@ -38,36 +38,36 @@ npx impeccable detect https://example.com
 npx impeccable detect --json src/
 ```
 
-`npx impeccable skills <command>` is the legacy namespace and still works.
+`npx impeccable skills <command>` é o namespace legado e continua funcionando.
 
-## What It Detects
+## O que ele detecta
 
-**AI Slop Tells**: patterns that scream "AI generated this":
-- Side-tab accent borders, gradient text on headings
-- Purple/violet gradients and cyan-on-dark palettes
-- Dark mode with glowing accents, border + border-radius clashes
+**Sinais de "AI Slop"**: padrões que gritam "isto foi gerado por IA":
+- Bordas de destaque em abas laterais, texto em gradiente nos títulos
+- Gradientes roxos/violeta e paletas de ciano sobre fundo escuro
+- Modo escuro com destaques brilhantes, conflitos entre borda + border-radius
 
-**Typography Issues**: overused fonts (Inter, Roboto), flat type hierarchy, single font families
+**Problemas de tipografia**: fontes usadas em excesso (Inter, Roboto), hierarquia tipográfica achatada, uma única família de fontes
 
-**Color & Contrast**: WCAG AA violations, gray text on colored backgrounds, pure black/white
+**Cor e contraste**: violações de WCAG AA, texto cinza sobre fundos coloridos, preto/branco puros
 
-**Layout & Composition**: nested cards, monotonous spacing, everything-centered layouts
+**Layout e composição**: cards aninhados, espaçamento monótono, layouts com tudo centralizado
 
-**Motion**: bounce/elastic easing, layout property transitions
+**Movimento**: easing com quique/elástico, transições de propriedades de layout
 
-**Quality**: tiny body text, cramped padding, long line lengths, small touch targets
+**Qualidade**: texto de corpo minúsculo, padding apertado, linhas longas demais, alvos de toque pequenos
 
-59 deterministic detector rules in total. See the full catalog at [impeccable.style/slop](https://impeccable.style/slop).
+59 regras determinísticas de detector no total. Veja o catálogo completo em [impeccable.style/slop](https://impeccable.style/slop).
 
-## Exit Codes
+## Códigos de saída
 
-- `0`: scan completed with no primary findings (advisories may still be listed)
-- `1`: at least one requested target could not be scanned
-- `2`: scan completed with primary findings
+- `0`: análise concluída sem achados primários (avisos consultivos ainda podem ser listados)
+- `1`: pelo menos um alvo solicitado não pôde ser analisado
+- `2`: análise concluída com achados primários
 
-Operational failure takes precedence when a multi-target scan is partial. In JSON mode, stdout remains a findings array and diagnostics are written to stderr.
+Falhas operacionais têm precedência quando uma análise de múltiplos alvos é parcial. No modo JSON, o stdout continua sendo um array de achados e os diagnósticos são escritos no stderr.
 
-## Options
+## Opções
 
 ```
 impeccable detect [options] [file-or-dir-or-url...]
@@ -77,18 +77,18 @@ impeccable detect [options] [file-or-dir-or-url...]
   --help      Show help
 ```
 
-## Requirements
+## Requisitos
 
-- Node.js 22.18+ to run `npx impeccable`. The engine itself is a self-contained binary and needs no runtime; the skill installed into your harness calls it directly.
-- For URL scans, an installed Chrome, Chromium, or Edge (set `IMPECCABLE_BROWSER` to point at one).
-- Behind a TLS-inspecting proxy, downloads trust your OS certificate store as well as the bundled Mozilla roots. Set `SSL_CERT_FILE` or `SSL_CERT_DIR` to use a specific CA bundle instead.
+- Node.js 22.18+ para executar `npx impeccable`. O motor em si é um binário autocontido e não precisa de runtime; a skill instalada no seu harness o chama diretamente.
+- Para análises de URL, um Chrome, Chromium ou Edge instalado (defina `IMPECCABLE_BROWSER` para apontar para um deles).
+- Atrás de um proxy que inspeciona TLS, os downloads confiam no repositório de certificados do seu sistema operacional, além das raízes da Mozilla incluídas. Defina `SSL_CERT_FILE` ou `SSL_CERT_DIR` para usar um pacote de CAs específico.
 
-Binary lookup order: `IMPECCABLE_BIN`, the platform package, `~/.impeccable/bin/<version>/`, then a download of the pinned version into that cache. Set `IMPECCABLE_BIN` to a local build to skip all of that.
+Ordem de busca do binário: `IMPECCABLE_BIN`, o pacote da plataforma, `~/.impeccable/bin/<version>/` e, por fim, um download da versão fixada para esse cache. Defina `IMPECCABLE_BIN` apontando para um build local para pular tudo isso.
 
-## Part of Impeccable
+## Parte do Impeccable
 
-This CLI is part of [Impeccable](https://impeccable.style), a cross-provider design skill pack for AI-powered development tools. The full suite includes 24 commands for Claude, Cursor, GitHub Copilot, Gemini, Codex, Hermes Agent, Veto, and more.
+Esta CLI faz parte do [Impeccable](https://impeccable.style), um pacote de skills de design multiprovedor para ferramentas de desenvolvimento com IA. O conjunto completo inclui 24 comandos para Claude, Cursor, GitHub Copilot, Gemini, Codex, Hermes Agent, Veto e outros.
 
-## License
+## Licença
 
 [Apache 2.0](https://github.com/pbakaus/impeccable/blob/main/LICENSE)

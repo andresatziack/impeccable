@@ -1,59 +1,59 @@
 # Shape
 
-Discover what should be made and how it should work, then return a confirmed design brief without code.
+Descubra o que deve ser feito e como deve funcionar e, em seguida, devolva um briefing de design confirmado, sem código.
 
-## Phase 1: Discovery interview
+## Fase 1: Entrevista de descoberta
 
-Do not write code or choose visual direction yet.
+Ainda não escreva código nem escolha uma direção visual.
 
-### Cadence
+### Cadência
 
-- Use the structured question tool when available; otherwise ask and stop.
-- Ask two or three related questions per round, then wait. One round is the default; add a second only when the answers expose a material gap.
-- Do not dump a questionnaire, repeat settled facts, or turn obvious facts into menus. Assert the likely reading and invite correction.
-- A sparse prompt requires at least one answer round. A precise prompt may need only a compact confirmation.
+- Use a ferramenta de perguntas estruturadas quando disponível; caso contrário, pergunte e pare.
+- Faça duas ou três perguntas relacionadas por rodada e depois espere. Uma rodada é o padrão; acrescente uma segunda apenas quando as respostas revelarem uma lacuna relevante.
+- Não despeje um questionário, não repita fatos já resolvidos nem transforme fatos óbvios em menus. Afirme a leitura provável e convide à correção.
+- Um prompt escasso exige pelo menos uma rodada de respostas. Um prompt preciso pode precisar apenas de uma confirmação compacta.
 
-### Round 1: purpose, people, and outcome
+### Rodada 1: propósito, pessoas e resultado
 
-Choose the two or three questions that most change the result:
+Escolha as duas ou três perguntas que mais mudam o resultado:
 
-- What is this surface or feature for, and what problem must it solve?
-- Who specifically reaches it, in what situation and state of mind?
-- What is the primary thing they must understand or do? What would success look like?
-- What is uniquely true here that a neighboring product or generic template could not claim?
+- Para que serve esta superfície ou funcionalidade, e que problema ela precisa resolver?
+- Quem, especificamente, chega até ela, em que situação e em que estado de espírito?
+- Qual é a principal coisa que essas pessoas precisam entender ou fazer? Como seria o sucesso?
+- O que é verdadeiro exclusivamente aqui e que um produto vizinho ou um template genérico não poderia reivindicar?
 
-### Round 2: material, behavior, and boundaries
+### Rodada 2: material, comportamento e limites
 
-Run only for material unresolved decisions:
+Faça esta rodada apenas para decisões relevantes ainda não resolvidas:
 
-- What real content, evidence, data, and assets must the experience carry? What are realistic minimum, typical, and maximum ranges?
-- Which states and transitions matter: first-run, empty, loading, error, success, permissions, overflow, or expert use?
-- What is the intended fidelity, breadth, and interactivity: exploration, production-ready screen, full flow, or broader surface?
-- What must remain untouched? What would make the result feel wrong even if it looked polished?
-- Which platform, framework, performance, accessibility, localization, or delivery constraints are binding?
+- Que conteúdo real, evidências, dados e assets a experiência precisa carregar? Quais são as faixas realistas de mínimo, típico e máximo?
+- Quais estados e transições importam: primeira execução, vazio, carregamento, erro, sucesso, permissões, transbordamento ou uso avançado?
+- Qual é a fidelidade, a amplitude e a interatividade pretendidas: exploração, tela pronta para produção, fluxo completo ou superfície mais ampla?
+- O que deve permanecer intocado? O que faria o resultado parecer errado mesmo que parecesse bem-acabado?
+- Quais restrições de plataforma, framework, desempenho, acessibilidade, localização ou entrega são obrigatórias?
 
-Never ask for CSS values or canned aesthetic lanes. New-work owns visual-world and concept choices.
+Nunca peça valores de CSS nem trilhas estéticas prontas. O new-work é dono das escolhas de mundo visual e de conceito.
 
-## Phase 2: Resolve the design direction
+## Fase 2: Resolva a direção de design
 
-For new surfaces, brand expansion, or replacement, follow [new-work.md](new-work.md) through visual authority, any world workshop, and concept choice. Reuse discovery, then return before its contract, persistence, or implementation. Inside an established world, use its concept process only when composition or interaction remains materially open.
+Para novas superfícies, expansão de marca ou substituição, siga [new-work.md](new-work.md) passando pela autoridade visual, por qualquer oficina de mundo visual e pela escolha de conceito. Reaproveite a descoberta e retorne antes do contrato, da persistência ou da implementação dele. Dentro de um mundo já estabelecido, use o processo de conceito dele apenas quando a composição ou a interação continuarem significativamente em aberto.
 
-## Phase 3: Write the brief
+## Fase 3: Escreva o briefing
 
-Write the smallest useful brief:
+Escreva o menor briefing útil:
 
-1. **Job and audience:** who arrives, their context, need, and visitor mode.
-2. **Outcome and proof:** primary task/action, success, real evidence, and product-specific truth.
-3. **Selected direction:** visual authority, structural/interaction thesis, sequence, focal moment, and implementation consequence.
-4. **Scope and boundaries:** fidelity, breadth, interactivity, named target, what remains untouched, and explicit anti-goals.
-5. **States and ranges:** realistic content/data ranges and material states.
-6. **Interaction and layout:** hierarchy, topology, responsiveness, affordances, feedback, and transitions; intent, not CSS.
-7. **Constraints and open decisions:** platform, delivery, accessibility, localization, reusable components, and choices a builder must not invent.
+1. **Função e público:** quem chega, seu contexto, sua necessidade e o modo do visitante.
+2. **Resultado e prova:** tarefa/ação principal, sucesso, evidência real e verdade específica do produto.
+3. **Direção selecionada:** autoridade visual, tese estrutural/de interação, sequência, momento focal e consequência para a implementação.
+4. **Escopo e limites:** fidelidade, amplitude, interatividade, alvo nomeado, o que permanece intocado e antiobjetivos explícitos.
+5. **Estados e faixas:** faixas realistas de conteúdo/dados e estados relevantes.
+6. **Interação e layout:** hierarquia, topologia, responsividade, affordances, feedback e transições; intenção, não CSS.
+7. **Restrições e decisões em aberto:** plataforma, entrega, acessibilidade, localização, componentes reutilizáveis e escolhas que quem constrói não deve inventar.
 
-Use three to five bullets when the task is settled; use the full structure only for ambiguous, multi-screen, or standalone planning. Do not restate the conversation.
+Use de três a cinco tópicos quando a tarefa estiver resolvida; use a estrutura completa apenas para planejamentos ambíguos, com várias telas ou independentes. Não repita a conversa.
 
-## Confirm and stop
+## Confirme e pare
 
-Present the brief for explicit confirmation or one correction round, then stop: shape never writes code or a direction contract.
+Apresente o briefing para confirmação explícita ou para uma rodada de correção e então pare: o shape nunca escreve código nem um contrato de direção.
 
-When no human or structured answer mechanism exists, mark assumptions plainly, return the brief, and stop.
+Quando não houver um humano nem um mecanismo de respostas estruturadas, marque as suposições com clareza, devolva o briefing e pare.

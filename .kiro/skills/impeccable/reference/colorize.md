@@ -1,86 +1,86 @@
-> **Additional context needed**: existing brand colors.
+> **Contexto adicional necessário**: cores de marca existentes.
 
-Introduce color as hierarchy, meaning, and atmosphere. Preserve confirmed brand and semantic conventions; do not replace a visual world under the guise of colorizing it.
+Introduza a cor como hierarquia, significado e atmosfera. Preserve as convenções de marca e semânticas confirmadas; não substitua um mundo visual sob o pretexto de colori-lo.
 
 ---
 
-## Visitor mode
+## Modo do visitante
 
-- **Persuade + Experience:** color may carry the voice and own large regions when the selected world calls for it.
-- **Operate + Read:** color primarily encodes action, selection, status, wayfinding, and reading hierarchy. Rarity gives an accent force.
+- **Persuade (persuadir) + Experience (experiência):** a cor pode carregar a voz e dominar grandes regiões quando o mundo visual selecionado pedir isso.
+- **Operate (operar) + Read (ler):** a cor codifica principalmente ação, seleção, status, orientação e hierarquia de leitura. A raridade dá força a um acento.
 
-## Audit before choosing
+## Audite antes de escolher
 
-Read DESIGN.md, tokens, assets, current themes, and representative states. Identify:
+Leia o DESIGN.md, os tokens, os assets, os temas atuais e estados representativos. Identifique:
 
-- which colors are confirmed brand commitments;
-- current surface, text, action, and semantic roles;
-- places where grayscale obscures hierarchy or state;
-- contrast failures and color-only communication;
-- light/dark or data-visualization requirements;
-- whether the task asks for more color or a new identity.
+- quais cores são compromissos de marca confirmados;
+- os papéis atuais de superfície, texto, ação e semântica;
+- lugares onde a escala de cinza esconde hierarquia ou estado;
+- falhas de contraste e comunicação feita só por cor;
+- requisitos de claro/escuro ou de visualização de dados;
+- se a tarefa pede mais cor ou uma nova identidade.
 
-If a new identity is required, use [new-work.md](new-work.md). Ask only when a binding brand decision cannot be inferred.
+Se for necessária uma nova identidade, use [new-work.md](new-work.md). Pergunte apenas quando uma decisão de marca vinculante não puder ser inferida.
 
-## Choose a strategy
+## Escolha uma estratégia
 
-Name the intended emotional temperature, dominant relationship, contrast range, and color dosage before editing. The strategy may be restrained or immersive; it must follow the brief and selected world rather than a fixed percentage rule.
+Antes de editar, nomeie a temperatura emocional pretendida, a relação dominante, a faixa de contraste e a dosagem de cor. A estratégia pode ser contida ou imersiva; ela deve seguir o briefing e o mundo visual selecionado, e não uma regra de porcentagem fixa.
 
-Build roles, not a bag of swatches:
+Construa papéis, não um saco de amostras:
 
-- canvas and elevated surfaces;
-- primary and secondary text;
-- action, focus, and selection;
-- borders and separators;
-- success, warning, error, and information;
-- data categories or scales when needed.
+- fundo (canvas) e superfícies elevadas;
+- texto primário e secundário;
+- ação, foco e seleção;
+- bordas e separadores;
+- sucesso, aviso, erro e informação;
+- categorias ou escalas de dados quando necessário.
 
-Use the project's existing color space. For a new web palette, prefer OKLCH because lightness and chroma can be adjusted predictably. Choose hue from product meaning and visual direction, never from a default category association.
+Use o espaço de cor já existente no projeto. Para uma nova paleta web, prefira OKLCH, porque luminosidade e croma podem ser ajustados de forma previsível. Escolha o matiz a partir do significado do produto e da direção visual, nunca de uma associação padrão da categoria.
 
-## Apply at system scale
+## Aplique em escala de sistema
 
-- Let the strongest color own a deliberate region or role instead of scattering tiny accents.
-- Keep the primary action easy to find; do not spend its color on decoration.
-- Tint neutrals only when the brand hue genuinely creates cohesion. Neutral gray is valid when it serves the world.
-- On colored surfaces, derive secondary text from the foreground or surface hue rather than using washed-out generic gray.
-- Keep semantic meanings consistent, but respect platform and domain conventions instead of assuming fixed hues.
-- For data, use distinct lightness, chroma, shape, label, or pattern so color is not the only code.
-- In dark mode, design surface elevation and contrast explicitly; do not invert the light theme mechanically.
-- Define primitive values and semantic tokens when the project has a token system. Theme changes should normally remap semantic roles.
+- Deixe a cor mais forte dominar uma região ou um papel deliberado em vez de espalhar acentos minúsculos.
+- Mantenha a ação principal fácil de encontrar; não gaste a cor dela em decoração.
+- Tinja os neutros apenas quando o matiz da marca realmente criar coesão. Cinza neutro é válido quando serve ao mundo visual.
+- Em superfícies coloridas, derive o texto secundário do matiz do primeiro plano ou da superfície em vez de usar um cinza genérico desbotado.
+- Mantenha os significados semânticos consistentes, mas respeite as convenções da plataforma e do domínio em vez de presumir matizes fixos.
+- Para dados, use luminosidade, croma, forma, rótulo ou padrão distintos para que a cor não seja o único código.
+- No modo escuro, projete explicitamente a elevação das superfícies e o contraste; não inverta o tema claro mecanicamente.
+- Defina valores primitivos e tokens semânticos quando o projeto tiver um sistema de tokens. Mudanças de tema normalmente devem remapear os papéis semânticos.
 
-Decoration without a relationship to hierarchy, state, content, or the visual world is not a color strategy.
+Decoração sem relação com hierarquia, estado, conteúdo ou o mundo visual não é uma estratégia de cor.
 
-## Contrast and perception
+## Contraste e percepção
 
-Verify computed foreground/background pairs:
+Verifique os pares computados de primeiro plano/fundo:
 
-| Content | WCAG AA minimum |
+| Conteúdo | Mínimo WCAG AA |
 |---|---|
-| body text | 4.5:1 |
-| large text | 3:1 |
-| controls, icons, focus indicators | 3:1 |
+| texto de corpo | 4.5:1 |
+| texto grande | 3:1 |
+| controles, ícones, indicadores de foco | 3:1 |
 
-Do not rely on eyesight alone. Check interactive states, overlays, text on images, disabled content, and both themes. Simulate common vision deficiencies. Information conveyed by color also needs text, shape, iconography, or position.
+Não confie só nos olhos. Verifique estados interativos, overlays, texto sobre imagens, conteúdo desabilitado e os dois temas. Simule as deficiências visuais mais comuns. Informações transmitidas por cor também precisam de texto, forma, iconografia ou posição.
 
-When deriving OKLCH ramps, vary lightness and reduce chroma near white and black. Do not keep high chroma at extreme lightness merely to make the math uniform. Prefer explicit colors over chains of translucent overlays when alpha would make contrast context-dependent.
+Ao derivar rampas em OKLCH, varie a luminosidade e reduza o croma perto do branco e do preto. Não mantenha croma alto em luminosidades extremas só para deixar a matemática uniforme. Prefira cores explícitas a cadeias de overlays translúcidos quando o alfa tornaria o contraste dependente do contexto.
 
-## Verify
+## Verifique
 
-- Every color has a stable role or a world-specific atmospheric purpose.
-- Attention lands on the intended action, content, or state.
-- The palette works across quiet, dense, interactive, error, and empty states.
-- Light and dark themes are each composed, not mechanically inverted.
-- Contrast and non-color cues pass in all relevant states.
-- The result is recognizably this product, not a generic “colorful” treatment.
+- Cada cor tem um papel estável ou um propósito atmosférico específico do mundo visual.
+- A atenção recai sobre a ação, o conteúdo ou o estado pretendidos.
+- A paleta funciona em estados discretos, densos, interativos, de erro e vazios.
+- Os temas claro e escuro são compostos cada um por si, não invertidos mecanicamente.
+- O contraste e as pistas que não dependem de cor passam em todos os estados relevantes.
+- O resultado é reconhecivelmente este produto, não um tratamento “colorido” genérico.
 
-When the palette earns its place, hand off to `/impeccable polish` for the final pass.
+Quando a paleta justificar seu lugar, passe para `/impeccable polish` para a etapa final.
 
-## Live-mode signature params
+## Parâmetros de assinatura do modo live
 
-When invoked from live mode, every variant declares a `color-amount` parameter. Author CSS against `var(--p-color-amount, 0.5)` so the user can move from neutral to the variant's full color strategy without regeneration.
+Quando invocada a partir do modo live, toda variante declara um parâmetro `color-amount`. Escreva o CSS em função de `var(--p-color-amount, 0.5)` para que o usuário possa ir do neutro até a estratégia de cor completa da variante sem regeneração.
 
 ```json
 {"id":"color-amount","kind":"range","min":0,"max":1,"step":0.05,"default":0.5,"label":"Color amount"}
 ```
 
-Add at most two variant-specific parameters, such as palette, temperature, or tint behavior. Follow [live.md](live.md)'s parameter contract.
+Adicione no máximo dois parâmetros específicos da variante, como paleta, temperatura ou comportamento de tingimento. Siga o contrato de parâmetros de [live.md](live.md).
