@@ -1,111 +1,111 @@
-Strip a design to its essence. Remove anything that doesn't earn its place: redundant elements, repeated information, decorative noise, cosmetic complexity.
+Reduza um design à sua essência. Remova tudo o que não justifica seu lugar: elementos redundantes, informações repetidas, ruído decorativo, complexidade cosmética.
 
 
 ---
 
-## Assess Current State
+## Avalie o estado atual
 
-Analyze what makes the design feel complex or cluttered:
+Analise o que faz o design parecer complexo ou poluído:
 
-1. **Identify complexity sources**:
-   - **Too many elements**: Competing buttons, redundant information, visual clutter
-   - **Excessive variation**: Too many colors, fonts, sizes, styles without purpose
-   - **Information overload**: Everything visible at once, no progressive disclosure
-   - **Visual noise**: Unnecessary borders, shadows, backgrounds, decorations
-   - **Confusing hierarchy**: Unclear what matters most
-   - **Feature creep**: Too many options, actions, or paths forward
+1. **Identifique as fontes de complexidade**:
+   - **Elementos demais**: botões competindo entre si, informações redundantes, poluição visual
+   - **Variação excessiva**: cores, fontes, tamanhos e estilos demais, sem propósito
+   - **Sobrecarga de informação**: tudo visível ao mesmo tempo, sem divulgação progressiva
+   - **Ruído visual**: bordas, sombras, fundos e decorações desnecessários
+   - **Hierarquia confusa**: não fica claro o que mais importa
+   - **Inchaço de funcionalidades**: opções, ações ou caminhos a seguir em excesso
 
-2. **Find the essence**:
-   - What's the primary user goal? (There should be ONE)
-   - What's actually necessary vs nice-to-have?
-   - What can be removed, hidden, or combined?
-   - What's the 20% that delivers 80% of value?
+2. **Encontre a essência**:
+   - Qual é o objetivo principal do usuário? (Deve haver UM só)
+   - O que é realmente necessário e o que é apenas desejável?
+   - O que pode ser removido, ocultado ou combinado?
+   - Quais são os 20% que entregam 80% do valor?
 
-If any of these are unclear from the codebase, do not guess. Ask the user directly to clarify what you cannot infer.
+Se algum desses pontos não estiver claro a partir do código, não chute. Pergunte diretamente ao usuário para esclarecer o que você não consegue inferir.
 
-**CRITICAL**: Simplicity is not about removing features. It's about removing obstacles between users and their goals. Every element should justify its existence.
+**CRÍTICO**: simplicidade não é remover funcionalidades. É remover obstáculos entre os usuários e seus objetivos. Cada elemento deve justificar sua existência.
 
-## Plan Simplification
+## Planeje a simplificação
 
-Create a ruthless editing strategy:
+Crie uma estratégia de edição implacável:
 
-- **Core purpose**: What's the ONE thing this should accomplish?
-- **Essential elements**: What's truly necessary to achieve that purpose?
-- **Progressive disclosure**: What can be hidden until needed?
-- **Consolidation opportunities**: What can be combined or integrated?
+- **Propósito central**: qual é a ÚNICA coisa que isto deve realizar?
+- **Elementos essenciais**: o que é de fato necessário para cumprir esse propósito?
+- **Divulgação progressiva**: o que pode ficar oculto até ser necessário?
+- **Oportunidades de consolidação**: o que pode ser combinado ou integrado?
 
-**IMPORTANT**: Simplification is hard. It requires saying no to good ideas to make room for great execution. Be ruthless.
+**IMPORTANTE**: simplificar é difícil. Exige dizer não a boas ideias para abrir espaço a uma ótima execução. Seja implacável.
 
-## Simplify the Design
+## Simplifique o design
 
-Systematically remove complexity across these dimensions:
+Remova a complexidade de forma sistemática nestas dimensões:
 
-### Information Architecture
-- **Reduce scope**: Remove secondary actions, optional features, redundant information
-- **Progressive disclosure**: Hide complexity behind clear entry points (accordions, modals, step-through flows)
-- **Combine related actions**: Merge similar buttons, consolidate forms, group related content
-- **Clear hierarchy**: ONE primary action, few secondary actions, everything else tertiary or hidden
-- **Remove redundancy**: If it's said elsewhere, don't repeat it here
+### Arquitetura da informação
+- **Reduza o escopo**: remova ações secundárias, funcionalidades opcionais, informações redundantes
+- **Divulgação progressiva**: oculte a complexidade atrás de pontos de entrada claros (acordeões, modais, fluxos passo a passo)
+- **Combine ações relacionadas**: junte botões semelhantes, consolide formulários, agrupe conteúdo relacionado
+- **Hierarquia clara**: UMA ação principal, poucas ações secundárias, todo o resto terciário ou oculto
+- **Remova redundâncias**: se já foi dito em outro lugar, não repita aqui
 
-### Visual Simplification
-- **Reduce color palette**: Use 1-2 colors plus neutrals, not 5-7 colors
-- **Limit typography**: One font family, 3-4 sizes maximum, 2-3 weights
-- **Remove decorations**: Eliminate borders, shadows, backgrounds that don't serve hierarchy or function
-- **Flatten structure**: Reduce nesting, remove unnecessary containers; never nest cards inside cards
-- **Remove unnecessary cards**: Cards aren't needed for basic layout; use spacing and alignment instead
-- **Consistent spacing**: Use one spacing scale, remove arbitrary gaps
+### Simplificação visual
+- **Reduza a paleta de cores**: use 1 ou 2 cores mais neutros, não 5 a 7 cores
+- **Limite a tipografia**: uma família de fontes, no máximo 3 ou 4 tamanhos, 2 ou 3 pesos
+- **Remova decorações**: elimine bordas, sombras e fundos que não servem à hierarquia nem à função
+- **Achate a estrutura**: reduza o aninhamento, remova contêineres desnecessários; nunca aninhe cards dentro de cards
+- **Remova cards desnecessários**: cards não são necessários para o layout básico; use espaçamento e alinhamento no lugar
+- **Espaçamento consistente**: use uma única escala de espaçamento, remova lacunas arbitrárias
 
-### Layout Simplification
-- **Linear flow**: Replace complex grids with simple vertical flow where possible
-- **Remove sidebars**: Move secondary content inline or hide it
-- **Full-width**: Use available space generously instead of complex multi-column layouts
-- **Consistent alignment**: Pick left or center, stick with it
-- **Generous white space**: Let content breathe, don't pack everything tight
+### Simplificação do layout
+- **Fluxo linear**: substitua grids complexos por um fluxo vertical simples sempre que possível
+- **Remova barras laterais**: traga o conteúdo secundário para o fluxo ou oculte-o
+- **Largura total**: use o espaço disponível com generosidade em vez de layouts complexos de várias colunas
+- **Alinhamento consistente**: escolha à esquerda ou centralizado e mantenha
+- **Espaço em branco generoso**: deixe o conteúdo respirar, não aperte tudo
 
-### Interaction Simplification
-- **Reduce choices**: Fewer buttons, fewer options, clearer path forward (paradox of choice is real)
-- **Smart defaults**: Make common choices automatic, only ask when necessary
-- **Inline actions**: Replace modal flows with inline editing where possible
-- **Remove steps**: Can the flow lose a step?
-- **Clear next action**: ONE obvious next action, not five competing ones
+### Simplificação da interação
+- **Reduza as escolhas**: menos botões, menos opções, um caminho mais claro a seguir (o paradoxo da escolha é real)
+- **Padrões inteligentes**: torne automáticas as escolhas comuns, pergunte só quando necessário
+- **Ações inline**: substitua fluxos em modal por edição inline sempre que possível
+- **Remova etapas**: o fluxo pode perder uma etapa?
+- **Próxima ação clara**: UMA próxima ação óbvia, não cinco competindo entre si
 
-### Content Simplification
-- **Shorter copy**: Cut every sentence in half, then do it again
-- **Active voice**: "Save changes" not "Changes will be saved"
-- **Remove jargon**: Plain language always wins
-- **Scannable structure**: Short paragraphs, bullet points, clear headings
-- **Essential information only**: Remove marketing fluff, legalese, hedging
-- **Remove redundant copy**: No headers restating intros, no repeated explanations, say it once
+### Simplificação do conteúdo
+- **Copy mais curta**: corte cada frase pela metade e depois faça isso de novo
+- **Voz ativa**: "Salvar alterações", não "As alterações serão salvas"
+- **Remova o jargão**: linguagem simples sempre vence
+- **Estrutura escaneável**: parágrafos curtos, tópicos, títulos claros
+- **Somente informação essencial**: remova enrolação de marketing, juridiquês, ressalvas
+- **Remova copy redundante**: nada de títulos que repetem a introdução, nada de explicações repetidas; diga uma vez só
 
-### Code Simplification
-- **Remove unused code**: Dead CSS, unused components, orphaned files
-- **Flatten component trees**: Reduce nesting depth
-- **Consolidate styles**: Merge similar styles, use utilities consistently
-- **Reduce variants**: Does that component need 12 variations, or can 3 cover 90% of cases?
+### Simplificação do código
+- **Remova código não utilizado**: CSS morto, componentes sem uso, arquivos órfãos
+- **Achate as árvores de componentes**: reduza a profundidade de aninhamento
+- **Consolide estilos**: junte estilos semelhantes, use utilitários de forma consistente
+- **Reduza variantes**: esse componente precisa de 12 variações, ou 3 cobrem 90% dos casos?
 
-**NEVER**:
-- Remove necessary functionality (simplicity ≠ feature-less)
-- Sacrifice accessibility for simplicity (clear labels and ARIA still required)
-- Make things so simple they're unclear (mystery ≠ minimalism)
-- Remove information users need to make decisions
-- Eliminate hierarchy completely (some things should stand out)
-- Oversimplify complex domains (match complexity to actual task complexity)
+**NUNCA**:
+- Remova funcionalidades necessárias (simplicidade ≠ ausência de funcionalidades)
+- Sacrifique a acessibilidade em nome da simplicidade (rótulos claros e ARIA continuam obrigatórios)
+- Deixe as coisas tão simples que fiquem obscuras (mistério ≠ minimalismo)
+- Remova informações de que os usuários precisam para tomar decisões
+- Elimine a hierarquia por completo (algumas coisas devem se destacar)
+- Simplifique demais domínios complexos (ajuste a complexidade à complexidade real da tarefa)
 
-## Verify Simplification
+## Verifique a simplificação
 
-Ensure simplification improves usability:
+Garanta que a simplificação melhore a usabilidade:
 
-- **Faster task completion**: Can users accomplish goals more quickly?
-- **Reduced cognitive load**: Is it easier to understand what to do?
-- **Still complete**: Are all necessary features still accessible?
-- **Clearer hierarchy**: Is it obvious what matters most?
-- **Better performance**: Does simpler design load faster?
+- **Conclusão de tarefas mais rápida**: os usuários conseguem atingir seus objetivos mais depressa?
+- **Carga cognitiva reduzida**: ficou mais fácil entender o que fazer?
+- **Continua completo**: todas as funcionalidades necessárias ainda estão acessíveis?
+- **Hierarquia mais clara**: é óbvio o que mais importa?
+- **Melhor desempenho**: o design mais simples carrega mais rápido?
 
-## Document Removed Complexity
+## Documente a complexidade removida
 
-If you removed features or options:
-- Document why they were removed
-- Consider if they need alternative access points
-- Note any user feedback to monitor
+Se você removeu funcionalidades ou opções:
+- Documente por que elas foram removidas
+- Avalie se precisam de pontos de acesso alternativos
+- Anote qualquer feedback de usuários a ser monitorado
 
-When the cuts feel right, hand off to `/impeccable polish` for the final pass. As Antoine de Saint-Exupéry put it: "Perfection is achieved not when there is nothing more to add, but when there is nothing left to take away."
+Quando os cortes parecerem certos, passe para `/impeccable polish` para a etapa final. Como disse Antoine de Saint-Exupéry: "A perfeição é alcançada não quando não há mais nada a acrescentar, mas quando não há mais nada a retirar."

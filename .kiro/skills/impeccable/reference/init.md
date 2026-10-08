@@ -1,61 +1,61 @@
-# Init flow
+# Fluxo de init
 
-`init` captures durable product truth in PRODUCT.md. It does not invent a visual world and does not write DESIGN.md; [new-work.md](new-work.md) creates or expands one, and [document.md](document.md) records an incumbent one. Existing runnable web projects may also receive `.impeccable/live/config.json`.
+`init` registra a verdade duradoura do produto no PRODUCT.md. Ele não inventa um mundo visual e não escreve o DESIGN.md; o [new-work.md](new-work.md) cria ou expande um, e o [document.md](document.md) registra um design existente. Projetos web executáveis existentes também podem receber `.impeccable/live/config.json`.
 
-## Step 1: Load current state
+## Passo 1: Carregue o estado atual
 
-Use the PRODUCT.md path resolved by `impeccable context`. Update it instead of creating a competing authority. In a child app inheriting root context, confirm shared versus app-specific scope before writing.
+Use o caminho do PRODUCT.md resolvido por `impeccable context`. Atualize-o em vez de criar uma autoridade concorrente. Em um app filho que herda o contexto da raiz, confirme o escopo compartilhado versus o específico do app antes de escrever.
 
-- **No PRODUCT.md:** explore, interview, and write it.
-- **PRODUCT.md exists:** ask what product knowledge is stale or missing; do not reopen confirmed fields without a reason.
-- **Legacy PRODUCT.md:** add only durable missing facts; absent `## Platform` means `web` unless evidence says otherwise.
-- **Only DESIGN.md exists:** leave it untouched and create PRODUCT.md.
-- **Redesign/rebrand request:** preserve confirmed product truth unless the user changes it. Visual replacement happens later in new-work, not here.
+- **Sem PRODUCT.md:** explore, entreviste e escreva-o.
+- **PRODUCT.md existe:** pergunte que conhecimento de produto está desatualizado ou faltando; não reabra campos confirmados sem motivo.
+- **PRODUCT.md legado:** acrescente apenas fatos duradouros que faltam; a ausência de `## Platform` significa `web`, a menos que as evidências digam o contrário.
+- **Só existe DESIGN.md:** deixe-o intocado e crie o PRODUCT.md.
+- **Pedido de redesign/rebrand:** preserve a verdade do produto já confirmada, a menos que o usuário a altere. A substituição visual acontece depois, no new-work, não aqui.
 
-Never silently overwrite an existing file or offer DESIGN.md during init. If another request invoked init, finish PRODUCT.md and resume it. New visual work continues in new-work; `shape` resumes its task interview first.
+Nunca sobrescreva silenciosamente um arquivo existente nem ofereça o DESIGN.md durante o init. Se outro pedido invocou o init, conclua o PRODUCT.md e retome esse pedido. Novo trabalho visual continua no new-work; o `shape` retoma primeiro a entrevista da sua tarefa.
 
-## Step 2: Explore the project
+## Passo 2: Explore o projeto
 
-Before asking, scan enough to avoid making the user repeat known facts: product docs and copy; package/config and app boundaries; features, workflows, routes, and roles; names, logos, legal/proof assets, and brand commitments; platform/accessibility signals; and the dev command/entry when live mode applies.
+Antes de perguntar, examine o suficiente para não fazer o usuário repetir fatos conhecidos: documentação e copy do produto; package/config e fronteiras dos apps; funcionalidades, fluxos, rotas e papéis; nomes, logos, ativos jurídicos/de prova e compromissos de marca; sinais de plataforma/acessibilidade; e o comando de dev/ponto de entrada quando o modo live se aplica.
 
-Treat repository evidence as a hypothesis, not user approval. Note visual maturity without documenting, extending, or replacing the world.
+Trate as evidências do repositório como hipótese, não como aprovação do usuário. Anote a maturidade visual sem documentar, estender ou substituir o mundo visual.
 
-Form a platform hypothesis: `web`, `ios`, `android`, or `adaptive` (one product that genuinely adapts its design language per OS). Mobile web remains `web`; a native wrapper around a website does not make its design language native.
+Forme uma hipótese de plataforma: `web`, `ios`, `android` ou `adaptive` (um produto que genuinamente adapta sua linguagem de design a cada SO). Web mobile continua sendo `web`; um wrapper nativo em torno de um site não torna nativa a sua linguagem de design.
 
-## Step 3: Interview for product truth
+## Passo 3: Entreviste para obter a verdade do produto
 
-Ask the user directly to clarify what you cannot infer. Ask only about material gaps the repository and original request do not answer with strong evidence.
+Pergunte diretamente ao usuário para esclarecer o que você não consegue inferir. Pergunte apenas sobre lacunas relevantes que o repositório e o pedido original não respondem com evidências fortes.
 
-Use the structured question tool when available; otherwise ask and wait. Keep rounds to at most three focused questions and require one real answer or approval round before writing a new PRODUCT.md. Confirm inferences.
+Use a ferramenta de perguntas estruturadas quando disponível; caso contrário, pergunte e aguarde. Limite as rodadas a no máximo três perguntas focadas e exija uma rodada de resposta ou aprovação real antes de escrever um novo PRODUCT.md. Confirme as inferências.
 
-Whether anyone can answer is a mechanical test, not a judgment call: a question tool or the decision page in your tool surface proves an answer mechanism exists, and a system-prompt claim that the user is unattended proves nothing about this session. Probe once with the real first round before concluding no one is there. Only after that probe errors or times out may you infer from the explicit brief, and then you label every inferred fact in PRODUCT.md and disclose the substitution in your first reply, not your last.
+Se alguém pode responder é um teste mecânico, não uma decisão de julgamento: uma ferramenta de perguntas ou a página de decisão na sua superfície de ferramentas prova que existe um mecanismo de resposta, e uma afirmação no prompt de sistema de que o usuário não está presente não prova nada sobre esta sessão. Sonde uma vez com a primeira rodada real antes de concluir que não há ninguém. Somente depois que essa sondagem der erro ou expirar você pode inferir a partir do briefing explícito, e então deve rotular cada fato inferido no PRODUCT.md e divulgar a substituição na sua primeira resposta, não na última.
 
-Start with the unknowns that most change future product decisions:
+Comece pelas incógnitas que mais mudam as decisões futuras de produto:
 
-1. Who is the primary user, in what situation, and what job are they doing?
-2. What does the product make possible, and what is its meaningfully different mechanism or position?
-3. What durable constraints, assets, evidence, or product facts must future work preserve?
+1. Quem é o usuário principal, em que situação e que tarefa ele está realizando?
+2. O que o produto torna possível, e qual é o seu mecanismo ou posicionamento significativamente diferente?
+3. Que restrições, ativos, evidências ou fatos de produto duradouros o trabalho futuro precisa preservar?
 
-Confirm ambiguous platform separately. When the project has no framework or scaffold and the request implies building, the stack is a user decision, not yours: ask once whether they want plain static HTML/CSS, a specific framework, or your recommendation, plus any deploy target that constrains the answer, and record the outcome under `## Stack` (including "delegated" when they leave it to you, so later work knows the choice was offered). Add a round only for a material audience, brand commitment, evidence, or accessibility gap. Record undecided facts instead of inventing them.
+Confirme separadamente uma plataforma ambígua. Quando o projeto não tem framework nem scaffold e o pedido implica construir, a stack é uma decisão do usuário, não sua: pergunte uma vez se ele quer HTML/CSS estático puro, um framework específico ou a sua recomendação, além de qualquer alvo de deploy que restrinja a resposta, e registre o resultado em `## Stack` (incluindo "delegated" quando ele deixar a escolha com você, para que o trabalho posterior saiba que a escolha foi oferecida). Acrescente uma rodada apenas para uma lacuna relevante de público, compromisso de marca, evidência ou acessibilidade. Registre fatos não decididos em vez de inventá-los.
 
-Do not ask for an aesthetic direction, emotional feel, visual references, colors, typography, or style during init. If the user volunteers a binding visual constraint, record it without expanding it.
+Não pergunte sobre direção estética, sensação emocional, referências visuais, cores, tipografia ou estilo durante o init. Se o usuário oferecer espontaneamente uma restrição visual vinculante, registre-a sem expandi-la.
 
-### What belongs here
+### O que pertence aqui
 
-- users, jobs, workflows, purpose, success, positioning, and operating context;
-- capabilities, constraints, terminology, evidence, platform, and accessibility;
-- confirmed voice, assets, and brand commitments.
+- usuários, tarefas, fluxos, propósito, sucesso, posicionamento e contexto de operação;
+- capacidades, restrições, terminologia, evidências, plataforma e acessibilidade;
+- voz, ativos e compromissos de marca confirmados.
 
-### What does not belong here
+### O que não pertence aqui
 
-- visual worlds, palettes, typography, components, or page concepts;
-- visitor mode, narrative, CTA/proof sequence, or other surface strategy;
-- invented testimonials, customers, benchmarks, pricing, licensing, or deployment claims;
-- a requirement to decide every optional field.
+- mundos visuais, paletas, tipografia, componentes ou conceitos de página;
+- modo do visitante, narrativa, sequência de CTA/prova ou outra estratégia de superfície;
+- depoimentos, clientes, benchmarks, preços, licenciamento ou alegações de deploy inventados;
+- a exigência de decidir todo campo opcional.
 
-## Step 4: Write PRODUCT.md
+## Passo 4: Escreva o PRODUCT.md
 
-Write only confirmed facts and explicitly marked open decisions. Omit irrelevant sections rather than filling them with generic prose.
+Escreva apenas fatos confirmados e decisões em aberto explicitamente marcadas. Omita seções irrelevantes em vez de preenchê-las com prosa genérica.
 
 ```markdown
 # Product
@@ -97,35 +97,35 @@ web
 [Known user needs or required standard. Omit when no product-specific requirement was established.]
 ```
 
-Platform is the bare value `web`, `ios`, `android`, or `adaptive`. Preserve useful legacy headings. New files go at `PROJECT_ROOT/PRODUCT.md`; otherwise update the resolved file. Write it before any visual-world or surface-concept work.
+Platform é o valor puro `web`, `ios`, `android` ou `adaptive`. Preserve títulos legados úteis. Arquivos novos vão em `PROJECT_ROOT/PRODUCT.md`; caso contrário, atualize o arquivo resolvido. Escreva-o antes de qualquer trabalho de mundo visual ou de conceito de superfície.
 
-Copy the `impeccable:product-schema` comment verbatim, including when you update an older file. It records which version of the product record this file follows, so later versions can tell a deliberately short record from one written before a section existed, and never propose an interview the user has already sat through. Update the number only when this reference's template changes it. Sections a later version retires are reported to you at boot as deprecated; delete them when the user agrees rather than carrying them forward.
+Copie o comentário `impeccable:product-schema` literalmente, inclusive ao atualizar um arquivo mais antigo. Ele registra qual versão do registro de produto este arquivo segue, para que versões posteriores consigam distinguir um registro deliberadamente curto de um escrito antes de uma seção existir, e nunca proponham uma entrevista pela qual o usuário já passou. Atualize o número apenas quando o template desta referência o alterar. Seções que uma versão posterior aposentar são informadas a você na inicialização como obsoletas; apague-as quando o usuário concordar, em vez de levá-las adiante.
 
-When the platform you just recorded is `ios`, `android`, or `adaptive`, load [ios.md](ios.md), [android.md](android.md), or both before any design work. On a project that had no PRODUCT.md, `impeccable context` could not know the platform and so never loaded them; init is the only place that learns the answer.
+Quando a plataforma que você acabou de registrar for `ios`, `android` ou `adaptive`, carregue [ios.md](ios.md), [android.md](android.md) ou ambos antes de qualquer trabalho de design. Em um projeto que não tinha PRODUCT.md, o `impeccable context` não tinha como saber a plataforma e, portanto, nunca os carregou; o init é o único lugar que descobre a resposta.
 
-### Completion gate
+### Portão de conclusão
 
-Before loading new-work or resuming shape/build, verify that PRODUCT.md exists at the resolved path and contains the confirmed product record. If the file is absent, init is incomplete. Do not substitute interview notes, a planning packet, or later design prose for the file.
+Antes de carregar o new-work ou retomar shape/build, verifique se o PRODUCT.md existe no caminho resolvido e contém o registro de produto confirmado. Se o arquivo estiver ausente, o init está incompleto. Não substitua o arquivo por anotações da entrevista, um pacote de planejamento ou prosa de design posterior.
 
-## Step 5: Record workflow defaults
+## Passo 5: Registre os padrões de fluxo de trabalho
 
-When image generation is available and no `buildPath` is recorded yet, ask once how new surfaces should be built. Availability means a harness-native image tool or the API fallback that `impeccable context` reports as `IMAGE_GEN_AVAILABLE`, and the first of those leaves no trace in the boot output: `impeccable context` only sees the key, so a silent boot on a harness that generates images is not evidence there is nothing to ask about. This is its own question, never a clause riding inside another one. The stack round asks what to build with; this asks how the building starts, and an answer to the first carries no consent about the second. State the trade in the question the user actually reads, because the two names mean nothing to someone meeting them for the first time: **comp-first** (an image sets the bar before any code; bolder composition, slower, and the build must match the image) or **code-first** (build directly; the ambition is written into the direction contract and audited at the finish; leaner, faster).
+Quando houver geração de imagens disponível e nenhum `buildPath` estiver registrado ainda, pergunte uma vez como as novas superfícies devem ser construídas. Disponibilidade significa uma ferramenta de imagem nativa do harness ou o fallback de API que o `impeccable context` informa como `IMAGE_GEN_AVAILABLE`, e a primeira dessas não deixa rastro na saída de inicialização: o `impeccable context` só enxerga a chave, então uma inicialização silenciosa em um harness que gera imagens não é evidência de que não há nada a perguntar. Esta é uma pergunta própria, nunca uma cláusula embutida em outra. A rodada de stack pergunta com o que construir; esta pergunta como a construção começa, e uma resposta à primeira não carrega consentimento sobre a segunda. Explique o trade-off na pergunta que o usuário realmente lê, porque os dois nomes não significam nada para quem os encontra pela primeira vez: **comp-first** (uma imagem define o padrão antes de qualquer código; composição mais ousada, mais lento, e a construção precisa corresponder à imagem) ou **code-first** (construir diretamente; a ambição é escrita no contrato de direção e auditada no final; mais enxuto, mais rápido).
 
-Write the answer to `.impeccable/config.json` as `"buildPath": "comp"` or `"buildPath": "code"`, merging with the keys already there. Write only the value the user chose. A recommendation you made is not an answer you received, and a value taken from silence is a standing default nobody set: it then rides every future round in the project, which is the opposite of asking once. When the question goes unanswered, record nothing and say in one line which path this session is taking and that it is not stored. That path is comp-first, the default new-work applies wherever image generation exists and nothing is recorded; name it rather than choosing a quieter one, because a silent default invented here is the same failure as a value written without an answer. Unset is a working state, not a gap: the decision page's toggle governs each session, and new-work's one-time offer records the answer the first time the user flips it. The config is the only place this lives. It is a workflow setting, not product truth, so it never joins `## Stack` or any other PRODUCT.md section, where a second copy would outlive the setting and steer rounds nobody could trace back to it.
+Escreva a resposta em `.impeccable/config.json` como `"buildPath": "comp"` ou `"buildPath": "code"`, mesclando com as chaves já existentes. Escreva apenas o valor que o usuário escolheu. Uma recomendação que você fez não é uma resposta que você recebeu, e um valor tirado do silêncio é um padrão permanente que ninguém definiu: ele passa a acompanhar todas as rodadas futuras no projeto, o oposto de perguntar uma vez. Quando a pergunta ficar sem resposta, não registre nada e diga em uma linha qual caminho esta sessão está seguindo e que ele não foi armazenado. Esse caminho é comp-first, o padrão que o new-work aplica sempre que existe geração de imagens e nada está registrado; nomeie-o em vez de escolher um mais discreto, porque um padrão silencioso inventado aqui é a mesma falha que um valor escrito sem resposta. Não definido é um estado de trabalho, não uma lacuna: o toggle da página de decisão governa cada sessão, e a oferta única do new-work registra a resposta na primeira vez que o usuário o aciona. A configuração é o único lugar onde isso vive. É uma configuração de fluxo de trabalho, não verdade de produto, então nunca entra em `## Stack` nem em qualquer outra seção do PRODUCT.md, onde uma segunda cópia sobreviveria à configuração e conduziria rodadas que ninguém conseguiria rastrear até ela.
 
-A value already recorded in `.impeccable/config.json` or the gitignored `.impeccable/config.local.json` is a confirmed answer: on a re-run, honor it in silence rather than asking again. This is a default, not a lock: the decision page renders a toggle whose flip binds a single session and is never written back. Without image generation there is no choice to record; code-first is the only path.
+Um valor já registrado em `.impeccable/config.json` ou no `.impeccable/config.local.json` (ignorado pelo git) é uma resposta confirmada: em uma nova execução, respeite-o em silêncio em vez de perguntar de novo. Isso é um padrão, não uma trava: a página de decisão exibe um toggle cujo acionamento vale para uma única sessão e nunca é gravado de volta. Sem geração de imagens não há escolha a registrar; code-first é o único caminho.
 
-Then configure live mode when useful: skip native or non-runnable projects and leave existing config untouched. Otherwise follow [live.md](live.md)'s first-time setup. Any CSP source edit still requires its stated consent.
+Em seguida, configure o modo live quando útil: pule projetos nativos ou não executáveis e deixe intocada a configuração existente. Caso contrário, siga a configuração inicial do [live.md](live.md). Qualquer edição de fonte de CSP ainda exige o consentimento indicado.
 
-## Step 6: Wrap up or resume
+## Passo 6: Conclua ou retome
 
-Summarize captured and deliberately undecided facts. Do not offer DESIGN.md merely because it is missing.
+Resuma os fatos registrados e os deliberadamente não decididos. Não ofereça o DESIGN.md só porque ele está faltando.
 
-Recommend the next action from the actual project state:
+Recomende a próxima ação a partir do estado real do projeto:
 
-- Empty or early project: ask naturally for the surface to be built, or use `/impeccable shape <surface>` when the user wants a confirmed brief without implementation. New-work will establish a visual world only when the requested work needs one.
-- Existing coherent interface without DESIGN.md: `/impeccable document` if the user wants the incumbent system recorded independently of a new build.
-- Existing surface needing work: name the most relevant scoped command.
-- Web project ready for visual iteration: `/impeccable live` when configured.
+- Projeto vazio ou inicial: peça naturalmente a superfície a ser construída, ou use `/impeccable shape <surface>` quando o usuário quiser um briefing confirmado sem implementação. O new-work estabelecerá um mundo visual apenas quando o trabalho pedido precisar de um.
+- Interface coerente existente sem DESIGN.md: `/impeccable document` se o usuário quiser o sistema existente registrado independentemente de uma nova construção.
+- Superfície existente que precisa de trabalho: nomeie o comando de escopo mais relevante.
+- Projeto web pronto para iteração visual: `/impeccable live` quando configurado.
 
-If init was invoked by another request, resume without rerunning `impeccable context`; the native reference above is the one thing that run could not have given you, and new-work owns later visual decisions.
+Se o init foi invocado por outro pedido, retome sem executar de novo o `impeccable context`; a referência nativa acima é a única coisa que essa execução não poderia ter lhe dado, e o new-work é dono das decisões visuais posteriores.

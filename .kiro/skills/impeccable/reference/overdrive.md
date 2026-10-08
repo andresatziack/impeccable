@@ -1,91 +1,91 @@
-Start your response with:
+Comece sua resposta com:
 
 ```
 ──────────── ⚡ OVERDRIVE ─────────────
 》》》 Entering overdrive mode...
 ```
 
-Push an interface past conventional limits. This isn't just about visual effects. It's about using the full power of the browser to make any part of an interface feel extraordinary: a table that handles a million rows, a dialog that morphs from its trigger, a form that validates in real-time with streaming feedback, a page transition that feels cinematic.
+Leve uma interface além dos limites convencionais. Não se trata apenas de efeitos visuais. Trata-se de usar todo o poder do navegador para fazer qualquer parte de uma interface parecer extraordinária: uma tabela que lida com um milhão de linhas, um diálogo que se transforma a partir do elemento que o acionou, um formulário que valida em tempo real com feedback em streaming, uma transição de página que parece cinematográfica.
 
-**EXTRA IMPORTANT FOR THIS COMMAND**: Context determines what "extraordinary" means. A particle system on a creative portfolio is impressive. The same particle system on a settings page is embarrassing. But a settings page with instant optimistic saves and animated state transitions? That's extraordinary too. Understand the project's personality and goals before deciding what's appropriate.
+**EXTRA IMPORTANTE PARA ESTE COMANDO**: o contexto determina o que "extraordinário" significa. Um sistema de partículas em um portfólio criativo impressiona. O mesmo sistema de partículas em uma página de configurações é constrangedor. Mas uma página de configurações com salvamentos otimistas instantâneos e transições de estado animadas? Isso também é extraordinário. Entenda a personalidade e os objetivos do projeto antes de decidir o que é apropriado.
 
-### Propose Before Building
+### Proponha antes de construir
 
-This command has the highest potential to misfire. Do NOT jump straight into implementation. You MUST:
+Este comando tem o maior potencial de dar errado. NÃO pule direto para a implementação. Você DEVE:
 
-1. **Think through 2-3 different directions**: consider different techniques, levels of ambition, and aesthetic approaches. For each direction, briefly describe what the result would look and feel like.
-2. **Get the user's pick before writing any code.** Ask the user directly to clarify what you cannot infer. Carry each direction's description and its trade-offs (browser support, performance cost, complexity) inside the option itself, so the user is choosing between things they can read. A structured question blocks the message it rides in until the user answers, so directions written alongside the question stay invisible while the user is being asked to choose between them.
-3. Only proceed with the direction the user confirms.
+1. **Pensar em 2-3 direções diferentes**: considere técnicas, níveis de ambição e abordagens estéticas diferentes. Para cada direção, descreva brevemente como o resultado ficaria e que sensação passaria.
+2. **Obter a escolha do usuário antes de escrever qualquer código.** Pergunte diretamente ao usuário para esclarecer o que você não consegue inferir. Coloque a descrição de cada direção e seus trade-offs (suporte de navegadores, custo de desempenho, complexidade) dentro da própria opção, para que o usuário escolha entre coisas que ele consegue ler. Uma pergunta estruturada bloqueia a mensagem em que vai até que o usuário responda, então direções escritas junto da pergunta ficam invisíveis enquanto se pede ao usuário que escolha entre elas.
+3. Só prosseguir com a direção que o usuário confirmar.
 
-Skipping this step risks building something embarrassing that needs to be thrown away.
+Pular esta etapa arrisca construir algo constrangedor que precisará ser jogado fora.
 
-### Iterate with Browser Automation
+### Itere com automação de navegador
 
-Technically ambitious effects almost never work on the first try. You MUST actively use browser automation tools to preview your work, visually verify the result, and iterate. Do not assume the effect looks right, check it. Expect multiple rounds of refinement. The gap between "technically works" and "looks extraordinary" is closed through visual iteration, not code alone.
+Efeitos tecnicamente ambiciosos quase nunca funcionam de primeira. Você DEVE usar ativamente ferramentas de automação de navegador para pré-visualizar seu trabalho, verificar visualmente o resultado e iterar. Não presuma que o efeito está certo; confira. Espere várias rodadas de refinamento. A distância entre "tecnicamente funciona" e "parece extraordinário" é vencida com iteração visual, não apenas com código.
 
 ---
 
-## Assess What "Extraordinary" Means Here
+## Avalie o que "extraordinário" significa aqui
 
-The right kind of technical ambition depends entirely on what you're working with. Before choosing a technique, ask: **what would make a user of THIS specific interface say "wow, that's nice"?**
+O tipo certo de ambição técnica depende inteiramente daquilo com que você está trabalhando. Antes de escolher uma técnica, pergunte: **o que faria um usuário DESTA interface específica dizer "uau, que legal"?**
 
-### For visual/marketing surfaces
-Pages, hero sections, landing pages, portfolios: the "wow" is often sensory: a scroll-driven reveal, a shader background, a cinematic page transition, generative art that responds to the cursor.
+### Para superfícies visuais/de marketing
+Páginas, seções hero, landing pages, portfólios: o "uau" costuma ser sensorial: uma revelação guiada pela rolagem, um fundo com shader, uma transição de página cinematográfica, arte generativa que responde ao cursor.
 
-### For functional UI
-Tables, forms, dialogs, navigation: the "wow" is in how it FEELS: a dialog that morphs from the button that triggered it via View Transitions, a data table that renders 100k rows at 60fps via virtual scrolling, a form with streaming validation that feels instant, drag-and-drop with spring physics.
+### Para UI funcional
+Tabelas, formulários, diálogos, navegação: o "uau" está em como ela SE SENTE: um diálogo que se transforma a partir do botão que o acionou via View Transitions, uma tabela de dados que renderiza 100 mil linhas a 60fps via virtual scrolling, um formulário com validação em streaming que parece instantânea, arrastar e soltar com física de mola.
 
-### For performance-critical UI
-The "wow" is invisible but felt: a search that filters 50k items without a flicker, a complex form that never blocks the main thread, an image editor that processes in near-real-time. The interface just never hesitates.
+### Para UI crítica em desempenho
+O "uau" é invisível, mas sentido: uma busca que filtra 50 mil itens sem piscar, um formulário complexo que nunca bloqueia a thread principal, um editor de imagens que processa quase em tempo real. A interface simplesmente nunca hesita.
 
-### For data-heavy interfaces
-Charts and dashboards: the "wow" is in fluidity: GPU-accelerated rendering via Canvas/WebGL for massive datasets, animated transitions between data states, force-directed graph layouts that settle naturally.
+### Para interfaces com muitos dados
+Gráficos e dashboards: o "uau" está na fluidez: renderização acelerada por GPU via Canvas/WebGL para conjuntos de dados enormes, transições animadas entre estados dos dados, layouts de grafos dirigidos por força que se acomodam naturalmente.
 
-**The common thread**: something about the implementation goes beyond what users expect from a web interface. The technique serves the experience, not the other way around.
+**O fio condutor**: algo na implementação vai além do que os usuários esperam de uma interface web. A técnica serve à experiência, não o contrário.
 
-## The Toolkit
+## O kit de ferramentas
 
-Organized by what you're trying to achieve, not by technology name.
+Organizado pelo que você está tentando alcançar, não pelo nome da tecnologia.
 
-### Make transitions feel cinematic
-- **View Transitions API** (same-document: all browsers; cross-document: no Firefox): shared element morphing between states. A list item expanding into a detail page. A button morphing into a dialog. This is the closest thing to native FLIP animations.
-- **`@starting-style`** (all browsers): animate elements from `display: none` to visible with CSS only, including entry keyframes
-- **Spring physics**: natural motion with mass, tension, and damping instead of cubic-bezier. Libraries: motion (formerly Framer Motion), GSAP, or roll your own spring solver.
+### Faça as transições parecerem cinematográficas
+- **View Transitions API** (mesmo documento: todos os navegadores; entre documentos: sem Firefox): transformação de elementos compartilhados entre estados. Um item de lista que se expande em uma página de detalhe. Um botão que se transforma em um diálogo. É o mais próximo de animações FLIP nativas.
+- **`@starting-style`** (todos os navegadores): anime elementos de `display: none` até visíveis apenas com CSS, incluindo keyframes de entrada
+- **Física de mola**: movimento natural com massa, tensão e amortecimento em vez de cubic-bezier. Bibliotecas: motion (antigo Framer Motion), GSAP, ou escreva seu próprio solucionador de molas.
 
-### Tie animation to scroll position
-- **Scroll-driven animations** (`animation-timeline: scroll()`): CSS-only, no JS. Parallax, progress bars, reveal sequences all driven by scroll position. (Chrome/Edge/Safari; Firefox: flag only; always provide a static fallback)
+### Vincule a animação à posição de rolagem
+- **Animações guiadas pela rolagem** (`animation-timeline: scroll()`): só CSS, sem JS. Parallax, barras de progresso e sequências de revelação, tudo guiado pela posição de rolagem. (Chrome/Edge/Safari; Firefox: apenas com flag; sempre forneça um fallback estático)
 
-### Render beyond CSS
-- **WebGL** (all browsers): shader effects, post-processing, particle systems. Libraries: Three.js, OGL (lightweight), regl. Use for effects CSS can't express.
-- **WebGPU** (Chrome/Edge; Safari 26+; Firefox on Windows/macOS; flag only on Firefox Linux/Android): next-gen GPU compute, more powerful than WebGL. Always fall back to WebGL2.
-- **Canvas 2D / OffscreenCanvas**: custom rendering, pixel manipulation, or moving heavy rendering off the main thread entirely via Web Workers + OffscreenCanvas.
-- **SVG filter chains**: displacement maps, turbulence, morphology for organic distortion effects. CSS-animatable.
+### Renderize além do CSS
+- **WebGL** (todos os navegadores): efeitos de shader, pós-processamento, sistemas de partículas. Bibliotecas: Three.js, OGL (leve), regl. Use para efeitos que o CSS não consegue expressar.
+- **WebGPU** (Chrome/Edge; Safari 26+; Firefox no Windows/macOS; apenas com flag no Firefox para Linux/Android): computação de GPU de nova geração, mais poderosa que o WebGL. Sempre tenha fallback para WebGL2.
+- **Canvas 2D / OffscreenCanvas**: renderização personalizada, manipulação de pixels ou tirar totalmente a renderização pesada da thread principal via Web Workers + OffscreenCanvas.
+- **Cadeias de filtros SVG**: mapas de deslocamento, turbulência, morfologia para efeitos de distorção orgânica. Animáveis via CSS.
 
-### Make data feel alive
-- **Virtual scrolling**: render only visible rows for tables/lists with tens of thousands of items. No library required for simple cases; TanStack Virtual for complex ones.
-- **GPU-accelerated charts**: Canvas or WebGL-rendered data visualization for datasets too large for SVG/DOM. Libraries: deck.gl, regl-based custom renderers.
-- **Animated data transitions**: morph between chart states rather than replacing. D3's `transition()` or View Transitions for DOM-based charts.
+### Faça os dados parecerem vivos
+- **Virtual scrolling**: renderize apenas as linhas visíveis em tabelas/listas com dezenas de milhares de itens. Nenhuma biblioteca é necessária em casos simples; TanStack Virtual para os complexos.
+- **Gráficos acelerados por GPU**: visualização de dados renderizada em Canvas ou WebGL para conjuntos de dados grandes demais para SVG/DOM. Bibliotecas: deck.gl, renderizadores personalizados baseados em regl.
+- **Transições de dados animadas**: transforme entre estados do gráfico em vez de substituí-los. `transition()` do D3 ou View Transitions para gráficos baseados em DOM.
 
-### Animate complex properties
-- **`@property`** (all browsers): register custom CSS properties with types, enabling animation of gradients, colors, and complex values that CSS can't normally interpolate.
-- **Web Animations API** (all browsers): JavaScript-driven animations with the performance of CSS. Composable, cancellable, reversible. The foundation for complex choreography.
+### Anime propriedades complexas
+- **`@property`** (todos os navegadores): registre propriedades CSS personalizadas com tipos, permitindo animar gradientes, cores e valores complexos que o CSS normalmente não consegue interpolar.
+- **Web Animations API** (todos os navegadores): animações controladas por JavaScript com o desempenho do CSS. Componíveis, canceláveis, reversíveis. A base para coreografias complexas.
 
-### Push performance boundaries
-- **Web Workers**: move computation off the main thread. Heavy data processing, image manipulation, search indexing: anything that would cause jank.
-- **OffscreenCanvas**: render in a Worker thread. The main thread stays free while complex visuals render in the background.
-- **WASM**: near-native performance for computation-heavy features. Image processing, physics simulations, codecs.
+### Amplie os limites de desempenho
+- **Web Workers**: tire a computação da thread principal. Processamento pesado de dados, manipulação de imagens, indexação de buscas: qualquer coisa que causaria travamentos.
+- **OffscreenCanvas**: renderize em uma thread de Worker. A thread principal fica livre enquanto visuais complexos são renderizados em segundo plano.
+- **WASM**: desempenho quase nativo para funcionalidades com computação pesada. Processamento de imagens, simulações físicas, codecs.
 
-### Interact with the device
-- **Web Audio API**: spatial audio, audio-reactive visualizations, sonic feedback. Requires user gesture to start.
-- **Device APIs**: orientation, ambient light, geolocation. Use sparingly and always with user permission.
+### Interaja com o dispositivo
+- **Web Audio API**: áudio espacial, visualizações reativas ao áudio, feedback sonoro. Exige um gesto do usuário para começar.
+- **APIs de dispositivo**: orientação, luz ambiente, geolocalização. Use com moderação e sempre com a permissão do usuário.
 
-**NOTE**: This command is about enhancing how an interface FEELS, not changing what a product DOES. Adding real-time collaboration, offline support, or new backend capabilities are product decisions, not UI enhancements. Focus on making existing features feel extraordinary.
+**OBSERVAÇÃO**: este comando trata de aprimorar como uma interface SE SENTE, não de mudar o que um produto FAZ. Adicionar colaboração em tempo real, suporte offline ou novas capacidades de backend são decisões de produto, não aprimoramentos de UI. Concentre-se em fazer as funcionalidades existentes parecerem extraordinárias.
 
-## Implement with Discipline
+## Implemente com disciplina
 
-### Progressive enhancement is non-negotiable
+### Aprimoramento progressivo é inegociável
 
-Every technique must degrade gracefully. The experience without the enhancement must still be good.
+Toda técnica deve degradar com elegância. A experiência sem o aprimoramento ainda precisa ser boa.
 
 ```css
 @supports (animation-timeline: scroll()) {
@@ -99,29 +99,29 @@ else if (canvas.getContext('webgl2')) { /* WebGL2 fallback */ }
 /* CSS-only fallback must still look good */
 ```
 
-### Performance rules
+### Regras de desempenho
 
-- Target 60fps. If dropping below 50, simplify.
-- Lazy-initialize heavy resources (WebGL contexts, WASM modules) only when near viewport.
-- Pause off-screen rendering. Kill what you can't see.
-- Test on real mid-range devices, not just your development machine.
+- Mire em 60fps. Se cair abaixo de 50, simplifique.
+- Inicialize recursos pesados (contextos WebGL, módulos WASM) de forma preguiçosa, apenas quando estiverem perto da viewport.
+- Pause a renderização fora da tela. Elimine o que não dá para ver.
+- Teste em dispositivos intermediários reais, não apenas na sua máquina de desenvolvimento.
 
-### Polish is the difference
+### O polimento faz a diferença
 
-The gap between "cool" and "extraordinary" is in the last 20% of refinement: the easing curve on a spring animation, the timing offset in a staggered reveal, the subtle secondary motion that makes a transition feel physical. Don't ship the first version that works; ship the version that feels inevitable.
+A distância entre "legal" e "extraordinário" está nos últimos 20% de refinamento: a curva de easing de uma animação de mola, o deslocamento de tempo em uma revelação escalonada, o movimento secundário sutil que faz uma transição parecer física. Não entregue a primeira versão que funciona; entregue a versão que parece inevitável.
 
-**NEVER**:
-- Ship effects that cause jank on mid-range devices
-- Use bleeding-edge APIs without a functional fallback
-- Add sound without explicit user opt-in
-- Use technical ambition to mask weak design fundamentals; fix those first with other commands
-- Layer multiple competing extraordinary moments. Focus creates impact, excess creates noise
+**NUNCA**:
+- Entregue efeitos que causem travamentos em dispositivos intermediários
+- Use APIs de ponta sem um fallback funcional
+- Adicione som sem consentimento explícito do usuário
+- Use ambição técnica para mascarar fundamentos de design fracos; corrija-os primeiro com outros comandos
+- Empilhe vários momentos extraordinários competindo entre si. Foco gera impacto, excesso gera ruído
 
-## Verify the Result
+## Verifique o resultado
 
-- **The wow test**: Show it to someone who hasn't seen it. Do they react?
-- **The removal test**: Take it away. Does the experience feel diminished, or does nobody notice?
-- **The device test**: Run it on a phone, a tablet, a Chromebook. Still smooth?
-- **The context test**: Does this make sense for THIS brand and audience?
+- **O teste do uau**: mostre a alguém que ainda não viu. A pessoa reage?
+- **O teste da remoção**: tire o efeito. A experiência parece empobrecida, ou ninguém percebe?
+- **O teste do dispositivo**: rode em um celular, um tablet, um Chromebook. Continua fluido?
+- **O teste do contexto**: isso faz sentido para ESTA marca e ESTE público?
 
-"Technically extraordinary" isn't about using the newest API. It's about making an interface do something users didn't think a website could do.
+"Tecnicamente extraordinário" não significa usar a API mais nova. Significa fazer uma interface realizar algo que os usuários não imaginavam que um site pudesse fazer.

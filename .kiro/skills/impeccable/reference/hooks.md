@@ -1,113 +1,114 @@
 # /impeccable hooks
 
-Manage the **design detector hook** for the current project.
+Gerencie o **hook do detector de design** do projeto atual.
 
-The hook runs the impeccable design detector on direct file edits to design-relevant files (`.tsx`, `.jsx`, `.html`, `.vue`, `.svelte`, `.astro`, `.css`, `.scss`, `.sass`, `.less`, `.ts`, `.js`). Claude Code, Codex, and GitHub Copilot use a post-tool-use hook and push a short system reminder into the agent's context after the edit; findings get a correction prompt, pending issues get a re-nudge, and clean UI-ish files get a short ack unless quiet mode is on (`hook.quiet` in config). Plain `.ts` and `.js` files are still scanned, but stay quiet unless the detector finds something. Cursor uses `preToolUse` to block bad proposed writes before they land and stays silent when it allows a clean write. Grok Build fires the same PostToolUse scan to mark touched files, then surfaces findings on Stop `additionalContext`. Do not expect a Grok per-edit reminder: Grok discards that stdout.
+O hook executa o detector de design do impeccable em edições diretas de arquivos relevantes para design (`.tsx`, `.jsx`, `.html`, `.vue`, `.svelte`, `.astro`, `.css`, `.scss`, `.sass`, `.less`, `.ts`, `.js`). Claude Code, Codex e GitHub Copilot usam um hook pós-uso de ferramenta e inserem um breve lembrete de sistema no contexto do agente após a edição; achados recebem um prompt de correção, problemas pendentes recebem um novo lembrete, e arquivos limpos com cara de UI recebem uma breve confirmação, a menos que o modo silencioso esteja ativado (`hook.quiet` na configuração). Arquivos `.ts` e `.js` simples continuam sendo analisados, mas ficam em silêncio a menos que o detector encontre algo. O Cursor usa `preToolUse` para bloquear escritas propostas ruins antes que elas aconteçam e fica em silêncio quando permite uma escrita limpa. O Grok Build dispara a mesma análise PostToolUse para marcar os arquivos tocados e depois exibe os achados no `additionalContext` do Stop. Não espere um lembrete por edição no Grok: o Grok descarta esse stdout.
 
-The detector rules run in two tiers. The per-edit hook surfaces only the immediate tier: mechanical, unambiguous problems worth interrupting an edit for, such as broken images, overflowing content, contrast and legibility failures, gradient text, glow shadows, and design-system drift. Everything else (copy cadence, palette and typography taste, layout rhythm) is deferred to a deep pass on the `Stop` hook event, which runs the full rule set over every UI file touched in the session and surfaces the remaining findings once, deduplicated against what the per-edit pass already reported. A session with nothing left to report stops silently. Set `hook.perEditRules` to `"all"` in `.impeccable/config.json` to restore the full rule set on every edit. The Stop deep pass is wired for Claude Code, Codex, and Grok Build, which dispatch a native `Stop` hook event. Cursor does not get one (its stop hook is not consistently dispatched; the pre-write gate covers it), and GitHub Copilot's stop-style events do not feed context back to the model, so they keep the full detector per edit. Grok also fires an observe-only Stop with `reason: "shutdown"` after `end_turn`; skip that one, scan only `end_turn`.
+As regras do detector rodam em dois níveis. O hook por edição exibe apenas o nível imediato: problemas mecânicos e inequívocos que valem a interrupção de uma edição, como imagens quebradas, conteúdo transbordando, falhas de contraste e legibilidade, texto em gradiente, sombras de brilho e desvio do design system. Todo o resto (cadência da copy, gosto de paleta e tipografia, ritmo do layout) é adiado para uma passada profunda no evento de hook `Stop`, que executa o conjunto completo de regras sobre cada arquivo de UI tocado na sessão e exibe os achados restantes uma única vez, sem duplicar o que a passada por edição já reportou. Uma sessão sem nada a reportar termina em silêncio. Defina `hook.perEditRules` como `"all"` em `.impeccable/config.json` para restaurar o conjunto completo de regras em toda edição. A passada profunda do Stop está ligada para Claude Code, Codex e Grok Build, que disparam um evento de hook `Stop` nativo. O Cursor não recebe uma (seu hook de parada não é disparado de forma consistente; o filtro pré-escrita o cobre), e os eventos do tipo stop do GitHub Copilot não devolvem contexto ao modelo, então eles mantêm o detector completo por edição. O Grok também dispara um Stop somente de observação com `reason: "shutdown"` após `end_turn`; pule esse, analise apenas `end_turn`.
 
-Every hook is a mechanical pass. The reflexes no scanner catches live in [craft-floor.md](craft-floor.md), which the skill loads before it edits UI, so they apply whether or not a hook is wired. A session with no automatic hook gets one `MANUAL_DETECTOR_REQUIRED` directive from `impeccable context` asking for a single detector run at the end.
+Todo hook é uma passada mecânica. Os reflexos que nenhum scanner captura vivem em [craft-floor.md](craft-floor.md), que a skill carrega antes de editar a UI, então eles se aplicam haja ou não um hook ligado. Uma sessão sem hook automático recebe uma diretiva `MANUAL_DETECTOR_REQUIRED` de `impeccable context` pedindo uma única execução do detector no final.
 
-This command toggles the hook **per project** by editing `.impeccable/config.json` (the unified Impeccable config; hook runtime settings live under its `hook` key, and shared detector ignores live under `detector`). Per-developer overrides, including the install consent decision (`hook.consent`) the CLI records, live in the gitignored `.impeccable/config.local.json`. Set `hook.enabled: false` to turn the hook off, `hook.quiet: true` to silence the clean/pending acks, or `hook.auditLog` to a file path for an NDJSON log. The legacy `IMPECCABLE_HOOK_DISABLED`, `IMPECCABLE_HOOK_QUIET`, and `IMPECCABLE_HOOK_LOG` env vars are still honored and override these config values when set.
+Este comando ativa e desativa o hook **por projeto** editando `.impeccable/config.json` (a configuração unificada do Impeccable; as configurações de runtime do hook ficam sob a chave `hook`, e os ignores compartilhados do detector ficam sob `detector`). Sobrescritas por desenvolvedor, incluindo a decisão de consentimento de instalação (`hook.consent`) que a CLI registra, ficam no `.impeccable/config.local.json`, que é ignorado pelo git. Defina `hook.enabled: false` para desligar o hook, `hook.quiet: true` para silenciar as confirmações de limpo/pendente, ou `hook.auditLog` com um caminho de arquivo para um log NDJSON. As variáveis de ambiente legadas `IMPECCABLE_HOOK_DISABLED`, `IMPECCABLE_HOOK_QUIET` e `IMPECCABLE_HOOK_LOG` continuam sendo respeitadas e sobrescrevem esses valores de configuração quando definidas.
 
-Declare server-side template extensions under **`detector.extensions`** when the project uses Blade, Twig, ERB, or Handlebars files; the hook skips them otherwise because they sit outside the built-in extension list. One entry per extension, `{ "ext": ".blade.php", "engine": "html" }`. `engine` picks the analyzer (`html` for markup templates, `text` for JS/TS/CSS-like files) and defaults to `html`. Match against the end of the filename, so double extensions like `.blade.php` and `.html.erb` work. Config only adds extensions; the built-in list always applies.
+Declare extensões de templates do lado do servidor em **`detector.extensions`** quando o projeto usar arquivos Blade, Twig, ERB ou Handlebars; caso contrário, o hook os ignora porque ficam fora da lista de extensões embutida. Uma entrada por extensão, `{ "ext": ".blade.php", "engine": "html" }`. `engine` escolhe o analisador (`html` para templates de markup, `text` para arquivos semelhantes a JS/TS/CSS) e o padrão é `html`. A correspondência é feita contra o final do nome do arquivo, então extensões duplas como `.blade.php` e `.html.erb` funcionam. A configuração apenas adiciona extensões; a lista embutida sempre se aplica.
 
-Manual `npx impeccable detect` scans use the same project filter config by default: `detector.ignoreRules`, `detector.ignoreFiles`, `detector.ignoreValues`, and `detector.designSystem.enabled`. `hook.enabled` only controls automatic hook execution, not manual CLI scans. Use `npx impeccable detect --no-config ...` for a raw detector run that ignores project config/context. Use `npx impeccable ignores ...` for direct CLI CRUD on the same detector ignores.
+Análises manuais com `npx impeccable detect` usam por padrão a mesma configuração de filtros do projeto: `detector.ignoreRules`, `detector.ignoreFiles`, `detector.ignoreValues` e `detector.designSystem.enabled`. `hook.enabled` controla apenas a execução automática do hook, não as análises manuais pela CLI. Use `npx impeccable detect --no-config ...` para uma execução crua do detector que ignora a configuração/contexto do projeto. Use `npx impeccable ignores ...` para CRUD direto pela CLI sobre os mesmos ignores do detector.
 
-Supported harnesses: Claude Code (`.claude/settings.local.json` in the project, which is gitignored so the hook stays machine-local; a hook you move into the shared `settings.json` is honored in place too), Codex (`.codex/hooks.json` in the project), Cursor (`.cursor/hooks.json` in the project), Grok Build (`.grok/hooks/impeccable.json` in the project; requires `/hooks-trust` or `--trust`), and GitHub Copilot (`.github/hooks/impeccable.json` in the project, a team-shared committed file that both the Copilot CLI and the cloud agent read). For the Copilot CLI, repo-level hooks fire once `.github/hooks/impeccable.json` is committed to the repository's default branch.
+Harnesses suportados: Claude Code (`.claude/settings.local.json` no projeto, que é ignorado pelo git para que o hook fique local à máquina; um hook que você mover para o `settings.json` compartilhado também é respeitado onde estiver), Codex (`.codex/hooks.json` no projeto), Cursor (`.cursor/hooks.json` no projeto), Grok Build (`.grok/hooks/impeccable.json` no projeto; requer `/hooks-trust` ou `--trust`) e GitHub Copilot (`.github/hooks/impeccable.json` no projeto, um arquivo compartilhado pela equipe e commitado que tanto a Copilot CLI quanto o agente na nuvem leem). Para a Copilot CLI, hooks em nível de repositório disparam assim que `.github/hooks/impeccable.json` é commitado no branch padrão do repositório.
 
-On **Cursor**, `preToolUse` checks proposed Write/Edit/Shell write content and denies only when the real detector finds an issue. The denial message is visible to the agent as the tool error, so the agent can reconsider before the bad write lands.
+No **Cursor**, `preToolUse` verifica o conteúdo proposto de escritas Write/Edit/Shell e nega somente quando o detector real encontra um problema. A mensagem de negação fica visível para o agente como o erro da ferramenta, então o agente pode reconsiderar antes que a escrita ruim aconteça.
 
-Gemini installs session and completion hooks in `.gemini/settings.json`, merged into the settings already there (comments are tolerated; a commented file is backed up to `settings.json.bak` before the rewrite, and a file that is not valid JSON is left alone). It does not install a per-edit detector hook. The `BeforeTool` hook only rewrites shell commands that run `build-phase`, and only on macOS and Linux; on Windows (where Gemini runs hooks through PowerShell) no session id reaches the shell, so a comp build is not tied to the session and the completion reminder stays silent.
+O Gemini instala hooks de sessão e de conclusão em `.gemini/settings.json`, mesclados às configurações já existentes (comentários são tolerados; um arquivo com comentários recebe backup em `settings.json.bak` antes da reescrita, e um arquivo que não é JSON válido é deixado intacto). Ele não instala um hook de detector por edição. O hook `BeforeTool` apenas reescreve comandos de shell que executam `build-phase`, e somente no macOS e no Linux; no Windows (onde o Gemini executa hooks pelo PowerShell) nenhum id de sessão chega ao shell, então uma construção por comp não fica vinculada à sessão e o lembrete de conclusão fica em silêncio.
 
-## Routing
+## Roteamento
 
-The first argument is the action. Defaults to `status`.
+O primeiro argumento é a ação. O padrão é `status`.
 
-| Action | What it does |
+| Ação | O que faz |
 |---|---|
-| `status` | Print current state, shared/local config paths, ignored rules / files / values, env override. |
-| `on` | Set `enabled: true` in `.impeccable/config.json`, record local hook consent as accepted, and install/repair provider hook manifests when the skill is installed. |
-| `off` | Set `enabled: false` in `.impeccable/config.json`. |
-| `ignore-rule <id>` | Append `<id>` to `detector.ignoreRules`; for `overused-font`, requires `--all-values`. Suppresses the rule across the whole project. |
-| `ignore-file <glob>` | Append `<glob>` to `detector.ignoreFiles`. Suppresses **every** rule for matching files. |
-| `ignore-value <id> <value> [--shared] [--reason "..."]` | Append a rule/value suppression to shared `.impeccable/config.json`. |
-| `ignore-value <id> <value> --local [--reason "..."]` | Append a private rule/value suppression to `.impeccable/config.local.json`. |
-| `ignore-value <id> "*" --file <glob> [--file <glob>...]` | Turn one rule off in matching files only, leaving it active everywhere else. Repeat `--file`, or use `--file=<glob>` / `--files=<glob>`. A bare `"*"` with no `--file` is refused: use `ignore-rule <id>` if you really mean project-wide. |
-| `reset` | Delete the project config, dedup cache, and Cursor pending queue, and remove the hook's entries from every provider manifest `on` installs, the committed Copilot file included (a team-shared `settings.json` that `on` never writes is never touched). |
+| `status` | Imprime o estado atual, os caminhos de configuração compartilhada/local, as regras / arquivos / valores ignorados e a sobrescrita por variável de ambiente. |
+| `on` | Define `enabled: true` em `.impeccable/config.json`, registra o consentimento local do hook como aceito e instala/repara os manifestos de hook dos provedores quando a skill está instalada. |
+| `off` | Define `enabled: false` em `.impeccable/config.json`. |
+| `ignore-rule <id>` | Acrescenta `<id>` a `detector.ignoreRules`; para `overused-font`, exige `--all-values`. Suprime a regra no projeto inteiro. |
+| `ignore-file <glob>` | Acrescenta `<glob>` a `detector.ignoreFiles`. Suprime **todas** as regras para os arquivos correspondentes. |
+| `ignore-value <id> <value> [--shared] [--reason "..."]` | Acrescenta uma supressão de regra/valor ao `.impeccable/config.json` compartilhado. |
+| `ignore-value <id> <value> --local [--reason "..."]` | Acrescenta uma supressão privada de regra/valor ao `.impeccable/config.local.json`. |
+| `ignore-value <id> "*" --file <glob> [--file <glob>...]` | Desliga uma regra apenas nos arquivos correspondentes, deixando-a ativa em todo o resto. Repita `--file`, ou use `--file=<glob>` / `--files=<glob>`. Um `"*"` sozinho sem `--file` é recusado: use `ignore-rule <id>` se você realmente quer dizer o projeto inteiro. |
+| `reset` | Apaga a configuração do projeto, o cache de deduplicação e a fila de pendências do Cursor, e remove as entradas do hook de todo manifesto de provedor que `on` instala, incluindo o arquivo commitado do Copilot (um `settings.json` compartilhado pela equipe que `on` nunca escreve nunca é tocado). |
 
-## Flow
+## Fluxo
 
-1. Resolve the action from the user's argument. If no action was given, default to `status`.
-2. Invoke the admin script and pass the user's output through verbatim:
+1. Resolva a ação a partir do argumento do usuário. Se nenhuma ação foi dada, use `status` como padrão.
+2. Invoque o script de administração e repasse a saída literalmente ao usuário:
 
    ```bash
    .kiro/skills/impeccable/scripts/impeccable hooks <action> [args...]
    ```
 
-3. If `<action>` is `off`, follow up with a one-line note: "Done. New edits will not trigger the design hook in this project until you run `/impeccable hooks on`."
-4. If `<action>` is `on`, follow up with: "Done. The design hook will fire after the next Edit/Write on a UI file."
-5. If `<action>` is `ignore-value`, `ignore-file`, or `ignore-rule`, just print the script output. The default scope is shared `.impeccable/config.json`; add `--local` only when the user explicitly asks for a private exception.
-6. If `<action>` is `status`, just print the script output. Do not add commentary unless the user asked a follow-up question.
+3. Se `<action>` for `off`, complemente com uma nota de uma linha: "Pronto. Novas edições não vão disparar o hook de design neste projeto até você executar `/impeccable hooks on`."
+4. Se `<action>` for `on`, complemente com: "Pronto. O hook de design vai disparar após o próximo Edit/Write em um arquivo de UI."
+5. Se `<action>` for `ignore-value`, `ignore-file` ou `ignore-rule`, apenas imprima a saída do script. O escopo padrão é o `.impeccable/config.json` compartilhado; adicione `--local` somente quando o usuário pedir explicitamente uma exceção privada.
+6. Se `<action>` for `status`, apenas imprima a saída do script. Não adicione comentários, a menos que o usuário tenha feito uma pergunta de acompanhamento.
 
-## Triage findings
+## Triagem de achados
 
-The hook itself never writes ignore config; every exception goes through `impeccable hooks`. Triage each finding into one of three outcomes:
+O próprio hook nunca escreve configuração de ignore; toda exceção passa por `impeccable hooks`. Faça a triagem de cada achado em um de três resultados:
 
-- **Real design problem**: fix it. Never add an ignore to skip a fix or to push a blocked write through.
-- **Confident false positive or sanctioned exception**: persist the narrowest ignore yourself and disclose it in your reply. The bar is evidence you can name: an intentional demo or fixture, documentation of bad design, literal or domain-appropriate motion (a ball that bounces), or a choice the user already confirmed. Put that evidence in `--reason` as `"<who decided: evidence>"`; write "user confirmed" only when the user actually did.
-- **Unsure**: leave the finding standing and ask the user in one line. Ask once; a one-line question costs less than the hook re-firing on every later edit.
+- **Problema real de design**: corrija. Nunca adicione um ignore para pular uma correção ou para forçar a passagem de uma escrita bloqueada.
+- **Falso positivo confiável ou exceção sancionada**: persista você mesmo o ignore mais restrito e informe-o na sua resposta. O critério é uma evidência que você consiga nomear: uma demo ou fixture intencional, documentação de design ruim, movimento literal ou adequado ao domínio (uma bola que quica), ou uma escolha que o usuário já confirmou. Coloque essa evidência em `--reason` como `"<who decided: evidence>"`; escreva "user confirmed" somente quando o usuário realmente tiver confirmado.
+- **Em dúvida**: deixe o achado de pé e pergunte ao usuário em uma linha. Pergunte uma vez; uma pergunta de uma linha custa menos do que o hook disparando de novo em toda edição posterior.
 
-Self-serve stops at `ignore-value`. `ignore-file` and `ignore-rule` silence too much to add on your own judgment; ask the user first.
+O autoatendimento para em `ignore-value`. `ignore-file` e `ignore-rule` silenciam demais para serem adicionados por julgamento próprio; pergunte ao usuário primeiro.
 
-Prefer the narrowest exception:
+Prefira a exceção mais restrita:
 
-- If the finding line shows an `ignore-value <rule> <value>` pair, pass it to `impeccable hooks ignore-value` with your `--reason`. This writes shared `.impeccable/config.json` by default.
-- For value-specific findings such as `overused-font` and `bounce-easing`, use `ignore-value` for the specific value. Do not use `ignore-rule overused-font` for a specific font.
-- If the finding has no value-specific command, such as `side-tab`, scope that one rule to the file: `ignore-value <id> "*" --file <path>`. Run `npx impeccable detect <path>` first to see what actually fires there.
-- Reach for `ignore-file <path>` only when the whole file is out of scope for design review: a fixture, a generated artifact, a deliberate slop demo. It silences every rule for that file permanently, including rules that have not been written yet. A real UI surface with one noisy rule wants the file-scoped value ignore above.
-- Use `ignore-rule <id>` only when the user asks to suppress that whole rule across the project. For broad overused-font suppression, use `ignore-rule overused-font --all-values` only when the user asks to ignore overused fonts generally.
-- Prefer config ignores (the commands above) by default; they keep suppressions in one reviewable place. Reach for an inline comment only when the waiver must travel with a single file that leaves the repo (a generated/exported standalone document, an emailed HTML file). The supported marker is `impeccable-disable <rule>` (whole file) or `impeccable-disable-line` / `impeccable-disable-next-line` (one line), in any comment syntax, with an optional reason after `:` or `--`. The detector honors it by default; `--no-inline-ignores` or `--no-config` bypasses it.
+- Se a linha do achado mostrar um par `ignore-value <rule> <value>`, passe-o para `impeccable hooks ignore-value` com o seu `--reason`. Isso escreve no `.impeccable/config.json` compartilhado por padrão.
+- Para achados específicos de valor, como `overused-font` e `bounce-easing`, use `ignore-value` para o valor específico. Não use `ignore-rule overused-font` para uma fonte específica.
+- Se o achado não tiver um comando específico de valor, como `side-tab`, restrinja essa única regra ao arquivo: `ignore-value <id> "*" --file <path>`. Execute `npx impeccable detect <path>` primeiro para ver o que realmente dispara ali.
+- Recorra a `ignore-file <path>` somente quando o arquivo inteiro estiver fora do escopo da revisão de design: uma fixture, um artefato gerado, uma demo deliberada de slop. Ele silencia permanentemente todas as regras para esse arquivo, incluindo regras que ainda não foram escritas. Uma superfície de UI real com uma regra barulhenta pede o ignore de valor restrito ao arquivo descrito acima.
+- Use `ignore-rule <id>` somente quando o usuário pedir para suprimir essa regra inteira no projeto todo. Para supressão ampla de overused-font, use `ignore-rule overused-font --all-values` somente quando o usuário pedir para ignorar fontes superutilizadas em geral.
+- Prefira ignores de configuração (os comandos acima) por padrão; eles mantêm as supressões em um único lugar revisável. Recorra a um comentário inline somente quando a dispensa precisar acompanhar um único arquivo que sai do repositório (um documento autônomo gerado/exportado, um arquivo HTML enviado por e-mail). O marcador suportado é `impeccable-disable <rule>` (arquivo inteiro) ou `impeccable-disable-line` / `impeccable-disable-next-line` (uma linha), em qualquer sintaxe de comentário, com um motivo opcional após `:` ou `--`. O detector o respeita por padrão; `--no-inline-ignores` ou `--no-config` o ignora.
 
-Example value-specific exception:
+Exemplo de exceção específica de valor:
 
 ```bash
 .kiro/skills/impeccable/scripts/impeccable hooks ignore-value overused-font Inter --shared --reason "User confirmed Inter is intentional"
 ```
 
-Example self-served exception, with the evidence named:
+Exemplo de exceção por autoatendimento, com a evidência nomeada:
 
 ```bash
 .kiro/skills/impeccable/scripts/impeccable hooks ignore-value bounce-easing bounce-ball --shared --reason "Agent: literal ball-bounce animation, bounce easing is the subject"
 ```
 
-Example whole-rule font exception:
+Exemplo de exceção de fonte para a regra inteira:
 
 ```bash
 .kiro/skills/impeccable/scripts/impeccable hooks ignore-rule overused-font --all-values --reason "User asked to ignore overused fonts generally"
 ```
 
-Example one-rule-in-one-file exception, for a file that is still worth reviewing
-for everything else:
+Exemplo de exceção de uma regra em um arquivo, para um arquivo que ainda vale a pena revisar
+em todo o resto:
 
 ```bash
 .kiro/skills/impeccable/scripts/impeccable hooks ignore-value design-system-font-size "*" --file "src/overlay/widget.js" --reason "Injected widget builds its own type scale; DESIGN.md's ramp describes the site"
 ```
 
-Example whole-file exception, for a file that is out of scope entirely:
+Exemplo de exceção para o arquivo inteiro, para um arquivo totalmente fora do escopo:
 
 ```bash
 .kiro/skills/impeccable/scripts/impeccable hooks ignore-file "src/legacy/Card.tsx"
 ```
 
-## Constraints
+## Restrições
 
-- Never modify `.impeccable/config.json` or `.impeccable/config.local.json` by hand from this command. Always go through `impeccable hooks` so writes stay validated and the file shape stays consistent. One exception: `detector.extensions` has no admin action, so when the user asks to cover a template stack, edit that one field in `.impeccable/config.json` directly and leave the rest of the file untouched.
-- Do not edit the launcher or the binary behind `impeccable hook` and `impeccable hook-before-edit` from this flow. Those are skill plumbing.
-- Cursor can block a proposed write when the detector finds a real issue. Claude Code, Codex, and GitHub Copilot do not block the edit; they emit a post-edit reminder instead. Disabling stops both blocking and reminders.
-- The hook is bundled with the Impeccable skill and installed through project-local manifests: `.claude/settings.local.json`, `.codex/hooks.json`, `.cursor/hooks.json`, `.github/hooks/impeccable.json`, and `.gemini/settings.json`. On Codex, the user must approve the hook via `/hooks` the first time. On Cursor, confirm hooks are enabled under Settings -> Hooks. On GitHub Copilot, the CLI loads `.github/hooks/impeccable.json` once it is committed to the repository's default branch, and the cloud agent reads it from the repo directly.
+- Nunca modifique `.impeccable/config.json` ou `.impeccable/config.local.json` à mão a partir deste comando. Sempre passe por `impeccable hooks` para que as escritas continuem validadas e o formato do arquivo continue consistente. Uma exceção: `detector.extensions` não tem ação de administração, então, quando o usuário pedir para cobrir uma stack de templates, edite esse único campo em `.impeccable/config.json` diretamente e deixe o resto do arquivo intacto.
+- Não edite o launcher (inicializador) nem o binário por trás de `impeccable hook` e `impeccable hook-before-edit` a partir deste fluxo. Eles são encanamento da skill.
+- O Cursor pode bloquear uma escrita proposta quando o detector encontra um problema real. Claude Code, Codex e GitHub Copilot não bloqueiam a edição; em vez disso, emitem um lembrete pós-edição. Desativar interrompe tanto o bloqueio quanto os lembretes.
+- O hook vem junto com a skill Impeccable e é instalado por meio de manifestos locais do projeto: `.claude/settings.local.json`, `.codex/hooks.json`, `.cursor/hooks.json`, `.github/hooks/impeccable.json` e `.gemini/settings.json`. No Codex, o usuário precisa aprovar o hook via `/hooks` na primeira vez. No Cursor, confirme que os hooks estão ativados em Settings -> Hooks. No GitHub Copilot, a CLI carrega `.github/hooks/impeccable.json` assim que ele é commitado no branch padrão do repositório, e o agente na nuvem o lê diretamente do repositório.
 
-## Failure modes
+## Modos de falha
 
-- If `.impeccable/config.json` or `.impeccable/config.local.json` is unreadable or malformed, the hook ignores that file and uses the remaining valid config/defaults. `impeccable hooks status` will show malformed files as ignored.
-- If the user asks to "disable the hook" globally, lead with `/impeccable hooks off` (persistent for this project; writes `hook.enabled: false` to config). The legacy `IMPECCABLE_HOOK_DISABLED=1` env var also works as a one-shot override that follows the shell.
+- Se `.impeccable/config.json` ou `.impeccable/config.local.json` estiver ilegível ou malformado, o hook ignora esse arquivo e usa a configuração válida restante/os padrões. `impeccable hooks status` vai mostrar os arquivos malformados como ignorados.
+- Se o usuário pedir para "desativar o hook" globalmente, comece por `/impeccable hooks off` (persistente para este projeto; escreve `hook.enabled: false` na configuração). A variável de ambiente legada `IMPECCABLE_HOOK_DISABLED=1` também funciona como uma sobrescrita pontual que acompanha o shell.
+

@@ -1,37 +1,37 @@
-Performance is a feature. Identify the actual bottleneck for THIS interface, fix it, then measure. Don't optimize what isn't slow.
+Desempenho é um recurso. Identifique o gargalo real DESTA interface, corrija-o e depois meça. Não otimize o que não está lento.
 
-## Assess Performance Issues
+## Avaliar problemas de desempenho
 
-Understand current performance and identify problems:
+Entenda o desempenho atual e identifique os problemas:
 
-1. **Measure current state**:
-   - **Core Web Vitals**: LCP, INP, CLS scores
-   - **Load time**: Time to interactive, first contentful paint
-   - **Bundle size**: JavaScript, CSS, image sizes
-   - **Runtime performance**: Frame rate, memory usage, CPU usage
-   - **Network**: Request count, payload sizes, waterfall
+1. **Meça o estado atual**:
+   - **Core Web Vitals**: pontuações de LCP, INP e CLS
+   - **Tempo de carregamento**: Tempo até a interatividade, first contentful paint
+   - **Tamanho do bundle**: Tamanhos de JavaScript, CSS e imagens
+   - **Desempenho em tempo de execução**: Taxa de quadros, uso de memória, uso de CPU
+   - **Rede**: Quantidade de requisições, tamanhos de payload, waterfall
 
-2. **Identify bottlenecks**:
-   - What's slow? (Initial load? Interactions? Animations?)
-   - What's causing it? (Large images? Expensive JavaScript? Layout thrashing?)
-   - How bad is it? (Perceivable? Annoying? Blocking?)
-   - Who's affected? (All users? Mobile only? Slow connections?)
+2. **Identifique os gargalos**:
+   - O que está lento? (Carregamento inicial? Interações? Animações?)
+   - O que está causando isso? (Imagens grandes? JavaScript custoso? Layout thrashing?)
+   - Quão grave é? (Perceptível? Irritante? Bloqueante?)
+   - Quem é afetado? (Todos os usuários? Só mobile? Conexões lentas?)
 
-**CRITICAL**: Measure before and after. Premature optimization wastes time. Optimize what actually matters.
+**CRÍTICO**: Meça antes e depois. Otimização prematura desperdiça tempo. Otimize o que realmente importa.
 
-## Optimization Strategy
+## Estratégia de otimização
 
-Create systematic improvement plan:
+Crie um plano de melhoria sistemático:
 
-### Loading Performance
+### Desempenho de carregamento
 
-**Optimize Images**:
-- Use modern formats (WebP, AVIF)
-- Proper sizing (don't load 3000px image for 300px display)
-- Lazy loading for below-fold images
-- Responsive images (`srcset`, `picture` element)
-- Compress images (80-85% quality is usually imperceptible)
-- Use CDN for faster delivery
+**Otimize as imagens**:
+- Use formatos modernos (WebP, AVIF)
+- Dimensionamento adequado (não carregue uma imagem de 3000px para exibir em 300px)
+- Lazy loading para imagens abaixo da dobra
+- Imagens responsivas (`srcset`, elemento `picture`)
+- Comprima as imagens (qualidade de 80-85% costuma ser imperceptível)
+- Use CDN para uma entrega mais rápida
 
 ```html
 <img 
@@ -43,30 +43,30 @@ Create systematic improvement plan:
 />
 ```
 
-**Reduce JavaScript Bundle**:
-- Code splitting (route-based, component-based)
-- Tree shaking (remove unused code)
-- Remove unused dependencies
-- Lazy load non-critical code
-- Use dynamic imports for large components
+**Reduza o bundle de JavaScript**:
+- Code splitting (por rota, por componente)
+- Tree shaking (remova código não utilizado)
+- Remova dependências não utilizadas
+- Faça lazy loading de código não crítico
+- Use imports dinâmicos para componentes grandes
 
 ```javascript
 // Lazy load heavy component
 const HeavyChart = lazy(() => import('./HeavyChart'));
 ```
 
-**Optimize CSS**:
-- Remove unused CSS
-- Critical CSS inline, rest async
-- Minimize CSS files
-- Use CSS containment for independent regions
+**Otimize o CSS**:
+- Remova CSS não utilizado
+- CSS crítico inline, o restante assíncrono
+- Minimize os arquivos CSS
+- Use CSS containment para regiões independentes
 
-**Optimize Fonts**:
-- Use `font-display: swap` or `optional`
-- Subset fonts (only characters you need)
-- Preload critical fonts
-- Use system fonts when appropriate
-- Limit font weights loaded
+**Otimize as fontes**:
+- Use `font-display: swap` ou `optional`
+- Faça subset das fontes (apenas os caracteres de que você precisa)
+- Faça preload das fontes críticas
+- Use fontes do sistema quando apropriado
+- Limite os pesos de fonte carregados
 
 ```css
 @font-face {
@@ -77,16 +77,16 @@ const HeavyChart = lazy(() => import('./HeavyChart'));
 }
 ```
 
-**Optimize Loading Strategy**:
-- Critical resources first (async/defer non-critical)
-- Preload critical assets
-- Prefetch likely next pages
-- Service worker for offline/caching
-- HTTP/2 or HTTP/3 for multiplexing
+**Otimize a estratégia de carregamento**:
+- Recursos críticos primeiro (async/defer para os não críticos)
+- Faça preload dos assets críticos
+- Faça prefetch das próximas páginas prováveis
+- Service worker para offline/cache
+- HTTP/2 ou HTTP/3 para multiplexação
 
-### Rendering Performance
+### Desempenho de renderização
 
-**Avoid Layout Thrashing**:
+**Evite layout thrashing**:
 ```javascript
 // ❌ Bad: Alternating reads and writes (causes reflows)
 elements.forEach(el => {
@@ -101,22 +101,22 @@ elements.forEach((el, i) => {
 });
 ```
 
-**Optimize Rendering**:
-- Use CSS `contain` property for independent regions
-- Minimize DOM depth (flatter is faster)
-- Reduce DOM size (fewer elements)
-- Use `content-visibility: auto` for long lists
-- Virtual scrolling for very long lists (react-window, TanStack Virtual)
+**Otimize a renderização**:
+- Use a propriedade CSS `contain` para regiões independentes
+- Minimize a profundidade do DOM (mais plano é mais rápido)
+- Reduza o tamanho do DOM (menos elementos)
+- Use `content-visibility: auto` para listas longas
+- Rolagem virtual para listas muito longas (react-window, TanStack Virtual)
 
-**Reduce Paint & Composite**:
-- Use `transform` and `opacity` for reliable movement, but allow blur, filters, masks, clip paths, shadows, and color shifts when they create meaningful polish
-- Avoid casual animation of layout-driving properties (`width`, `height`, `top`, `left`, margins)
-- Use `will-change` sparingly for known expensive operations
-- Bound expensive paint areas for blur/filter/shadow effects (smaller and isolated is faster)
+**Reduza paint e composição**:
+- Use `transform` e `opacity` para movimento confiável, mas permita blur, filtros, máscaras, clip paths, sombras e mudanças de cor quando criarem um refinamento significativo
+- Evite animar casualmente propriedades que determinam o layout (`width`, `height`, `top`, `left`, margens)
+- Use `will-change` com moderação, para operações sabidamente custosas
+- Limite as áreas de paint custosas para efeitos de blur/filtro/sombra (menor e isolado é mais rápido)
 
-### Animation Performance
+### Desempenho de animação
 
-**GPU Acceleration**:
+**Aceleração por GPU**:
 ```css
 /* ✅ GPU-accelerated (fast) */
 .animated {
@@ -131,12 +131,12 @@ elements.forEach((el, i) => {
 }
 ```
 
-**Smooth 60fps**:
-- Target 16ms per frame (60fps)
-- Use `requestAnimationFrame` for JS animations
-- Debounce/throttle scroll handlers
-- Use CSS animations when possible
-- Avoid long-running JavaScript during animations
+**60fps fluidos**:
+- Mire em 16ms por quadro (60fps)
+- Use `requestAnimationFrame` para animações em JS
+- Aplique debounce/throttle aos handlers de rolagem
+- Use animações CSS quando possível
+- Evite JavaScript de longa duração durante animações
 
 **Intersection Observer**:
 ```javascript
@@ -150,64 +150,64 @@ const observer = new IntersectionObserver((entries) => {
 });
 ```
 
-### React/Framework Optimization
+### Otimização de React/frameworks
 
-**React-specific**:
-- Use `memo()` for expensive components
-- `useMemo()` and `useCallback()` for expensive computations
-- Virtualize long lists
-- Code split routes
-- Avoid inline function creation in render
-- Use React DevTools Profiler
+**Específico de React**:
+- Use `memo()` para componentes custosos
+- `useMemo()` e `useCallback()` para cálculos custosos
+- Virtualize listas longas
+- Faça code splitting das rotas
+- Evite criar funções inline no render
+- Use o React DevTools Profiler
 
-**Framework-agnostic**:
-- Minimize re-renders
-- Debounce expensive operations
-- Memoize computed values
-- Lazy load routes and components
+**Independente de framework**:
+- Minimize as re-renderizações
+- Aplique debounce a operações custosas
+- Memoize valores calculados
+- Faça lazy loading de rotas e componentes
 
-### Network Optimization
+### Otimização de rede
 
-**Reduce Requests**:
-- Combine small files
-- Use SVG sprites for icons
-- Inline small critical assets
-- Remove unused third-party scripts
+**Reduza as requisições**:
+- Combine arquivos pequenos
+- Use sprites SVG para ícones
+- Coloque inline os assets críticos pequenos
+- Remova scripts de terceiros não utilizados
 
-**Optimize APIs**:
-- Use pagination (don't load everything)
-- GraphQL to request only needed fields
-- Response compression (gzip, brotli)
-- HTTP caching headers
-- CDN for static assets
+**Otimize as APIs**:
+- Use paginação (não carregue tudo)
+- GraphQL para solicitar apenas os campos necessários
+- Compressão de resposta (gzip, brotli)
+- Cabeçalhos de cache HTTP
+- CDN para assets estáticos
 
-**Optimize for Slow Connections**:
-- Adaptive loading based on connection (navigator.connection)
-- Optimistic UI updates
-- Request prioritization
-- Progressive enhancement
+**Otimize para conexões lentas**:
+- Carregamento adaptativo com base na conexão (navigator.connection)
+- Atualizações otimistas de UI
+- Priorização de requisições
+- Aprimoramento progressivo
 
-## Core Web Vitals Optimization
+## Otimização dos Core Web Vitals
 
 ### Largest Contentful Paint (LCP < 2.5s)
-- Optimize hero images
-- Inline critical CSS
-- Preload key resources
+- Otimize as imagens da seção hero
+- Coloque inline o CSS crítico
+- Faça preload dos recursos principais
 - Use CDN
-- Server-side rendering
+- Renderização no servidor
 
 ### Interaction to Next Paint (INP < 200ms)
-- Break up long tasks
-- Defer non-critical JavaScript
-- Use web workers for heavy computation
-- Reduce JavaScript execution time
+- Divida tarefas longas
+- Adie o JavaScript não crítico
+- Use web workers para processamento pesado
+- Reduza o tempo de execução de JavaScript
 
 ### Cumulative Layout Shift (CLS < 0.1)
-- Set dimensions on images and videos
-- Don't inject content above existing content
-- Use `aspect-ratio` CSS property
-- Reserve space for ads/embeds
-- Avoid animations that cause layout shifts
+- Defina dimensões em imagens e vídeos
+- Não injete conteúdo acima do conteúdo existente
+- Use a propriedade CSS `aspect-ratio`
+- Reserve espaço para anúncios/embeds
+- Evite animações que causem deslocamentos de layout
 
 ```css
 /* Reserve space for image */
@@ -216,43 +216,43 @@ const observer = new IntersectionObserver((entries) => {
 }
 ```
 
-## Performance Monitoring
+## Monitoramento de desempenho
 
-**Tools to use**:
-- Chrome DevTools (Lighthouse, Performance panel)
+**Ferramentas a usar**:
+- Chrome DevTools (Lighthouse, painel Performance)
 - WebPageTest
 - Core Web Vitals (Chrome UX Report)
-- Bundle analyzers (webpack-bundle-analyzer)
-- Performance monitoring (Sentry, DataDog, New Relic)
+- Analisadores de bundle (webpack-bundle-analyzer)
+- Monitoramento de desempenho (Sentry, DataDog, New Relic)
 
-**Key metrics**:
-- LCP, INP, CLS (Core Web Vitals; INP replaced FID in March 2024)
+**Métricas principais**:
+- LCP, INP, CLS (Core Web Vitals; o INP substituiu o FID em março de 2024)
 - Time to Interactive (TTI)
 - First Contentful Paint (FCP)
 - Total Blocking Time (TBT)
-- Bundle size
-- Request count
+- Tamanho do bundle
+- Quantidade de requisições
 
-**IMPORTANT**: Measure on real devices with real network conditions. Desktop Chrome with fast connection isn't representative.
+**IMPORTANTE**: Meça em dispositivos reais com condições de rede reais. O Chrome no desktop com conexão rápida não é representativo.
 
-**NEVER**:
-- Optimize without measuring (premature optimization)
-- Sacrifice accessibility for performance
-- Break functionality while optimizing
-- Use `will-change` everywhere (creates new layers, uses memory)
-- Lazy load above-fold content
-- Optimize micro-optimizations while ignoring major issues (optimize the biggest bottleneck first)
-- Forget about mobile performance (often slower devices, slower connections)
+**NUNCA**:
+- Otimize sem medir (otimização prematura)
+- Sacrifique a acessibilidade pelo desempenho
+- Quebre funcionalidades ao otimizar
+- Use `will-change` em todo lugar (cria novas camadas, consome memória)
+- Faça lazy loading de conteúdo acima da dobra
+- Faça micro-otimizações ignorando os problemas principais (otimize primeiro o maior gargalo)
+- Esqueça o desempenho em mobile (dispositivos muitas vezes mais lentos, conexões mais lentas)
 
-## Verify Improvements
+## Verificar as melhorias
 
-Test that optimizations worked:
+Teste se as otimizações funcionaram:
 
-- **Before/after metrics**: Compare Lighthouse scores
-- **Real user monitoring**: Track improvements for real users
-- **Different devices**: Test on low-end Android, not just flagship iPhone
-- **Slow connections**: Throttle to 3G, test experience
-- **No regressions**: Ensure functionality still works
-- **User perception**: Does it *feel* faster?
+- **Métricas de antes/depois**: Compare as pontuações do Lighthouse
+- **Monitoramento de usuários reais**: Acompanhe as melhorias para usuários reais
+- **Dispositivos diferentes**: Teste em Android de entrada, não apenas no iPhone topo de linha
+- **Conexões lentas**: Limite para 3G e teste a experiência
+- **Sem regressões**: Garanta que as funcionalidades continuam funcionando
+- **Percepção do usuário**: Ele *parece* mais rápido?
 
-When the user-facing numbers move, hand off to `/impeccable polish` for the final pass.
+Quando os números percebidos pelo usuário melhorarem, passe para `/impeccable polish` para a etapa final.

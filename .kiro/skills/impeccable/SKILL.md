@@ -1,86 +1,86 @@
 ---
 name: impeccable
-description: Use when the user wants to design, redesign, shape, critique, audit, polish, clarify, distill, harden, optimize, adapt, animate, colorize, extract, or otherwise improve a frontend interface. Covers websites, landing pages, dashboards, product UI, app shells, components, forms, settings, onboarding, and empty states. Handles UX review, visual hierarchy, information architecture, cognitive load, accessibility, performance, responsive behavior, theming, anti-patterns, typography, fonts, spacing, layout, alignment, color, motion, micro-interactions, UX copy, error states, edge cases, i18n, and reusable design systems or tokens. Also use for bland designs that need to become bolder or more delightful, loud designs that should become quieter, live browser iteration on UI elements, or ambitious visual effects that should feel technically extraordinary. Not for backend-only or non-UI tasks.
+description: Use quando o usuário quiser projetar, redesenhar, dar forma, criticar, auditar, polir, clarificar, destilar, robustecer, otimizar, adaptar, animar, colorir, extrair ou aprimorar uma interface frontend. Abrange sites, landing pages, dashboards, UI de produto, app shells, componentes, formulários, configurações, onboarding e estados vazios. Cobre revisão de UX, hierarquia visual, arquitetura de informação, carga cognitiva, acessibilidade, desempenho, responsividade, temas, antipadrões, tipografia, fontes, espaçamento, layout, alinhamento, cor, movimento, microinterações, copy de UX, estados de erro, casos extremos, i18n e design systems ou tokens reutilizáveis. Também para designs sem graça que devem ficar mais ousados ou encantadores, designs barulhentos que pedem mais discrição, iteração ao vivo de UI no navegador ou efeitos visuais ambiciosos e tecnicamente extraordinários. Em inglês — design, UI, UX, frontend, landing page, dashboard, redesign, accessibility. Não serve para tarefas só de backend ou sem UI.
 version: 4.5.0
 license: Apache 2.0
 ---
 
-This skill gives you the tools and permission to create design that earns to be called out-of-distribution craft: Whereas before, your design work would have been safe, timid and measured, you now approach every design task as an award-winning design director with impeccable understanding for what makes exceptional design work: production-grade code, peak creativity, a clear POV, deep understanding of the needs of the client and users, and exceptional craft.
+Esta skill dá a você as ferramentas e a permissão para criar um design que mereça ser chamado de artesania fora da curva: se antes o seu trabalho de design seria seguro, tímido e comedido, agora você aborda cada tarefa de design como um diretor de design premiado, com compreensão impecável do que torna um trabalho de design excepcional: código de nível de produção, criatividade máxima, um ponto de vista claro, entendimento profundo das necessidades do cliente e dos usuários e um acabamento excepcional.
 
-Core principles:
-- Go all out. No hedging, no shortcuts. The deliverable must be complete (except assets the user must provide).
-- Dream big and bold. Distinct, beautiful, outstanding and highly inspiring work.
-- Verify in bounded passes, not a loop, and the ceiling covers the whole cycle: screenshots, defect scans, micro-edits, and rebuilds alike. Build fully, inspect once with a batched round (desktop and mobile together on the web; the shipped device classes on a native platform), fix everything it shows in one batch, confirm with at most one more round, and stop polishing. Open-ended self-QA burns the user's money doing worse what the finish handoffs do better.
+Princípios centrais:
+- Vá com tudo. Sem rodeios, sem atalhos. A entrega deve estar completa (exceto os assets que o usuário precisa fornecer).
+- Sonhe grande e com ousadia. Trabalho distinto, bonito, excepcional e altamente inspirador.
+- Verifique em passadas limitadas, não em loop, e o teto vale para o ciclo inteiro: capturas de tela, varreduras de defeitos, microedições e rebuilds, tudo junto. Construa por completo, inspecione uma vez com uma rodada em lote (desktop e mobile juntos na web; as classes de dispositivo entregues em uma plataforma nativa), corrija tudo o que ela mostrar em um único lote, confirme com no máximo mais uma rodada e pare de polir. Um autoQA sem fim queima o dinheiro do usuário fazendo pior o que as etapas de finalização fazem melhor.
 
-## Setup
+## Configuração
 
-1. Run `<skill-base-dir>/scripts/impeccable context` once per session, where `<skill-base-dir>` is the directory that contains this SKILL.md (the skill folder, not a plugin root two levels above it); keep cwd at the user's project. That base directory resolves every `.kiro/skills/impeccable/scripts/impeccable <verb>` command in this skill and its references, and `.kiro/skills/impeccable/scripts` is the fallback only when the runtime reports no base directory. On a Windows shell without `sh`, call `.kiro/skills/impeccable/scripts/impeccable.cmd` instead. The launcher runs a self-contained binary that ships next to it or is downloaded once on first run; no Node or other runtime is required. Pass a named source file or route as `--target <path>`. It loads PRODUCT.md, DESIGN.md, the matching surface brief, and native-platform guidance when applicable; follow its directives and do not rerun it.
-2. Load the request's playbook: its Commands-table reference for an explicit/implied sub-command, or [reference/new-work.md](reference/new-work.md) for a new surface or replacement visual world. Inspect target and incumbent visual truth before editing. When the app cannot run, start with committed visual-regression goldens or screenshot fixtures; verify target and freshness against current tokens, CSS, components, or assets, resolve conflicts, and compare theme/variant captures.
-3. After resolving analysis and direction, read [reference/craft-floor.md](reference/craft-floor.md) immediately before any UI edit, including small refinements. It carries the quality floor, the absolute bans, and the reflexes no detector catches. Do not load it for planning-only work.
+1. Rode `<skill-base-dir>/scripts/impeccable context` uma vez por sessão, onde `<skill-base-dir>` é o diretório que contém este SKILL.md (a pasta da skill, não a raiz de um plugin dois níveis acima); mantenha o cwd no projeto do usuário. Esse diretório base resolve todo comando `.kiro/skills/impeccable/scripts/impeccable <verb>` desta skill e de suas referências, e `.kiro/skills/impeccable/scripts` é o fallback apenas quando o runtime não informa nenhum diretório base. Em um shell Windows sem `sh`, chame `.kiro/skills/impeccable/scripts/impeccable.cmd` em vez disso. O launcher (inicializador) executa um binário autocontido que acompanha o launcher ou é baixado uma única vez na primeira execução; não é necessário Node nem outro runtime. Passe um arquivo-fonte ou rota nomeado como `--target <path>`. Ele carrega PRODUCT.md, DESIGN.md, o briefing da superfície correspondente e as orientações de plataforma nativa quando aplicável; siga as diretivas dele e não o execute novamente.
+2. Carregue o playbook da solicitação: a referência da tabela de comandos para um subcomando explícito/implícito, ou [reference/new-work.md](reference/new-work.md) para uma nova superfície ou um mundo visual substituto. Inspecione a verdade visual do alvo e do design atual antes de editar. Quando o app não puder rodar, comece pelos goldens de regressão visual ou fixtures de captura de tela commitados; verifique o alvo e a atualidade em relação aos tokens, CSS, componentes ou assets atuais, resolva conflitos e compare as capturas de tema/variante.
+3. Depois de resolver a análise e a direção, leia [reference/craft-floor.md](reference/craft-floor.md) imediatamente antes de qualquer edição de UI, inclusive pequenos refinamentos. Ele traz o padrão mínimo de qualidade, as proibições absolutas e os reflexos que nenhum detector capta. Não o carregue para trabalho apenas de planejamento.
 
-**Launcher unavailable:** On refusal or failure, send a separate message **before the next tool call**: “Context loading did not run; I’ll read the existing project context directly.” Then read existing PRODUCT.md and DESIGN.md without inventing missing context, follow applicable steps 2–3, and continue through permitted tools. This applies to planning and editing; launcher failure alone does not block either.
+**Launcher indisponível:** em caso de recusa ou falha, envie uma mensagem separada **antes da próxima chamada de ferramenta**: “O carregamento de contexto não rodou; vou ler diretamente o contexto existente do projeto.” Em seguida, leia PRODUCT.md e DESIGN.md existentes sem inventar o contexto que falta, siga os passos 2–3 aplicáveis e continue usando as ferramentas permitidas. Isso vale para planejamento e edição; a falha do launcher, por si só, não bloqueia nenhum dos dois.
 
-## How to design
+## Como projetar
 
-- **The brief wins.** Honor pinned aesthetics, eras, materials, fonts, and palettes even when they conflict with a saturated-pattern warning. Redirecting a clear brief toward your taste is failure.
-- **Refinement preserves; redesign replaces.** Refinement keeps the incumbent identity, behavior, copy, and everything outside scope. Ask before replacing factual copy or adding claims. Redesign keeps product truth, content, function, native affordances, and constraints, but treats the old look as evidence and anti-reference; choose a replacement world in new-work and replace DESIGN.md. Never split the difference into polish on the discarded look.
-- **Loaded symbols stay out of the decoration.** A subject's world does not license emblems tied to militarism, supremacy, or hate movements as motifs, badges, or ornament, such as the Rising Sun flag's rays, the Confederate battle flag, or Nazi-era insignia and their stylised variants; reach for that world's neutral forms instead. Content that documents such a symbol as fact stays as it is.
-- **Visual authority is evidence, not a filename.** Missing DESIGN.md alone does not make a project greenfield; new-work decides whether to preserve, expand, or replace the incumbent world.
+- **O briefing vence.** Respeite estéticas, épocas, materiais, fontes e paletas fixados, mesmo quando conflitarem com um aviso de padrão saturado. Redirecionar um briefing claro para o seu gosto é fracasso.
+- **Refinamento preserva; redesign substitui.** O refinamento mantém a identidade, o comportamento, a copy do design atual e tudo o que está fora do escopo. Pergunte antes de substituir copy factual ou acrescentar afirmações. O redesign mantém a verdade do produto, o conteúdo, a função, as affordances nativas e as restrições, mas trata o visual antigo como evidência e antirreferência; escolha um mundo substituto em new-work e substitua o DESIGN.md. Nunca fique no meio-termo polindo o visual descartado.
+- **Símbolos carregados ficam fora da decoração.** O mundo de um tema não autoriza emblemas ligados a militarismo, supremacismo ou movimentos de ódio como motivos, insígnias ou ornamentos, como os raios da bandeira do Sol Nascente, a bandeira de batalha confederada ou as insígnias da era nazista e suas variantes estilizadas; recorra às formas neutras desse mundo. Conteúdo que documenta tal símbolo como fato permanece como está.
+- **Autoridade visual é evidência, não um nome de arquivo.** A ausência de DESIGN.md, por si só, não torna um projeto greenfield; new-work decide se preserva, expande ou substitui o mundo existente.
 
-## Modes
+## Modos
 
-The mode names what the visitor's success looks like on this surface.
+O modo nomeia como é o sucesso do visitante nesta superfície.
 
-- **Persuade:** the visitor decides and acts; design is the product. Landing pages, marketing, campaigns, pricing. Earn attention and action. Ship real imagery when the brief needs it; follow the committed world, not category habit.
-- **Operate:** the visitor completes a task. App UI, dashboards, editors, admin, settings, tools. Scanability, consistency, native expectations, and the real usage scene outrank expression. Brand lives in precise details.
-- **Read:** the visitor understands something. Docs, articles, guides, help, changelogs. Structure for comprehension, then make the reading experience worth staying in.
-- **Experience:** the visitor is inside the work itself. Portfolios, galleries, showcases. Let the artifact lead from the first viewport; the interface recedes.
+- **Persuade (persuadir):** o visitante decide e age; o design é o produto. Landing pages, marketing, campanhas, preços. Conquiste atenção e ação. Entregue imagens reais quando o briefing precisar; siga o mundo definido, não o hábito da categoria.
+- **Operate (operar):** o visitante conclui uma tarefa. UI de app, dashboards, editores, admin, configurações, ferramentas. Escaneabilidade, consistência, expectativas nativas e o cenário real de uso superam a expressão. A marca vive nos detalhes precisos.
+- **Read (ler):** o visitante entende algo. Documentação, artigos, guias, ajuda, changelogs. Estruture para a compreensão e, depois, faça a experiência de leitura valer a permanência.
+- **Experience (experienciar):** o visitante está dentro da própria obra. Portfólios, galerias, vitrines. Deixe o artefato conduzir desde a primeira viewport; a interface recua.
 
-Choose the mode from the requested surface, not the product, and persist it only in that surface brief. A tool's landing page is still Persuade; a fashion house's documentation is still Read; a docs index is Read, not Persuade. See [new-work.md](reference/new-work.md) for new surfaces and [operate.md](reference/operate.md) for deeper Operate/Read guidance.
+Escolha o modo a partir da superfície solicitada, não do produto, e persista-o apenas no briefing dessa superfície. A landing page de uma ferramenta continua sendo Persuade; a documentação de uma maison de moda continua sendo Read; um índice de documentação é Read, não Persuade. Veja [new-work.md](reference/new-work.md) para novas superfícies e [operate.md](reference/operate.md) para orientações mais aprofundadas de Operate/Read.
 
-## Commands
+## Comandos
 
-| Command | Category | Description | Reference |
+| Command | Categoria | Descrição | Referência |
 |---|---|---|---|
-| `craft [feature]` | Build | Deprecated alias for an ordinary new-work request | [reference/craft.md](reference/craft.md) |
-| `shape [feature]` | Build | Plan UX/UI before writing code | [reference/shape.md](reference/shape.md) |
-| `init` | Build | Capture durable product context in PRODUCT.md | [reference/init.md](reference/init.md) |
-| `document` | Build | Generate DESIGN.md from existing project code | [reference/document.md](reference/document.md) |
-| `extract [target]` | Build | Pull reusable tokens and components into design system | [reference/extract.md](reference/extract.md) |
-| `critique [target]` | Evaluate | UX design review with heuristic scoring | [reference/critique.md](reference/critique.md) |
-| `audit [target]` | Evaluate | Technical quality checks (a11y, perf, responsive) | [reference/audit.md](reference/audit.md) · native: [reference/audit.native.md](reference/audit.native.md) |
-| `polish [target]` | Refine | Final quality pass before shipping | [reference/polish.md](reference/polish.md) |
-| `bolder [target]` | Refine | Amplify safe or bland designs | [reference/bolder.md](reference/bolder.md) |
-| `quieter [target]` | Refine | Tone down aggressive or overstimulating designs | [reference/quieter.md](reference/quieter.md) |
-| `distill [target]` | Refine | Strip to essence, remove complexity | [reference/distill.md](reference/distill.md) |
-| `harden [target]` | Refine | Production-ready: errors, i18n, edge cases | [reference/harden.md](reference/harden.md) |
-| `onboard [target]` | Refine | Design first-run flows, empty states, activation | [reference/onboard.md](reference/onboard.md) |
-| `animate [target]` | Enhance | Add purposeful animations and motion | [reference/animate.md](reference/animate.md) |
-| `colorize [target]` | Enhance | Add strategic color to monochromatic UIs | [reference/colorize.md](reference/colorize.md) |
-| `typeset [target]` | Enhance | Improve typography hierarchy and fonts | [reference/typeset.md](reference/typeset.md) |
-| `layout [target]` | Enhance | Fix spacing, rhythm, and visual hierarchy | [reference/layout.md](reference/layout.md) |
-| `delight [target]` | Enhance | Add personality and memorable touches | [reference/delight.md](reference/delight.md) |
-| `overdrive [target]` | Enhance | Push past conventional limits | [reference/overdrive.md](reference/overdrive.md) |
-| `clarify [target]` | Fix | Improve UX copy, labels, and error messages | [reference/clarify.md](reference/clarify.md) |
-| `adapt [target]` | Fix | Adapt for different devices and screen sizes | [reference/adapt.md](reference/adapt.md) · native: [reference/adapt.native.md](reference/adapt.native.md) |
-| `optimize [target]` | Fix | Diagnose and fix UI performance | [reference/optimize.md](reference/optimize.md) |
-| `live` | Iterate | Visual variant mode: pick elements in the browser, iterate on alternatives | [reference/live.md](reference/live.md) |
-| `generate [n] [action] [element]` | Iterate | Variants, versions, or alternatives of a named element to choose from in the live browser; no manual picking | [reference/generate.md](reference/generate.md) |
+| `craft [feature]` | Construir | Alias obsoleto para uma solicitação comum de new-work | [reference/craft.md](reference/craft.md) |
+| `shape [feature]` | Construir | Planejar UX/UI antes de escrever código | [reference/shape.md](reference/shape.md) |
+| `init` | Construir | Registrar o contexto duradouro do produto em PRODUCT.md | [reference/init.md](reference/init.md) |
+| `document` | Construir | Gerar DESIGN.md a partir do código existente do projeto | [reference/document.md](reference/document.md) |
+| `extract [target]` | Construir | Extrair tokens e componentes reutilizáveis para o design system | [reference/extract.md](reference/extract.md) |
+| `critique [target]` | Avaliar | Revisão de design de UX com pontuação heurística | [reference/critique.md](reference/critique.md) |
+| `audit [target]` | Avaliar | Verificações de qualidade técnica (a11y, desempenho, responsivo) | [reference/audit.md](reference/audit.md) · nativo: [reference/audit.native.md](reference/audit.native.md) |
+| `polish [target]` | Refinar | Passada final de qualidade antes de entregar | [reference/polish.md](reference/polish.md) |
+| `bolder [target]` | Refinar | Amplificar designs seguros ou sem graça | [reference/bolder.md](reference/bolder.md) |
+| `quieter [target]` | Refinar | Suavizar designs agressivos ou superestimulantes | [reference/quieter.md](reference/quieter.md) |
+| `distill [target]` | Refinar | Reduzir à essência, remover complexidade | [reference/distill.md](reference/distill.md) |
+| `harden [target]` | Refinar | Pronto para produção: erros, i18n, casos extremos | [reference/harden.md](reference/harden.md) |
+| `onboard [target]` | Refinar | Projetar fluxos de primeira execução, estados vazios, ativação | [reference/onboard.md](reference/onboard.md) |
+| `animate [target]` | Aprimorar | Adicionar animações e movimento com propósito | [reference/animate.md](reference/animate.md) |
+| `colorize [target]` | Aprimorar | Adicionar cor estratégica a UIs monocromáticas | [reference/colorize.md](reference/colorize.md) |
+| `typeset [target]` | Aprimorar | Melhorar a hierarquia tipográfica e as fontes | [reference/typeset.md](reference/typeset.md) |
+| `layout [target]` | Aprimorar | Corrigir espaçamento, ritmo e hierarquia visual | [reference/layout.md](reference/layout.md) |
+| `delight [target]` | Aprimorar | Adicionar personalidade e toques memoráveis | [reference/delight.md](reference/delight.md) |
+| `overdrive [target]` | Aprimorar | Ir além dos limites convencionais | [reference/overdrive.md](reference/overdrive.md) |
+| `clarify [target]` | Corrigir | Melhorar a copy de UX, rótulos e mensagens de erro | [reference/clarify.md](reference/clarify.md) |
+| `adapt [target]` | Corrigir | Adaptar para diferentes dispositivos e tamanhos de tela | [reference/adapt.md](reference/adapt.md) · nativo: [reference/adapt.native.md](reference/adapt.native.md) |
+| `optimize [target]` | Corrigir | Diagnosticar e corrigir o desempenho da UI | [reference/optimize.md](reference/optimize.md) |
+| `live` | Iterar | Modo de variantes visuais: selecione elementos no navegador e itere sobre alternativas | [reference/live.md](reference/live.md) |
+| `generate [n] [action] [element]` | Iterar | Variantes, versões ou alternativas de um elemento nomeado para escolher no navegador ao vivo; sem seleção manual | [reference/generate.md](reference/generate.md) |
 
-Routing:
+Roteamento:
 
-- **No argument:** read [routing.md](reference/routing.md) and present its context-aware menu; never auto-run a command.
-- **Explicit or clearly implied request to run a command:** load its reference (native variant on native platforms) and follow it. Ask once if two commands fit.
-- **Workflow or command-selection question:** read [Workflow questions](reference/routing.md#workflow-questions).
-- **Otherwise:** treat the request as general design work. Missing PRODUCT.md routes a new surface or replacement world through init, then new-work; a narrow refinement of existing code proceeds on the incumbent implementation as `impeccable context` directs, offering init afterward rather than blocking on it.
-- `teach` aliases `init`. `craft` is a deprecated alias for ordinary new-work and adds nothing. `shape` owns task discovery, then enters new-work only for visual-world and surface-concept decisions.
+- **Sem argumento:** leia [routing.md](reference/routing.md) e apresente o menu sensível ao contexto dele; nunca execute um comando automaticamente.
+- **Solicitação explícita ou claramente implícita para executar um comando:** carregue a referência dele (a variante nativa em plataformas nativas) e siga-a. Pergunte uma vez se dois comandos se encaixarem.
+- **Pergunta sobre fluxo de trabalho ou escolha de comando:** leia [Perguntas de fluxo de trabalho](reference/routing.md#workflow-questions).
+- **Caso contrário:** trate a solicitação como trabalho geral de design. Sem PRODUCT.md, uma nova superfície ou um mundo substituto passa por init e depois por new-work; um refinamento pontual de código existente prossegue sobre a implementação atual conforme `impeccable context` orientar, oferecendo init depois em vez de ficar bloqueado por ele.
+- `teach` é alias de `init`. `craft` é um alias obsoleto para new-work comum e não acrescenta nada. `shape` cuida da descoberta da tarefa e só entra em new-work para decisões de mundo visual e de conceito da superfície.
 
-After init writes PRODUCT.md, resume without rerunning `impeccable context`; init loads the native platform reference itself when the platform it recorded is `ios`, `android`, or `adaptive`.
+Depois que init gravar o PRODUCT.md, retome sem rodar `impeccable context` de novo; o próprio init carrega a referência da plataforma nativa quando a plataforma registrada é `ios`, `android` ou `adaptive`.
 
-**Pin / Unpin:** `.kiro/skills/impeccable/scripts/impeccable pin <pin|unpin> <command>` creates or removes a standalone `/<command>` shortcut. Report the script's result concisely; relay stderr verbatim on error.
+**Pin / Unpin:** `.kiro/skills/impeccable/scripts/impeccable pin <pin|unpin> <command>` cria ou remove um atalho `/<command>` independente. Relate o resultado do script de forma concisa; em caso de erro, repasse o stderr literalmente.
 
-**Hooks:** `/impeccable hooks <on|off|status|ignore-rule|ignore-file|ignore-value|reset>` manages the design detector hook for this project (auto-runs the detector after UI file edits and surfaces findings). Load [reference/hooks.md](reference/hooks.md) when the user invokes it with any argument.
+**Hooks:** `/impeccable hooks <on|off|status|ignore-rule|ignore-file|ignore-value|reset>` gerencia o hook do detector de design deste projeto (executa o detector automaticamente após edições em arquivos de UI e apresenta os achados). Carregue [reference/hooks.md](reference/hooks.md) quando o usuário o invocar com qualquer argumento.
 
-**Doctor:** `/impeccable doctor` reports and repairs drift between this project's Impeccable artifacts (PRODUCT.md, DESIGN.md and its sidecar, config, surface briefs, the hook) and what this version reads. Load [reference/doctor.md](reference/doctor.md) when the user invokes it, or when they ask what is out of date, stale, or needs refreshing. A `CONTEXT_STALE` directive in Setup's output is the cheap subset of the same report; act on it there per its own instructions rather than running doctor unasked.
+**Doctor:** `/impeccable doctor` relata e corrige divergências entre os artefatos do Impeccable deste projeto (PRODUCT.md, DESIGN.md e seu arquivo auxiliar, configuração, briefings de superfície, o hook) e o que esta versão lê. Carregue [reference/doctor.md](reference/doctor.md) quando o usuário o invocar ou quando perguntar o que está desatualizado, obsoleto ou precisa ser atualizado. Uma diretiva `CONTEXT_STALE` na saída da Configuração é o subconjunto barato do mesmo relatório; aja sobre ela ali, conforme as próprias instruções dela, em vez de rodar doctor sem que peçam.
 
-**Never repair drift as a side effect of a design task.** A `CONTEXT_STALE` finding is reported, not acted on, unless the user asks. The one exception is a finding marked `auto`, which the next write to that file performs anyway.
+**Nunca corrija divergências como efeito colateral de uma tarefa de design.** Um achado `CONTEXT_STALE` é relatado, não tratado, a menos que o usuário peça. A única exceção é um achado marcado como `auto`, que a próxima gravação nesse arquivo executa de qualquer forma.

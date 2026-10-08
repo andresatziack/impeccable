@@ -1,89 +1,89 @@
-> **Additional context needed**: performance constraints.
+> **Contexto adicional necessário**: restrições de desempenho.
 
-Use motion to explain state, relationship, and hierarchy, or to create one authored moment the surface has earned. Decoration without purpose is animation debt.
+Use movimento para explicar estado, relação e hierarquia, ou para criar um momento autoral que a superfície tenha merecido. Decoração sem propósito é dívida de animação.
 
 ---
 
-## Visitor mode
+## Modo do visitante
 
-- **Persuade + Experience:** motion may carry the voice. Prefer one rehearsed focal sequence to repeated section reveals.
-- **Operate + Read:** motion serves feedback, state, and continuity. Keep routine transitions fast and do not make users wait through page-load choreography.
-- **Native (`ios` / `android` / `adaptive`):** follow the Motion section of [ios.md](ios.md) or [android.md](android.md), including the platform's Reduce Motion behavior. Do not apply the web tooling below.
+- **Persuade (persuadir) + Experience (experiência):** o movimento pode carregar a voz. Prefira uma única sequência focal ensaiada a revelações repetidas de seções.
+- **Operate (operar) + Read (ler):** o movimento serve a feedback, estado e continuidade. Mantenha as transições rotineiras rápidas e não faça os usuários esperarem por coreografias de carregamento de página.
+- **Nativo (`ios` / `android` / `adaptive`):** siga a seção Motion de [ios.md](ios.md) ou [android.md](android.md), incluindo o comportamento de Reduzir Movimento da plataforma. Não aplique as ferramentas web abaixo.
 
-## Find the job
+## Encontre a função
 
-Inspect the existing motion language, interaction states, target devices, and performance budget. Find only the places where motion would:
+Inspecione a linguagem de movimento existente, os estados de interação, os dispositivos-alvo e o orçamento de desempenho. Encontre apenas os lugares onde o movimento:
 
-- acknowledge an action;
-- make a state change or spatial relationship legible;
-- preserve continuity through navigation or layout change;
-- direct attention at a meaningful moment;
-- embody the selected visual world.
+- reconheceria uma ação;
+- tornaria legível uma mudança de estado ou uma relação espacial;
+- preservaria a continuidade em uma navegação ou mudança de layout;
+- direcionaria a atenção em um momento significativo;
+- encarnaria o mundo visual selecionado.
 
-Ask only when a material constraint cannot be inferred. Do not animate a static area merely because it exists.
+Pergunte apenas quando uma restrição relevante não puder ser inferida. Não anime uma área estática só porque ela existe.
 
-## Set the motion thesis
+## Defina a tese de movimento
 
-Write a short plan before implementation:
+Escreva um plano curto antes da implementação:
 
-- **Focal moment:** the one sequence or interaction that deserves authorship, if any.
-- **Continuity:** the state, layout, or navigation changes that need explanation.
-- **Feedback:** the controls and outcomes that need acknowledgment.
-- **Budget:** which effects may be expensive and how often they run.
+- **Momento focal:** a sequência ou interação que merece autoria, se houver.
+- **Continuidade:** as mudanças de estado, layout ou navegação que precisam de explicação.
+- **Feedback:** os controles e resultados que precisam de reconhecimento.
+- **Orçamento:** quais efeitos podem ser custosos e com que frequência eles rodam.
 
-The focal moment must come from this product and surface concept. A generic fade-and-rise, hover lift, parallax layer, or scroll reveal is not a thesis.
+O momento focal precisa vir deste produto e do conceito desta superfície. Um fade-and-rise genérico, um hover que levanta o elemento, uma camada de parallax ou uma revelação no scroll não são uma tese.
 
-## Choose material by meaning
+## Escolha o material pelo significado
 
-Transform and opacity are reliable foundations, not the entire palette. Choose properties for what the transition communicates:
+Transform e opacity são bases confiáveis, não a paleta inteira. Escolha propriedades pelo que a transição comunica:
 
-- **Continuity and relationship:** shared-element motion, FLIP-style transforms, view transitions, or deliberate spatial movement.
-- **Focus and depth:** bounded blur, filter, backdrop, light, or shadow changes.
-- **Reveal and composition:** masks, clip paths, cropping, or controlled occlusion.
-- **Material and energy:** color, gradient position, texture, distortion, or shader effects when the world and runtime support them.
-- **State and feedback:** the smallest change that makes cause and result unmistakable.
+- **Continuidade e relação:** movimento de elemento compartilhado, transforms no estilo FLIP, view transitions ou deslocamento espacial deliberado.
+- **Foco e profundidade:** mudanças controladas de blur, filter, backdrop, luz ou sombra.
+- **Revelação e composição:** máscaras, clip paths, recortes ou oclusão controlada.
+- **Matéria e energia:** cor, posição de gradiente, textura, distorção ou efeitos de shader quando o mundo visual e o runtime os suportam.
+- **Estado e feedback:** a menor mudança que torna causa e resultado inconfundíveis.
 
-Do not stack techniques for spectacle. One strong material idea, carried through the focal sequence and quiet supporting states, is usually enough.
+Não empilhe técnicas em busca de espetáculo. Uma ideia de material forte, levada ao longo da sequência focal e de estados de apoio discretos, costuma bastar.
 
-Sibling stagger is appropriate when a list appears as a list. Cap the total delay, and never reinterpret every scrolled section as a staggered list.
+O stagger entre irmãos é apropriado quando uma lista aparece como lista. Limite o atraso total e nunca reinterprete cada seção rolada como uma lista escalonada.
 
-## Timing and easing
+## Tempo e easing
 
-Timing should express distance and consequence:
+O tempo deve expressar distância e consequência:
 
-| Duration | Typical use |
+| Duração | Uso típico |
 |---|---|
-| 100–150 ms | immediate feedback |
-| 150–300 ms | routine state change |
-| 300–500 ms | layout, overlay, or view transition |
-| 500–800 ms | a deliberately authored focal entrance |
+| 100–150 ms | feedback imediato |
+| 150–300 ms | mudança de estado rotineira |
+| 300–500 ms | transição de layout, overlay ou view |
+| 500–800 ms | uma entrada focal deliberadamente autoral |
 
-Exit faster than entrance. Use natural deceleration such as `cubic-bezier(0.16, 1, 0.3, 1)` for confident arrivals; do not use bounce or elastic curves by reflex. Long feedback feels like latency.
+A saída deve ser mais rápida que a entrada. Use uma desaceleração natural como `cubic-bezier(0.16, 1, 0.3, 1)` para chegadas confiantes; não use curvas de bounce ou elásticas por reflexo. Feedback longo parece latência.
 
-## Implement to the runtime
+## Implemente de acordo com o runtime
 
-- Use CSS transitions and keyframes for declarative state and bounded sequences.
-- Use Web Animations API or the project's existing motion library for interruption, sequencing, and dynamic values.
-- Use View Transitions or shared-element techniques when continuity across states is the point.
-- Use scroll-driven motion only when the scroll relationship itself carries meaning, with a robust fallback.
-- Do not add a dependency for an effect the existing stack can express cleanly.
+- Use transições e keyframes de CSS para estado declarativo e sequências delimitadas.
+- Use a Web Animations API ou a biblioteca de movimento já existente no projeto para interrupção, sequenciamento e valores dinâmicos.
+- Use View Transitions ou técnicas de elemento compartilhado quando a continuidade entre estados for o objetivo.
+- Use movimento guiado por scroll somente quando a própria relação com o scroll carregar significado, com um fallback robusto.
+- Não adicione uma dependência para um efeito que a stack existente consegue expressar de forma limpa.
 
-Keep content visible in the default state so failed scripts do not hide the page. Avoid casually animating layout-driving properties such as `width`, `height`, `top`, `left`, and margins; use FLIP, transforms, or grid techniques when appropriate. Bound blur, filter, shadow, canvas, and shader work to isolated regions. Apply `will-change` only during known animation. Measure on target viewports and devices rather than assuming transform means fast.
+Mantenha o conteúdo visível no estado padrão para que scripts com falha não escondam a página. Evite animar casualmente propriedades que determinam o layout, como `width`, `height`, `top`, `left` e margens; use FLIP, transforms ou técnicas de grid quando apropriado. Restrinja trabalhos de blur, filter, sombra, canvas e shader a regiões isoladas. Aplique `will-change` apenas durante animações conhecidas. Meça nos viewports e dispositivos-alvo em vez de presumir que transform significa rápido.
 
-## Accessibility and control
+## Acessibilidade e controle
 
-Respect autoplay and sound preferences. Any nonessential loop must stop when offscreen or hidden.
+Respeite as preferências de reprodução automática e de som. Qualquer loop não essencial deve parar quando estiver fora da tela ou oculto.
 
-Every web animation needs a `prefers-reduced-motion` path with an intentional alternative. Remove or reduce spatial movement while preserving opacity, color, and state transitions that carry meaning. Reduced motion means fewer and gentler animations, not disabling all motion; feedback that confirms an action should remain legible.
+Toda animação web precisa de um caminho `prefers-reduced-motion` com uma alternativa intencional. Remova ou reduza o deslocamento espacial, preservando as transições de opacidade, cor e estado que carregam significado. Movimento reduzido significa animações em menor número e mais suaves, não desativar todo o movimento; o feedback que confirma uma ação deve continuar legível.
 
-## Verify
+## Verifique
 
-- The focal motion is specific to the selected world and surface.
-- Every supporting animation explains feedback, state, or relationship.
-- Interruption and repeated use behave correctly.
-- Desktop, mobile, and keyboard paths remain usable.
-- The `prefers-reduced-motion` path reduces movement without erasing meaningful feedback or state changes.
-- Expensive effects stay smooth on the target device.
-- Removing an animation would lose meaning or authored character, not merely decoration.
+- O movimento focal é específico do mundo visual e da superfície selecionados.
+- Cada animação de apoio explica feedback, estado ou relação.
+- Interrupção e uso repetido se comportam corretamente.
+- Os caminhos de desktop, mobile e teclado continuam utilizáveis.
+- O caminho `prefers-reduced-motion` reduz o deslocamento sem apagar feedbacks ou mudanças de estado significativos.
+- Efeitos custosos permanecem fluidos no dispositivo-alvo.
+- Remover uma animação faria perder significado ou caráter autoral, não apenas decoração.
 
-When motion earns its place, hand off to `/impeccable polish` for the final pass.
+Quando o movimento justificar seu lugar, passe para `/impeccable polish` para a etapa final.

@@ -1,54 +1,54 @@
-Report and repair drift between this project's Impeccable artifacts and what the installed version reads: PRODUCT.md, DESIGN.md and its `.impeccable/design.json` sidecar, `.impeccable/config.json`, persisted surface briefs, and the design hook.
+Relate e repare o descompasso entre os artefatos do Impeccable deste projeto e o que a versão instalada lê: PRODUCT.md, DESIGN.md e seu arquivo auxiliar `.impeccable/design.json`, `.impeccable/config.json`, briefings de superfície persistidos e o hook de design.
 
-This is maintenance, not design. Do not redesign anything, do not open files outside the ones the report names, and do not run any other command as a side effect.
+Isto é manutenção, não design. Não faça redesign de nada, não abra arquivos além dos que o relatório nomeia e não rode nenhum outro comando como efeito colateral.
 
-## What this owns, and what it does not
+## O que este comando cobre, e o que não cobre
 
-Three kinds of drift travel under "out of date". Keep them apart:
+Três tipos de descompasso aparecem sob o rótulo "desatualizado". Mantenha-os separados:
 
-- **Tool version.** The installed skill is older than the published one. `impeccable context` reports that at boot as `UPDATE_AVAILABLE` and `npx impeccable update` fixes it. Not this command's job.
-- **Schema drift.** An artifact was written by an older Impeccable: fields nothing reads, fields now expected, files in retired locations. Mechanical, and this command repairs most of it.
-- **Truth drift.** The code moved on and the document no longer describes it. No file comparison settles this. `document` owns DESIGN.md, `init` owns PRODUCT.md, and this command's job is to hand them a specific gap rather than a vague suspicion.
+- **Versão da ferramenta.** A skill instalada é mais antiga que a publicada. `impeccable context` informa isso na inicialização como `UPDATE_AVAILABLE` e `npx impeccable update` corrige. Não é tarefa deste comando.
+- **Descompasso de esquema.** Um artefato foi escrito por um Impeccable mais antigo: campos que nada lê, campos agora esperados, arquivos em locais aposentados. É mecânico, e este comando repara a maior parte.
+- **Descompasso de verdade.** O código evoluiu e o documento não o descreve mais. Nenhuma comparação de arquivos resolve isso. `document` é responsável pelo DESIGN.md, `init` é responsável pelo PRODUCT.md, e a tarefa deste comando é entregar a eles uma lacuna específica em vez de uma suspeita vaga.
 
-## Step 1: Run the pass
+## Etapa 1: Rode a verificação
 
 ```
 .kiro/skills/impeccable/scripts/impeccable doctor --json
 ```
 
-Add `--target <path>` when the user named a workspace, file, or route in a monorepo. Without it the report describes the repo root, and in a monorepo that is often the wrong project.
+Acrescente `--target <path>` quando o usuário tiver nomeado um workspace, arquivo ou rota em um monorepo. Sem isso, o relatório descreve a raiz do repositório e, em um monorepo, esse muitas vezes é o projeto errado.
 
-The output carries `findings` (each with `id`, `artifact`, `path`, `severity`, `summary`, `fix`) and, in a monorepo, `workspaces` with each app's product and design resolution. `ruleRegistryAvailable: false` means ignored rule ids could not be validated; say so rather than implying that list is clean.
+A saída traz `findings` (cada um com `id`, `artifact`, `path`, `severity`, `summary`, `fix`) e, em um monorepo, `workspaces` com a resolução de produto e de design de cada app. `ruleRegistryAvailable: false` significa que os ids de regras ignoradas não puderam ser validados; diga isso em vez de dar a entender que essa lista está limpa.
 
-An empty `findings` array is the good outcome. Say so in one line and stop.
+Um array `findings` vazio é o bom resultado. Diga isso em uma linha e pare.
 
-## Step 2: Act by severity
+## Etapa 2: Aja conforme a severidade
 
-The severity says what should happen, not how bad it is.
+A severidade diz o que deve acontecer, não o quão grave é.
 
-- **`auto`** carries no decision. Run `.kiro/skills/impeccable/scripts/impeccable doctor --fix` once to apply these, then report what it moved in one line. Do not ask permission first, and do not ask about them afterward.
-- **`mention`** needs the user to know but not to decide anything now. State each one in a sentence with its offered fix.
-- **`route`** needs a specific command. Name the command and the gap it would close. Run it only if the user asks in this turn; `init` and `document` are conversations, not repairs you perform unattended.
+- **`auto`** não envolve decisão. Rode `.kiro/skills/impeccable/scripts/impeccable doctor --fix` uma vez para aplicá-los e depois relate em uma linha o que foi alterado. Não peça permissão antes e não pergunte sobre eles depois.
+- **`mention`** exige que o usuário saiba, mas não que decida nada agora. Apresente cada um em uma frase com a correção oferecida.
+- **`route`** exige um comando específico. Nomeie o comando e a lacuna que ele fecharia. Rode-o somente se o usuário pedir neste turno; `init` e `document` são conversas, não reparos que você executa sem supervisão.
 
-Report all three groups in one pass. Findings are not errors and the command does not fail on them.
+Relate os três grupos em uma única passada. Achados não são erros e o comando não falha por causa deles.
 
-## Step 3: Deprecated fields are binding
+## Etapa 3: Campos obsoletos são vinculantes
 
-A finding that reports a deprecated field (`## Register` is the current one) is not a style note. Treat that field as absent for every decision from here on, whatever value it holds, and offer to delete the section. Preserving it "just in case" is how a retired axis keeps steering current output.
+Um achado que relata um campo obsoleto (`## Register` é o atual) não é uma observação de estilo. Trate esse campo como ausente em todas as decisões daqui em diante, seja qual for o valor que ele contenha, e ofereça excluir a seção. Preservá-lo "por precaução" é a forma como um eixo aposentado continua direcionando a saída atual.
 
-## Step 4: Do not overclaim on truth drift
+## Etapa 4: Não exagere sobre o descompasso de verdade
 
-`design-md-drift` counts commits to the visual source directories since DESIGN.md was last edited. A commit count is not a contradiction. Report the number, say what it measures, and if the user wants to know whether the document is actually wrong, read DESIGN.md against the current tokens and components and answer from that. Never assert that DESIGN.md is stale because the number is large.
+`design-md-drift` conta os commits nos diretórios de código-fonte visual desde a última edição do DESIGN.md. Uma contagem de commits não é uma contradição. Relate o número, diga o que ele mede e, se o usuário quiser saber se o documento está de fato errado, leia o DESIGN.md em comparação com os tokens e componentes atuais e responda a partir disso. Nunca afirme que o DESIGN.md está desatualizado porque o número é grande.
 
-The same restraint applies to `workspace-context-inherited`. Inheritance is a designed behavior. Whether one product record truthfully describes several apps is a question for the user, not a defect to fix.
+A mesma contenção se aplica a `workspace-context-inherited`. A herança é um comportamento projetado. Se um único registro de produto descreve fielmente vários apps é uma pergunta para o usuário, não um defeito a corrigir.
 
-## Monorepo notes
+## Notas sobre monorepo
 
-- `workspace-platform-native-evidence` is the finding that matters most here: a workspace carrying native build files while inheriting a root record that resolves to web gets web guidance for its whole life and never loads [ios.md](ios.md) or [android.md](android.md). The repair is a child PRODUCT.md in that workspace, because one inherited record cannot hold two platforms.
-- `config-project-roots-match-nothing` means every `projectRoots` glob missed, so the repo root is silently standing in as the active project. A renamed workspace directory is the usual cause. Report the patterns and ask which directories they should name.
-- `config-invalid-build-path` and `config-build-path-unset` both concern one key, `buildPath` in `.impeccable/config.json` (or the gitignored `.impeccable/config.local.json`, which wins for that developer). It holds `comp` or `code` and sets whether new surfaces are built from a generated comp or straight in code. An unread value does not fall back to the opposite path, so a project meaning `code` has been building comp-led; report the exact value. The unset finding fires only where a project has done direction work and never recorded a preference, and the offer belongs in it only when image generation exists in your tool surface. Without image generation there is nothing to choose and nothing to say.
-- Use the `workspaces` table to show the user which apps carry their own context, which inherit, and which have none, before proposing any change.
+- `workspace-platform-native-evidence` é o achado que mais importa aqui: um workspace que contém arquivos de build nativos enquanto herda um registro da raiz que resolve para web recebe orientação web durante toda a sua vida e nunca carrega [ios.md](ios.md) ou [android.md](android.md). O reparo é um PRODUCT.md filho nesse workspace, porque um único registro herdado não comporta duas plataformas.
+- `config-project-roots-match-nothing` significa que todos os globs de `projectRoots` falharam, então a raiz do repositório está silenciosamente fazendo o papel de projeto ativo. Um diretório de workspace renomeado é a causa habitual. Relate os padrões e pergunte quais diretórios eles deveriam nomear.
+- `config-invalid-build-path` e `config-build-path-unset` dizem respeito a uma única chave, `buildPath` em `.impeccable/config.json` (ou no `.impeccable/config.local.json` ignorado pelo git, que prevalece para aquele desenvolvedor). Ela contém `comp` ou `code` e define se novas superfícies são construídas a partir de um comp (mockup) gerado ou diretamente em código. Um valor não lido não recai no caminho oposto, então um projeto que pretendia `code` vem construindo guiado por comp; relate o valor exato. O achado de chave não definida só dispara quando um projeto fez trabalho de direção e nunca registrou uma preferência, e a oferta só cabe nele quando há geração de imagens disponível entre as suas ferramentas. Sem geração de imagens, não há o que escolher nem o que dizer.
+- Use a tabela `workspaces` para mostrar ao usuário quais apps têm contexto próprio, quais herdam e quais não têm nenhum, antes de propor qualquer mudança.
 
-## Opting out of the boot check
+## Desativar a verificação na inicialização
 
-`impeccable context` reports the cheap subset of these findings at session start, throttled to once a week per project. Set `"stalenessCheck": false` in `.impeccable/config.json` to silence that, or `IMPECCABLE_NO_STALENESS_CHECK=1` for one session. This command still works with the check disabled, and that is the combination to suggest for a user who wants the report only when they ask for it.
+`impeccable context` relata o subconjunto barato desses achados no início da sessão, limitado a uma vez por semana por projeto. Defina `"stalenessCheck": false` em `.impeccable/config.json` para silenciá-lo, ou `IMPECCABLE_NO_STALENESS_CHECK=1` para uma sessão. Este comando continua funcionando com a verificação desativada, e essa é a combinação a sugerir para um usuário que quer o relatório somente quando pedir.

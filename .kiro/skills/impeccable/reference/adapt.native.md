@@ -1,58 +1,58 @@
-> **Additional context needed**: target platforms/devices and usage contexts.
+> **Contexto adicional necessário**: plataformas/dispositivos-alvo e contextos de uso.
 
-Adapt an existing **native** design (`ios` / `android` / `adaptive`) to a different context: another device class, orientation, platform, or origin. The trap is treating adaptation as scaling. The job is rethinking the experience for the new context, inside the platform conventions of [ios.md](ios.md) / [android.md](android.md); read the target platform's reference before planning if Setup hasn't already.
+Adapte um design **nativo** existente (`ios` / `android` / `adaptive`) para um contexto diferente: outra classe de dispositivo, orientação, plataforma ou origem. A armadilha é tratar a adaptação como redimensionamento. A tarefa é repensar a experiência para o novo contexto, dentro das convenções de plataforma de [ios.md](ios.md) / [android.md](android.md); leia a referência da plataforma-alvo antes de planejar, caso a etapa de Setup ainda não tenha feito isso.
 
-## Assess Adaptation Challenge
+## Avaliar o desafio de adaptação
 
-1. **Source context**: what was it designed for, and what assumptions did it make? (Phone-only? Portrait-only? One platform's idioms? A website?)
-2. **Target context**: which device class (phone, tablet, foldable), orientation, platform, and usage posture (one-handed on the go vs two-handed at rest)?
-3. **What breaks**: navigation that doesn't fit the target, layouts that stretch instead of restructure, gestures or controls that don't exist there?
+1. **Contexto de origem**: para o que ele foi projetado e que suposições fez? (Só celular? Só retrato? As convenções de uma única plataforma? Um site?)
+2. **Contexto-alvo**: qual classe de dispositivo (celular, tablet, dobrável), orientação, plataforma e postura de uso (com uma mão, em movimento, vs. com as duas mãos, em repouso)?
+3. **O que quebra**: navegação que não cabe no alvo, layouts que esticam em vez de se reestruturar, gestos ou controles que não existem lá?
 
-## Adaptation Strategies
+## Estratégias de adaptação
 
-### Phone → Tablet (iPad / large screens)
+### Celular → Tablet (iPad / telas grandes)
 
-- **Restructure, don't stretch.** A scaled-up phone UI on a tablet is the failure mode. Use size classes (iOS) / window size classes (Android) to switch structure.
-- **Navigation changes shape**: tab bar stays or becomes a sidebar on iPad; Android navigation bar becomes a rail or drawer on expanded width.
-- **Use the width**: split view / master-detail (list + detail side by side), multi-column grids, popovers where phones used sheets.
-- **Multitasking is a size, not an edge case**: iPad Split View and Android multi-window can hand you a phone-width window on a tablet; size-class-driven layout handles both for free.
+- **Reestruture, não estique.** Uma UI de celular ampliada num tablet é o modo de falha. Use size classes (iOS) / window size classes (Android) para trocar a estrutura.
+- **A navegação muda de forma**: a tab bar permanece ou vira uma barra lateral no iPad; a barra de navegação do Android vira um trilho (rail) ou uma gaveta (drawer) em largura expandida.
+- **Use a largura**: split view / mestre-detalhe (lista + detalhe lado a lado), grids com várias colunas, popovers onde os celulares usavam sheets.
+- **Multitarefa é um tamanho, não um caso extremo**: o Split View do iPad e o modo multijanela do Android podem lhe entregar uma janela com largura de celular num tablet; um layout guiado por size classes resolve os dois sem custo extra.
 
-### Orientation & foldables
+### Orientação e dobráveis
 
-- Landscape restructures (side-by-side panes, repositioned controls); never clip or letterbox. Lock orientation only when the task truly demands it.
-- Foldables (Android): react to posture and hinge via window size classes; test folded, unfolded, and tabletop.
+- A paisagem reestrutura (painéis lado a lado, controles reposicionados); nunca corte nem use letterbox. Trave a orientação apenas quando a tarefa realmente exigir.
+- Dobráveis (Android): reaja à postura e à dobradiça por meio das window size classes; teste dobrado, desdobrado e no modo mesa (tabletop).
 
-### Platform → platform (iOS ↔ Android)
+### Plataforma → plataforma (iOS ↔ Android)
 
-Translate idioms; never transplant them:
+Traduza as convenções; nunca as transplante:
 
 | iOS | Android |
 |---|---|
-| Tab bar | Navigation bar / rail / drawer |
-| Edge-swipe back, back chevron | Predictive Back gesture / button |
-| Switch, segmented control, system pickers | Material switch, chips, Material pickers |
-| Action sheet | Bottom sheet / Material dialog |
-| SF Symbols, SF Pro, Dynamic Type | Material Symbols, Roboto, sp scaling |
-| Semantic system colors, materials | Material color roles, tonal elevation |
-| System push/sheet transitions | Container transform, shared-axis, fade-through |
+| Tab bar | Barra de navegação / trilho / gaveta |
+| Voltar deslizando pela borda, chevron de voltar | Gesto / botão de Back preditivo |
+| Switch, segmented control, seletores do sistema | Switch Material, chips, seletores Material |
+| Action sheet | Bottom sheet / diálogo Material |
+| SF Symbols, SF Pro, Dynamic Type | Material Symbols, Roboto, escala em sp |
+| Cores semânticas do sistema, materiais | Papéis de cor do Material, elevação tonal |
+| Transições de push/sheet do sistema | Container transform, shared-axis, fade-through |
 
-Rebuild navigation and controls in the target's vocabulary; carry over the brand's expressive layer (palette intent, type accent, motion personality) through the target's theming system.
+Reconstrua a navegação e os controles no vocabulário do alvo; leve a camada expressiva da marca (intenção da paleta, destaque tipográfico, personalidade do movimento) por meio do sistema de temas do alvo.
 
-### Web → native (porting a website or web app)
+### Web → nativo (portando um site ou web app)
 
-Reconform, don't reflow. Replace web navigation with the platform's model, HTML-shaped controls with platform controls, hover affordances with touch-first ones, and px-based type with Dynamic Type / sp. Then treat the result to the full platform reference; the slop test there is the acceptance bar.
+Reconforme, não apenas reflua. Substitua a navegação web pelo modelo da plataforma, controles com formato de HTML por controles da plataforma, affordances de hover por outras pensadas primeiro para toque, e tipografia baseada em px por Dynamic Type / sp. Depois, submeta o resultado à referência completa da plataforma; o teste de desleixo de lá é o critério de aceitação.
 
-## Implement & Verify
+## Implementar e verificar
 
-- Drive structure from **size classes / window size classes**, never from device-model checks.
-- Respect safe areas and window insets in every new configuration (notch, hinge, status bar, keyboard).
-- Test on simulators for breadth, then real hardware for truth: at least one phone and one tablet per shipped platform, both orientations, split-screen where supported.
+- Conduza a estrutura por **size classes / window size classes**, nunca por verificações de modelo de dispositivo.
+- Respeite as áreas seguras e os insets de janela em toda nova configuração (notch, dobradiça, barra de status, teclado).
+- Teste em simuladores para ter amplitude e depois em hardware real para ter a verdade: pelo menos um celular e um tablet por plataforma distribuída, nas duas orientações, com tela dividida onde houver suporte.
 
-When the adaptation feels native to each context, hand off to `/impeccable polish` for the final pass.
+Quando a adaptação parecer nativa em cada contexto, passe para `/impeccable polish` para a passada final.
 
-**NEVER**:
-- Ship a stretched phone layout on a tablet
-- Port one platform's controls or navigation onto the other
-- Hide core functionality on smaller devices (if it matters, make it work)
-- Lock orientation to dodge a layout bug
-- Trust simulators alone (posture, gestures, and performance need hardware)
+**NUNCA**:
+- Entregue um layout de celular esticado num tablet
+- Porte os controles ou a navegação de uma plataforma para a outra
+- Esconda funcionalidades essenciais em dispositivos menores (se importa, faça funcionar)
+- Trave a orientação para fugir de um bug de layout
+- Confie apenas em simuladores (postura, gestos e desempenho exigem hardware)

@@ -1,8 +1,8 @@
-One-time live-mode project setup. Loaded from [live.md](live.md) only when `impeccable live` reports `config_missing` / `config_invalid`, when `configDrift` needs handling, or when the config lacks `cspChecked`. Not part of the per-session hot path.
+Configuração única do projeto para o modo live. Carregado a partir de [live.md](live.md) somente quando `impeccable live` informa `config_missing` / `config_invalid`, quando `configDrift` precisa ser tratado ou quando a configuração não tem `cspChecked`. Não faz parte do caminho crítico de cada sessão.
 
-## Write the config
+## Escreva a configuração
 
-Create the file at the `path` the boot reported (default `.impeccable/live/config.json`):
+Crie o arquivo no `path` informado pela inicialização (padrão `.impeccable/live/config.json`):
 
 ```json
 {
@@ -14,15 +14,15 @@ Create the file at the `path` the boot reported (default `.impeccable/live/confi
 }
 ```
 
-`files` is the inject target: **the HTML files the browser actually loads**, not necessarily source (tracked vs generated does not matter here; wrap has its own generated-file guard). Entries are literal paths or globs. `exclude` (optional) skips files a `files` glob would otherwise include (email templates, demo fixtures). `cspChecked` records that the CSP step below has run; absent on first setup.
+`files` é o alvo da injeção: **os arquivos HTML que o navegador de fato carrega**, não necessariamente o código-fonte (rastreado vs gerado não importa aqui; o wrap tem sua própria proteção contra arquivos gerados). As entradas são caminhos literais ou globs. `exclude` (opcional) ignora arquivos que um glob de `files` incluiria (templates de e-mail, fixtures de demonstração). `cspChecked` registra que a etapa de CSP abaixo já foi executada; ausente na primeira configuração.
 
-**Hard-excluded paths (cannot be overridden):** `**/node_modules/**` and `**/.git/**`; injecting there would instrument third-party code.
+**Caminhos excluídos de forma rígida (não podem ser sobrescritos):** `**/node_modules/**` e `**/.git/**`; injetar ali instrumentaria código de terceiros.
 
-**Glob syntax:** `**` matches any number of segments (including zero), `*` matches within a segment, `?` matches one character. Paths are project-root-relative with forward slashes.
+**Sintaxe de glob:** `**` corresponde a qualquer número de segmentos (inclusive zero), `*` corresponde dentro de um segmento, `?` corresponde a um caractere. Os caminhos são relativos à raiz do projeto, com barras normais.
 
 | Framework | `files` | `insertBefore` | `commentSyntax` |
 |-----------|---------|----------------|-----------------|
-| SPA with single shell (Vite / React / Plain HTML) | `["index.html"]` | `</body>` | `html` |
+| SPA com um único shell (Vite / React / HTML puro) | `["index.html"]` | `</body>` | `html` |
 | Next.js (App Router) | `["app/layout.tsx"]` | `</body>` | `jsx` |
 | Next.js (Pages) | `["pages/_document.tsx"]` | `</body>` | `jsx` |
 | Nuxt | `["app.vue"]` | `</body>` | `html` |
@@ -30,49 +30,49 @@ Create the file at the `path` the boot reported (default `.impeccable/live/confi
 | TanStack Router (SPA, Vite) | `["index.html"]` | `</body>` | `html` |
 | TanStack Start (SSR) | `["src/routes/__root.tsx"]` | `<Scripts` | `jsx` |
 | Astro | `[" <root layout .astro>"]` | `</body>` | `html` |
-| Multi-page (separate HTML per route) | `["public/**/*.html"]` glob over the served dir | `</body>` | `html` |
+| Várias páginas (HTML separado por rota) | glob `["public/**/*.html"]` sobre o diretório servido | `</body>` | `html` |
 
-Pick an anchor that exists in every file (`</body>` almost always works); `insertAfter` matches after a line instead. For multi-page sites prefer a glob so new pages are picked up automatically. For sites whose pages are rebuilt by a generator, the inject survives only until the next regeneration: re-run `impeccable live` after each build (accept is unaffected; it writes true source via the fallback flow).
+Escolha uma âncora que exista em todos os arquivos (`</body>` funciona quase sempre); `insertAfter` insere depois de uma linha. Para sites de várias páginas, prefira um glob para que novas páginas sejam incluídas automaticamente. Para sites cujas páginas são reconstruídas por um gerador, a injeção sobrevive somente até a próxima regeneração: execute `impeccable live` de novo após cada build (o accept não é afetado; ele escreve no código-fonte verdadeiro pelo fluxo de fallback).
 
-**Framework adapters (auto-detected at inject time).** Every inject records what it wrote in `.impeccable/live/inject-journal.json`; the next inject or remove heals artifacts a crash or wrong-directory stop left behind. SvelteKit, Nuxt, and TanStack Start server-render their document shell, so a raw `<script>` in the entry template will not execute reliably; `impeccable live-inject` detects them and routes to a dedicated adapter (SvelteKit: dev-only root component from `+layout.svelte`; Nuxt: dev-only `.client.ts` plugin; TanStack Start: a generated dev-only `ImpeccableLiveRoot` component in `__root`). The `files` value stays a valid detection/CSP hint but is not the literal insertion site. A plain TanStack Router SPA takes the baseline Vite path.
+**Adaptadores de framework (detectados automaticamente no momento da injeção).** Toda injeção registra o que escreveu em `.impeccable/live/inject-journal.json`; a próxima injeção ou remoção corrige os artefatos deixados por uma falha ou por uma parada no diretório errado. SvelteKit, Nuxt e TanStack Start renderizam o shell do documento no servidor, então um `<script>` cru no template de entrada não será executado de forma confiável; `impeccable live-inject` os detecta e encaminha para um adaptador dedicado (SvelteKit: componente raiz somente de desenvolvimento a partir de `+layout.svelte`; Nuxt: plugin `.client.ts` somente de desenvolvimento; TanStack Start: um componente `ImpeccableLiveRoot` gerado, somente de desenvolvimento, em `__root`). O valor de `files` continua sendo uma pista válida para detecção/CSP, mas não é o local literal de inserção. Uma SPA simples com TanStack Router segue o caminho básico do Vite.
 
-## Config drift
+## Desvio de configuração
 
-On every boot the project is scanned for HTML files under common page roots (`public/`, `src/`, `app/`, `pages/`) that the resolved `files` list does not cover; they surface as `configDrift.orphans` with a hint. Tell the user once per session which files are uncovered and offer to add them or switch `files` to a glob. Never auto-update the config; the user decides. `configDrift` is `null` when there is no drift.
+A cada inicialização, o projeto é varrido em busca de arquivos HTML sob raízes comuns de páginas (`public/`, `src/`, `app/`, `pages/`) que a lista `files` resolvida não cobre; eles aparecem como `configDrift.orphans` com uma dica. Diga ao usuário uma vez por sessão quais arquivos não estão cobertos e ofereça adicioná-los ou trocar `files` por um glob. Nunca atualize a configuração automaticamente; quem decide é o usuário. `configDrift` é `null` quando não há desvio.
 
-## CSP detection (first-time only)
+## Detecção de CSP (somente na primeira vez)
 
-Keep all allowances below development-only, including manual middleware and meta-tag edits. Do not change a deployed production site's CSP to load the localhost helper; see [live.md](live.md) for production inspection alternatives.
+Mantenha todas as permissões abaixo restritas ao desenvolvimento, incluindo edições manuais de middleware e de meta tags. Não altere o CSP de um site de produção já implantado para carregar o helper de localhost; veja [live.md](live.md) para alternativas de inspeção em produção.
 
-If `config.cspChecked === true`, skip this whole section; the user was already asked once.
+Se `config.cspChecked === true`, pule esta seção inteira; o usuário já foi perguntado uma vez.
 
 ```bash
 .kiro/skills/impeccable/scripts/impeccable detect-csp
 ```
 
-Output `{ shape, signals }`; the shape names the *patch mechanism*, so one template covers many frameworks:
+Saída `{ shape, signals }`; o shape nomeia o *mecanismo de patch*, então um único modelo cobre muitos frameworks:
 
-- **`null`**: no CSP; write the config with `cspChecked: true` and stop here.
-- **`append-arrays`**: CSP as structured directive arrays; auto-patchable (monorepo helpers with `additionalScriptSrc`/`additionalConnectSrc`, SvelteKit `kit.csp.directives`, Nuxt `nuxt-security`).
-- **`append-string`**: CSP as a literal value string; auto-patchable (inline `next.config.*` `headers()`, Nuxt `routeRules`).
-- **`middleware`** / **`meta-tag`**: detected but not auto-patched. Show the user the detected files, ask them to add `http://localhost:8400` to `script-src` and `connect-src` manually, then mark `cspChecked: true` and proceed.
+- **`null`**: sem CSP; escreva a configuração com `cspChecked: true` e pare aqui.
+- **`append-arrays`**: CSP como arrays estruturados de diretivas; corrigível automaticamente (helpers de monorepo com `additionalScriptSrc`/`additionalConnectSrc`, SvelteKit `kit.csp.directives`, Nuxt `nuxt-security`).
+- **`append-string`**: CSP como uma string de valor literal; corrigível automaticamente (`next.config.*` `headers()` inline, Nuxt `routeRules`).
+- **`middleware`** / **`meta-tag`**: detectado, mas não corrigido automaticamente. Mostre ao usuário os arquivos detectados, peça que ele adicione `http://localhost:8400` a `script-src` e `connect-src` manualmente, então marque `cspChecked: true` e prossiga.
 
-### Consent prompt (use this phrasing)
+### Pedido de consentimento (use esta redação)
 
-> **CSP patch needed.** I detected a Content Security Policy in your project that blocks `http://localhost:8400`: the live picker won't load without an allowance. Here's the change I'd make:
+> **Patch de CSP necessário.** Detectei no seu projeto uma Content Security Policy que bloqueia `http://localhost:8400`: o seletor do modo live não carrega sem uma permissão. Esta é a alteração que eu faria:
 >
 > ```diff
 > [file: <patchTarget>]
 > [exact diff, 2-5 lines]
 > ```
 >
-> It's guarded by `NODE_ENV === "development"` so the extra entry only appears in dev and never reaches production. You can remove it any time by reverting this file. Apply? [y/n]
+> Ela é protegida por `NODE_ENV === "development"`, então a entrada extra só aparece em desenvolvimento e nunca chega à produção. Você pode removê-la a qualquer momento revertendo este arquivo. Aplicar? [s/n]
 
-On "no": skip the patch, note that live will not work until the allowance is added manually, and still write `cspChecked: true` (the question has been asked). On "yes": apply the shape's patch below, then write `cspChecked: true`.
+Em caso de "não": pule o patch, avise que o live não vai funcionar até a permissão ser adicionada manualmente e ainda assim escreva `cspChecked: true` (a pergunta já foi feita). Em caso de "sim": aplique o patch do shape abaixo e então escreva `cspChecked: true`.
 
 ### append-arrays
 
-Declare near the top of the file that holds the CSP arrays, then append `...__impeccableLiveDev` to the script-src and connect-src arrays:
+Declare perto do topo do arquivo que contém os arrays de CSP e então acrescente `...__impeccableLiveDev` aos arrays de script-src e connect-src:
 
 ```ts
 // Dev-only allowance so impeccable live mode can load. Guarded by NODE_ENV.
@@ -80,11 +80,11 @@ const __impeccableLiveDev =
   process.env.NODE_ENV === "development" ? ["http://localhost:8400"] : [];
 ```
 
-Per-framework: Next.js + monorepo helper: edit the *app's* `next.config.*` (not the shared helper), appending to `additionalScriptSrc` / `additionalConnectSrc`. SvelteKit: `svelte.config.js`, `kit.csp.directives['script-src']` and `['connect-src']`. Nuxt + nuxt-security: `nuxt.config.*`, `security.headers.contentSecurityPolicy['script-src']` and `['connect-src']`. Reference outputs: [nextjs-turborepo/expected-after-patch.ts](https://github.com/pbakaus/impeccable/blob/8dac6ae7e020c43ab10ce9b41939f6fd42627b96/tests/framework-fixtures/nextjs-turborepo/expected-after-patch.ts), [sveltekit-csp/expected-after-patch.js](https://github.com/pbakaus/impeccable/blob/8dac6ae7e020c43ab10ce9b41939f6fd42627b96/tests/framework-fixtures/sveltekit-csp/expected-after-patch.js). Idempotency: if `__impeccableLiveDev` already exists in the file, the patch is applied; just mark `cspChecked: true`.
+Por framework: Next.js + helper de monorepo: edite o `next.config.*` *do app* (não o helper compartilhado), acrescentando a `additionalScriptSrc` / `additionalConnectSrc`. SvelteKit: `svelte.config.js`, `kit.csp.directives['script-src']` e `['connect-src']`. Nuxt + nuxt-security: `nuxt.config.*`, `security.headers.contentSecurityPolicy['script-src']` e `['connect-src']`. Saídas de referência: [nextjs-turborepo/expected-after-patch.ts](https://github.com/pbakaus/impeccable/blob/8dac6ae7e020c43ab10ce9b41939f6fd42627b96/tests/framework-fixtures/nextjs-turborepo/expected-after-patch.ts), [sveltekit-csp/expected-after-patch.js](https://github.com/pbakaus/impeccable/blob/8dac6ae7e020c43ab10ce9b41939f6fd42627b96/tests/framework-fixtures/sveltekit-csp/expected-after-patch.js). Idempotência: se `__impeccableLiveDev` já existir no arquivo, o patch já foi aplicado; apenas marque `cspChecked: true`.
 
 ### append-string
 
-Two-point patch: declare a dev-only string, interpolate it into the CSP value at both directives (leading space so it concatenates cleanly; convert literals to template strings as part of the edit):
+Patch em dois pontos: declare uma string somente de desenvolvimento e interpole-a no valor do CSP nas duas diretivas (com espaço inicial para que concatene corretamente; converta os literais em template strings como parte da edição):
 
 ```ts
 // Dev-only allowance so impeccable live mode can load.
@@ -92,13 +92,13 @@ const __impeccableLiveDev =
   process.env.NODE_ENV === "development" ? " http://localhost:8400" : "";
 ```
 
-- `script-src 'self' 'unsafe-inline'` becomes `` `script-src 'self' 'unsafe-inline'${__impeccableLiveDev}` ``
-- `connect-src 'self'` becomes `` `connect-src 'self'${__impeccableLiveDev}` ``
+- `script-src 'self' 'unsafe-inline'` passa a ser `` `script-src 'self' 'unsafe-inline'${__impeccableLiveDev}` ``
+- `connect-src 'self'` passa a ser `` `connect-src 'self'${__impeccableLiveDev}` ``
 
-Per-framework: Next.js inline `headers()` in `next.config.*`; Nuxt `routeRules['/**'].headers['Content-Security-Policy']` in `nuxt.config.*`. Reference outputs: [nextjs-inline-csp/expected-after-patch.js](https://github.com/pbakaus/impeccable/blob/8dac6ae7e020c43ab10ce9b41939f6fd42627b96/tests/framework-fixtures/nextjs-inline-csp/expected-after-patch.js), [nuxt-csp/expected-after-patch.ts](https://github.com/pbakaus/impeccable/blob/8dac6ae7e020c43ab10ce9b41939f6fd42627b96/tests/framework-fixtures/nuxt-csp/expected-after-patch.ts).
+Por framework: Next.js com `headers()` inline em `next.config.*`; Nuxt `routeRules['/**'].headers['Content-Security-Policy']` em `nuxt.config.*`. Saídas de referência: [nextjs-inline-csp/expected-after-patch.js](https://github.com/pbakaus/impeccable/blob/8dac6ae7e020c43ab10ce9b41939f6fd42627b96/tests/framework-fixtures/nextjs-inline-csp/expected-after-patch.js), [nuxt-csp/expected-after-patch.ts](https://github.com/pbakaus/impeccable/blob/8dac6ae7e020c43ab10ce9b41939f6fd42627b96/tests/framework-fixtures/nuxt-csp/expected-after-patch.ts).
 
-## Troubleshooting
+## Solução de problemas
 
-If the user said "no" to the CSP patch and later reports live not working: their dev CSP blocks `http://localhost:8400`. Delete `cspChecked` from `.impeccable/live/config.json` and re-run `impeccable live`; setup asks again.
+Se o usuário disse "não" ao patch de CSP e depois relatar que o live não funciona: o CSP de desenvolvimento dele bloqueia `http://localhost:8400`. Exclua `cspChecked` de `.impeccable/live/config.json` e execute `impeccable live` de novo; a configuração pergunta outra vez.
 
-After setup, re-run `impeccable live`.
+Após a configuração, execute `impeccable live` de novo.

@@ -1,51 +1,51 @@
-# iOS platform
+# Plataforma iOS
 
-For native iOS / iPadOS apps: SwiftUI, UIKit, React Native, Expo, Flutter shipping to Apple hardware.
+Para apps nativos de iOS / iPadOS: SwiftUI, UIKit, React Native, Expo e Flutter rodando em hardware Apple.
 
-On native, the visitor mode narrows what expression may override. HIG conformance governs structure, navigation, and interaction in every mode; brand expresses through the layer the platform leaves open (tint, type, motion, content).
+No nativo, o modo do visitante restringe o que a expressão pode sobrepor. A conformidade com as HIG rege a estrutura, a navegação e a interação em todos os modos; a marca se expressa pela camada que a plataforma deixa aberta (tint, tipografia, movimento, conteúdo).
 
-## The iOS slop test
+## O teste de desleixo do iOS
 
-Would a fluent iPhone user trust this app, or pause at off-spec controls? The tell is "ported from a website": reinvented navigation bars, custom back gestures, web-shaped buttons, hover-dependent affordances. Default to the platform's components; depart only for a reason the user would thank you for.
+Um usuário fluente em iPhone confiaria neste app ou pararia diante de controles fora da especificação? O sinal revelador é "portado de um site": barras de navegação reinventadas, gestos de voltar personalizados, botões com cara de web, affordances que dependem de hover. Use por padrão os componentes da plataforma; afaste-se deles apenas por um motivo pelo qual o usuário lhe agradeceria.
 
-## Layout & structure
+## Layout e estrutura
 
-- **Safe area.** Lay out inside the safe-area insets. No controls under the notch, Dynamic Island, home indicator, or rounded corners.
-- **System navigation.** Tab bar for 2–5 top-level sections (sections, never actions), navigation stack for hierarchy, sheet for self-contained tasks. No custom global nav, no mixed metaphors.
-- **Edge-swipe back stays alive.** The left-edge back gesture is muscle memory; never disable or overlay it.
-- **Large titles** on top-level screens, collapsing to inline on scroll. Deep detail screens stay inline.
+- **Área segura.** Faça o layout dentro dos insets da área segura. Nenhum controle sob o notch, a Dynamic Island, o indicador de início ou os cantos arredondados.
+- **Navegação do sistema.** Tab bar para 2–5 seções de nível superior (seções, nunca ações), pilha de navegação para hierarquia, sheet para tarefas autocontidas. Nada de navegação global personalizada, nada de metáforas misturadas.
+- **O voltar deslizando pela borda continua vivo.** O gesto de voltar pela borda esquerda é memória muscular; nunca o desative nem o cubra.
+- **Títulos grandes** nas telas de nível superior, recolhendo-se para inline na rolagem. Telas de detalhe profundas permanecem inline.
 
-## Touch targets
+## Áreas de toque
 
-- **44×44 pt minimum** for every tappable control, with breathing room between adjacent targets.
+- **Mínimo de 44×44 pt** para todo controle tocável, com espaço de respiro entre alvos adjacentes.
 
-## Typography
+## Tipografia
 
-- **Dynamic Type.** Use the system text styles (Large Title through Caption) so text follows the user's reading size. No hard-coded point sizes.
-- **San Francisco carries the UI.** Body, labels, and controls stay on SF Pro / SF Compact; a brand face may appear in display moments.
-- **11 pt floor**; Body is 17 pt.
+- **Dynamic Type.** Use os estilos de texto do sistema (de Large Title a Caption) para que o texto siga o tamanho de leitura do usuário. Nada de tamanhos em pontos fixos no código.
+- **A San Francisco sustenta a UI.** Corpo de texto, rótulos e controles ficam em SF Pro / SF Compact; uma fonte da marca pode aparecer em momentos de display.
+- **Piso de 11 pt**; o Body tem 17 pt.
 
-## Color & materials
+## Cor e materiais
 
-- **Semantic system colors** (label, secondaryLabel, systemBackground, separator, tint). They adapt to Dark Mode and increased contrast automatically; raw hex breaks there.
-- **Dark Mode is a first-class appearance.** Design and test both.
-- **One tint color** drives interactive elements; decoration is not its job.
-- **System materials** for blur and translucency behind bars and sheets; no hand-rolled glassmorphism.
+- **Cores semânticas do sistema** (label, secondaryLabel, systemBackground, separator, tint). Elas se adaptam automaticamente ao Dark Mode e ao aumento de contraste; hex bruto quebra nesses casos.
+- **O Dark Mode é uma aparência de primeira classe.** Projete e teste as duas.
+- **Uma única cor de tint** comanda os elementos interativos; decoração não é função dela.
+- **Materiais do sistema** para desfoque e translucidez atrás de barras e sheets; nada de glassmorphism feito à mão.
 
-## Components & controls
+## Componentes e controles
 
-- **Platform controls.** Switch, segmented control, stepper, system pickers, action sheets, alerts, context menus, swipe actions. Reinventing these for flavor is the most common native slop.
-- **SF Symbols** for iconography: baseline-aligned, Dynamic Type-aware, weight and scale variants. Don't mix in a web icon set.
-- **Deliberate modality.** Sheet for a focused dismissible sub-task, full-screen cover for immersion. Clear Cancel/Done; honor swipe-to-dismiss unless data loss requires a guard.
-- **Grouped/inset lists** for settings-shaped content; no bespoke card stacks.
+- **Controles da plataforma.** Switch, segmented control, stepper, seletores do sistema, action sheets, alertas, menus de contexto, ações de deslizar. Reinventá-los por estilo é o desleixo nativo mais comum.
+- **SF Symbols** para a iconografia: alinhados à linha de base, compatíveis com Dynamic Type, com variantes de peso e escala. Não misture um conjunto de ícones da web.
+- **Modalidade deliberada.** Sheet para uma subtarefa focada e dispensável, cobertura em tela cheia para imersão. Cancelar/Concluir claros; respeite o deslizar para dispensar, a menos que a perda de dados exija uma proteção.
+- **Listas agrupadas/inset** para conteúdo com formato de configurações; nada de pilhas de cards sob medida.
 
-## Motion
+## Movimento
 
-- **System transitions.** Push slides, sheets rise, dismiss reverses the entrance. Custom transitions that fight the navigation model disorient.
-- **Honor Reduce Motion.** Crossfade instead of parallax and large slides.
+- **Transições do sistema.** O push desliza, as sheets sobem, a dispensa inverte a entrada. Transições personalizadas que brigam com o modelo de navegação desorientam.
+- **Respeite o Reduce Motion.** Crossfade em vez de parallax e de grandes deslizamentos.
 
-## Verifying the build
+## Verificando o build
 
-- **Screenshots come from the Simulator, never a browser.** Build and run, then capture with `xcrun simctl io booted screenshot <path>` (with several running, replace `booted` with the target's UDID from `xcrun simctl list devices booted`; display names can collide, the UDID never does). Capture every device class the app ships to, at least one iPhone and, when iPad is a target, one iPad, and write the files where the review flow expects them.
-- **Dark Mode and Dynamic Type belong in the pass.** `xcrun simctl ui booted appearance dark` flips appearance, reusing the capture's UDID when several are booted; a check at a large Dynamic Type size catches the truncation a fixed layout hides.
-- **Simulators give breadth; posture, gestures, and performance need hardware.** Say which one produced the evidence.
+- **As capturas de tela vêm do Simulator, nunca de um navegador.** Faça o build e execute, depois capture com `xcrun simctl io booted screenshot <path>` (com vários em execução, substitua `booted` pelo UDID do alvo obtido em `xcrun simctl list devices booted`; nomes de exibição podem colidir, o UDID nunca). Capture cada classe de dispositivo para a qual o app é distribuído, pelo menos um iPhone e, quando o iPad for um alvo, um iPad, e grave os arquivos onde o fluxo de revisão os espera.
+- **Dark Mode e Dynamic Type fazem parte da verificação.** `xcrun simctl ui booted appearance dark` alterna a aparência, reutilizando o UDID da captura quando vários estão iniciados; uma checagem num tamanho grande de Dynamic Type revela o truncamento que um layout fixo esconde.
+- **Simuladores dão amplitude; postura, gestos e desempenho exigem hardware.** Diga qual deles produziu a evidência.

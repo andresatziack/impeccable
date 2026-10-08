@@ -1,24 +1,25 @@
-# Command guidance
+# Orientação sobre comandos
 
-## Workflow questions
+<a id="workflow-questions"></a>
+## Perguntas de fluxo de trabalho
 
-Give advice without executing commands; the menu below is only for bare invocations. Consult relevant command references as needed for prerequisites and scope. Link to the [docs](https://impeccable.style/docs/) for the broader workflow guide. If the user also requests execution, follow that request.
+Dê conselhos sem executar comandos; o menu abaixo serve apenas para invocações sem argumento. Consulte as referências dos comandos relevantes conforme necessário para pré-requisitos e escopo. Inclua um link para a [documentação](https://impeccable.style/docs/) para o guia mais amplo do fluxo de trabalho. Se o usuário também pedir execução, atenda a esse pedido.
 
-## No-argument routing: the context-aware menu
+## Roteamento sem argumento: o menu sensível ao contexto
 
-Read this when the user invokes `/impeccable` with no argument. They are asking "what should I do?" Make the menu context-aware instead of static.
+Leia isto quando o usuário invocar `/impeccable` sem nenhum argumento. Ele está perguntando "o que eu devo fazer?". Torne o menu sensível ao contexto em vez de estático.
 
-Setup has already run `impeccable context`. If that reported `NO_PRODUCT_MD`, the project has no captured context yet: lead the menu with `/impeccable init` as the top recommendation (one line on why) and still show the rest below; don't silently jump into init. Otherwise run `.kiro/skills/impeccable/scripts/impeccable signals` once and read its JSON, then lead with the **2-3 highest-value next commands**, each with a one-line reason pulled from the signals, followed by the full menu (the Commands table in SKILL.md, grouped by category). **Never auto-run a command; the recommendation is a suggestion the user confirms.**
+A etapa de Setup já executou `impeccable context`. Se ela relatou `NO_PRODUCT_MD`, o projeto ainda não tem contexto capturado: abra o menu com `/impeccable init` como recomendação principal (com uma linha explicando o porquê) e ainda assim mostre o restante abaixo; não pule para o init silenciosamente. Caso contrário, execute `.kiro/skills/impeccable/scripts/impeccable signals` uma vez e leia o JSON resultante; depois, abra com os **2-3 próximos comandos de maior valor**, cada um com um motivo de uma linha extraído dos sinais, seguidos do menu completo (a tabela de Comandos do SKILL.md, agrupada por categoria). **Nunca execute um comando automaticamente; a recomendação é uma sugestão que o usuário confirma.**
 
-Reason over the signals; there is no score to obey:
+Raciocine sobre os sinais; não há nenhuma pontuação a obedecer:
 
-- `setup.hasDesign` false while `setup.hasCode` true → `document` (capture the visual system).
-- `critique.latest` is `null` → the project has never been critiqued; for a set-up project with a real surface, offering `/impeccable critique <surface>` is a strong default.
-- `critique.latest` with a low `score` or non-zero `p0` / `p1` → `polish` (it reads that snapshot as its backlog and closes it when stale or cleared).
-- `git.changedFiles` pointing at one surface → scope `audit` or `polish` to those files specifically, naming them.
-- `devServer.running` true → `live` is available for in-browser iteration, and `generate` for one-shot variant runs on a named element; if false, don't lead with either. **`live`, `generate`, and the bundled `impeccable detect` are web-only.** If `setup.platform` is `ios`, `android`, or `adaptive`, don't lead with any of them; the browser overlay and the HTML rule engine don't apply to native app code.
-- Otherwise group by intent (build new / improve what's there / iterate visually), tailored to the current surface and `setup.platform`.
+- `setup.hasDesign` falso enquanto `setup.hasCode` é verdadeiro → `document` (capturar o sistema visual).
+- `critique.latest` é `null` → o projeto nunca passou por critique; para um projeto já configurado com uma superfície real, oferecer `/impeccable critique <surface>` é um padrão forte.
+- `critique.latest` com `score` baixo ou `p0` / `p1` diferente de zero → `polish` (ele lê esse snapshot como seu backlog e o encerra quando estiver desatualizado ou resolvido).
+- `git.changedFiles` apontando para uma única superfície → restrinja `audit` ou `polish` especificamente a esses arquivos, nomeando-os.
+- `devServer.running` verdadeiro → `live` está disponível para iteração no navegador, e `generate` para execuções pontuais de variantes em um elemento nomeado; se for falso, não abra com nenhum dos dois. **`live`, `generate` e o `impeccable detect` incluído são exclusivos para web.** Se `setup.platform` for `ios`, `android` ou `adaptive`, não abra com nenhum deles; a sobreposição no navegador e o motor de regras de HTML não se aplicam a código de app nativo.
+- Caso contrário, agrupe por intenção (construir algo novo / melhorar o que existe / iterar visualmente), adaptando à superfície atual e a `setup.platform`.
 
-**If `scan.targets` is non-empty and `setup.platform` is not `ios`/`android`/`adaptive`, run `.kiro/skills/impeccable/scripts/impeccable detect --json <scan.targets joined by spaces>` once** (the bundled detector over local files: no network, no npx; it reads HTML/CSS, so skip it for native projects). `scan.via` tells you what they are: `git-changes` (the markup/style files in your dirty tree, the most relevant set), `source-dir` (e.g. `src`, `app`), `html`, or `root`. Fold the hits into your picks: many quality / contrast hits → `audit` or `polish`; a specific slop family → the matching command (gradient text or eyebrows → `quieter` / `typeset`, flat or gray palette → `colorize`, and so on). It's a real, current signal that beats guessing. If detect errors or the tree is large and slow, skip it and recommend the user run `audit` themselves; never block the suggestion on it.
+**Se `scan.targets` não estiver vazio e `setup.platform` não for `ios`/`android`/`adaptive`, execute `.kiro/skills/impeccable/scripts/impeccable detect --json <scan.targets joined by spaces>` uma vez** (o detector incluído rodando sobre arquivos locais: sem rede, sem npx; ele lê HTML/CSS, então pule-o em projetos nativos). `scan.via` informa o que eles são: `git-changes` (os arquivos de marcação/estilo na sua árvore com alterações, o conjunto mais relevante), `source-dir` (por exemplo, `src`, `app`), `html` ou `root`. Incorpore os achados às suas escolhas: muitos achados de qualidade / contraste → `audit` ou `polish`; uma família específica de desleixo → o comando correspondente (texto com gradiente ou eyebrows → `quieter` / `typeset`, paleta chapada ou cinza → `colorize`, e assim por diante). É um sinal real e atual, que vence o chute. Se o detect der erro ou se a árvore for grande e lenta, pule-o e recomende que o próprio usuário execute `audit`; nunca bloqueie a sugestão por causa dele.
 
-Keep it to 2-3 pointed picks with the exact command to type. The menu stays the fallback; the recommendation is the lede.
+Limite-se a 2-3 escolhas certeiras, com o comando exato a ser digitado. O menu continua sendo o recurso de reserva; a recomendação é o destaque.
